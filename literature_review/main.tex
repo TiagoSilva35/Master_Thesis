@@ -1,0 +1,293 @@
+% Contact Nuno Laranjeiro cnl@dei.uc.pt for any feedback, suggestions, or corrections regarding this template.
+
+% ************************************ CONFIGURATION *****************************************
+% Fill in _all_ items in this configuration section with your Thesis details.                                                                      
+
+% If you are writing a Phd Thesis, change *msc* to *phd* in the following line
+\def\thesistype{msc}                                                     
+
+% docLanguage is the main language of the document. Possible options are: en,pt
+\def\docLanguage{en}
+
+% Tentative title -- revisit after the literature review (Section 3.7) fixes the research questions.
+\def\titleEN{Towards Fair Algorithmic Recourse with Kolmogorov-Arnold Networks}
+\def\subtitleEN{}
+
+\def\titlePT{Rumo a um Recurso Algorítmico Justo com Redes de Kolmogorov-Arnold}
+\def\subtitlePT{}
+
+% MSc Theses - cover page
+\def\descMScEN{Dissertation in the context of the Master in Informatics Engineering, specialization in Artificial Intelligence, advised by
+Professor Pedro Henriques Abreu and Professor Bruno Veloso and presented to the Department of Informatics Engineering of the Faculty of Sciences and Technology of the University of Coimbra.}
+
+\def\descMScPT{Dissertação no âmbito do Mestrado em Engenharia Informática, especialização em Inteligência Artificial, orientada
+pelo Professor Pedro Henriques Abreu e pelo Professor Bruno Veloso e apresentada ao Departamento de Engenharia Informática da Faculdade de Ciências e Tecnologia da Universidade de Coimbra.}
+
+% PhD Theses - cover page
+\def\descPhDEN{Thesis in the context of the <full name of the doctoral program, including branches/areas if applicable>, advised by Professor 
+<full name of the supervisor> and presented at <name of the academic unit>/<name of the department within the academic unit, if applicable>.}
+
+\def\descPhDPT{Tese no âmbito do <nome completo do doutoramento, incluindo ramos/área se aplicável> orientada pelo/a Professor/a <nome completo 
+do orientador> e apresentada <à nome da unidade orgânica>/<ao nome do departamento, se aplicável da/do nome da unidade orgânica>.}
+
+
+% MSc Theses - title Page
+\def\titlePageDescMScEN{Dissertation in the context of the Master in Informatics Engineering, specialization in Artificial Intelligence, advised by Professor
+Pedro Henriques Abreu and Professor Bruno Veloso and presented to the Department of Informatics Engineering of the Faculty of Sciences and Technology of the University of Coimbra.}
+\def\titlePageDescMScPT{Dissertação no âmbito do Mestrado em Engenharia Informática, especialização em Inteligência Artificial, orientada
+pelo Professor Pedro Henriques Abreu e pelo Professor Bruno Veloso e apresentada ao Departamento de Engenharia Informática da Faculdade de Ciências e Tecnologia da Universidade de Coimbra.}
+
+
+% PhD Theses - title Page
+\def\titlePageDescPhdEN{PhD Thesis submitted to the University of Coimbra\\Advised by Professor <Supervisor's name>.}
+\def\titlePageDescPhdPT{Tese de Doutoramento submetida à Universidade de Coimbra\\Orientada pelo Professor <Nome do Orientador>.}
+
+
+\def\author{Tiago Silva}
+\def\dateEN{January 2027}
+\def\datePT{Janeiro 2027}
+% ********************************** END CONFIGURATION ***************************************
+
+
+
+\documentclass[twoside, 12pt, a4paper]{book}
+\raggedbottom
+
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=3.5cm,right=2.5cm,headsep=12pt]{geometry}
+\usepackage[final]{pdfpages}
+
+\usepackage[absolute,overlay]{textpos}
+
+
+\usepackage{ifthen}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\ifthenelse{\equal{\docLanguage}{en}}
+{
+	\usepackage[english]{babel}
+}
+{
+	\usepackage[portuguese]{babel}
+}
+
+\usepackage{graphicx}
+\usepackage{glossaries}
+\usepackage{tabularx}
+\usepackage{mathpazo}
+\usepackage{xcolor, soulutf8, afterpage}  
+\usepackage{emptypage}
+\usepackage{setspace}
+
+\usepackage[disable]{todonotes}
+
+\ifthenelse{\equal{\thesistype}{msc}}
+{
+
+	%Cor do fundo da capa, lombada e contracapa: C 17%, M 27%, Y 45%, K 4% (~ Pantone 7753C)
+	\definecolor{cover-background}{cmyk}{0.17 0.27 0.45 0.04}
+	%Cor das marcas e Tipografia: C 44%, M 50%, Y 68%, K 45% (~ Pantone 448C)
+	\definecolor{cover-foreground}{cmyk}{0.44 0.50 0.68 0.45}
+}
+{
+	%Cor do fundo da capa, lombada e contracapa: C 17%, M 26%, Y 67%, K 4% (~ Pantone 480C)
+	\definecolor{cover-background}{cmyk}{0.17 0.26 0.67 0.04}
+	%Cor das marcas e Tipografia: C 44%, M 50%, Y 68%, K 45% (~ Pantone 448C)
+	\definecolor{cover-foreground}{cmyk}{0.44 0.50 0.68 0.45}
+}
+
+
+
+\usepackage[page,titletoc,title]{appendix} 
+
+\usepackage{subcaption}
+
+\usepackage[sort&compress,square]{natbib}
+\renewcommand{\cite}[1]{\citep{#1}}
+
+\usepackage[nottoc,notlot,notlof]{tocbibind}
+
+\usepackage{notoccite}
+\usepackage{titlesec}
+
+%Remove all paragraph indentation
+\setlength\parindent{0pt}
+
+
+% --------------- headers and footers control ----------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
+\fancyhead[LE]{\ifnum \value{chapter}>0\sl{\nouppercase{\chaptertitlename~\thechapter}}\fi}
+\fancyhead[RE]{}
+\fancyhead[LO]{}
+\fancyhead[RO]{\sl{\nouppercase{\leftmark}}}
+
+%\fancyhead[RE,LO]{\rightmark}
+\renewcommand{\headrulewidth}{0.4pt}
+%---------------------------------------------------------------------
+
+
+\makenoidxglossaries
+\usepackage[hidelinks,bookmarks=true]{hyperref}
+
+
+\hypersetup{
+    pdftitle={\titleEN},
+    pdfauthor={\author}
+}
+
+\input{frontmatter/8-acronyms}
+
+\usepackage{etoolbox}
+
+
+\begin{document}
+\setlength{\parskip}{0.7em}
+
+%---------------------------------- FRONTMATTER ---------------------------------- 
+\frontmatter
+
+\input{frontmatter/1-coverpage}
+\cleardoublepage
+
+\ifthenelse{\equal{\docLanguage}{en}}
+{ 
+	\input{frontmatter/2-titlepage}
+	\cleardoublepage	
+	\def\docLanguage{pt}
+	\input{frontmatter/2-titlepage}
+	\cleardoublepage
+	\def\docLanguage{en}
+}
+{
+	\input{frontmatter/2-titlepage}
+	\cleardoublepage	
+	\def\docLanguage{en}
+	\input{frontmatter/2-titlepage}
+	\cleardoublepage
+	\def\docLanguage{pt}
+}
+
+
+\ifthenelse{\equal{\thesistype}{phd}}
+{ 
+	\input{frontmatter/3-funding}
+	\cleardoublepage
+}{}
+
+
+\input{frontmatter/4-acknowledgements}
+\newpage
+\input{frontmatter/5-ai-declaration}
+\cleardoublepage
+
+
+
+
+\ifthenelse{\equal{\docLanguage}{en}}
+{
+	\input{frontmatter/6-abstract-EN.tex}
+	\cleardoublepage
+	\input{frontmatter/6-abstract-PT.tex}
+	\cleardoublepage
+}
+{%else
+	\input{frontmatter/6-abstract-PT.tex}
+	\cleardoublepage
+	\input{frontmatter/6-abstract-EN.tex}
+	\cleardoublepage
+}
+
+\ifthenelse{\equal{\thesistype}{phd}}
+{
+	\input{frontmatter/7-publications.tex}
+	\cleardoublepage
+}{}
+%-----------------------------------------------------------------------------------
+
+% Set paragraph spacing to use in ToC and other lists
+\setlength{\parskip}{0em}
+
+% Make sure acronyms don't appear in the ToC
+\glsunsetall
+\tableofcontents
+\glsresetall
+
+\cleardoublepage
+
+
+% List of acronyms
+\glsnogroupskiptrue
+
+\ifthenelse{\equal{\docLanguage}{en}}
+{
+	\def\acronymsTitle{Acronyms}
+}
+{
+	\def\acronymsTitle{Acrónimos}
+}
+\printnoidxglossary[type=\acronymtype,style=list,title={\acronymsTitle}, nonumberlist]
+
+\cleardoublepage
+
+\listoffigures
+\cleardoublepage
+
+\listoftables
+\cleardoublepage
+
+%------------------------------
+\mainmatter
+\setlength{\parskip}{0.7em}
+\input{text/1-introduction}
+\input{text/2-background}
+\input{text/3-literature-review}
+\input{text/4-proposed-approach}
+\input{text/5-conclusion}
+
+\bibliographystyle{plainnat} 
+%\bibliographystyle{apalike}
+
+\ifthenelse{\equal{\docLanguage}{en}}
+{
+	\renewcommand{\bibname}{References}
+}
+{
+	\renewcommand{\bibname}{Referências}
+}
+
+
+\cleardoublepage
+
+% Custom headers style for the references chapter
+%--------------
+\phantomsection
+\renewcommand{\chaptermark}[1]{} % disable automatic chaptermark
+\fancyhead[LE,RO]{\sl\MakeUppercase{\bibname}} 
+%--------------
+\bibliography{references}
+
+\cleardoublepage
+%reset fancyheaders definitions
+%--------------
+\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
+\fancyhead[LE]{\ifnum \value{chapter}>0\sl{\nouppercase{\chaptertitlename~\thechapter}}\fi}
+\fancyhead[RE]{}
+\fancyhead[LO]{}
+\fancyhead[RO]{\sl{\nouppercase{\leftmark}}}
+%--------------
+
+\begin{appendices}
+
+
+
+	
+\input{text/9-appendices}
+\end{appendices}
+%------------------------------
+
+
+\end{document}
+%Document end

@@ -1,0 +1,165 @@
+\chapter{Literature Review}
+\label{chap:literature-review}
+
+% PLAN: the core of the January delivery, ~25--32 pages (W3--W8).
+% Intro paragraph: positioning at the intersection of recourse, fairness and
+% KANs, with causal modelling as the enabler (positioning figure). Explain that
+% the chapter ends with a decision about the role of the KAN (decision model,
+% causal model or recourse generator), taken up in Chapter~\ref{chap:proposed-approach}.
+% Rule: every section ends with ``Summary and Implications'' tied to the thesis.
+
+\section{Review Methodology}
+\label{sec:lr-methodology}
+
+% (W3) Protocol following \cite{kitchenham2007guidelines}; reporting following
+% \cite{page2021prisma}; snowballing following \cite{wohlin2014guidelines}.
+
+\subsection{Review Questions}
+\label{subsec:lr-review-questions}
+
+% The review's own questions (one per cluster), not the thesis RQs.
+
+\subsection{Search Strategy}
+\label{subsec:lr-search}
+
+% Databases, preprint servers, venues, strings S1--S5 (table), search dates.
+
+\subsection{Inclusion and Exclusion Criteria}
+\label{subsec:lr-criteria}
+
+% IC1--IC4, EC1--EC5, time windows.
+
+\subsection{Study Selection}
+\label{subsec:lr-selection}
+
+% PRISMA flow diagram with the logged counts (finish in W8).
+
+\section{Counterfactual Explanation and Recourse Generation Methods}
+\label{sec:lr-recourse-methods}
+
+% (W4) Taxonomy figure + comparison table:
+% method | year | model access | causal? | actionability | plausibility | data | code.
+% Seeds: \cite{karimi2022survey, verma2024counterfactual, guidotti2024counterfactual}.
+
+\subsection{Optimisation-Based Methods}
+\label{subsec:lr-optimisation}
+
+% \cite{wachter2018counterfactual, ustun2019actionable, mothilal2020explaining}.
+
+\subsection{Data-Manifold and Generative Methods}
+\label{subsec:lr-generative}
+
+% \cite{poyiadzi2020face, joshi2019towards, pawelczyk2020learning}.
+% Note amortized generators (relevant to option O3).
+
+\subsection{Causality-Aware Recourse}
+\label{subsec:lr-causal-recourse}
+
+% \cite{mahajan2019preserving, karimi2021algorithmic}.
+
+\subsection{Robustness and Global Recourse}
+\label{subsec:lr-robust-global}
+
+% \cite{upadhyay2021towards, dominguezolmedo2022adversarial, rawal2020beyond};
+% critical perspectives \cite{venkatasubramanian2020philosophical, barocas2020hidden}.
+
+\subsection{Summary and Implications}
+\label{subsec:lr-recourse-summary}
+
+\section{Fairness of Algorithmic Recourse}
+\label{sec:lr-fair-recourse}
+
+% (W5) Comparison table:
+% notion | definition | needs SCM? | mitigation proposed? | datasets.
+
+\subsection{Group-Level Notions of Recourse Fairness}
+\label{subsec:lr-group-recourse-fairness}
+
+% Cost parity and burden \cite{gupta2019equalizing, sharma2020certifai};
+% social burden \cite{barrainkua2026revisiting}; substantive equality
+% \cite{bell2024fairness}.
+
+\subsection{Individual and Causal Notions of Recourse Fairness}
+\label{subsec:lr-causal-recourse-fairness}
+
+% \cite{vonkugelgen2022fairness, ehyaei2023robustness}.
+
+\subsection{Auditing and Mitigating Unfair Recourse}
+\label{subsec:lr-recourse-mitigation}
+
+% Subgroup audits \cite{kavouras2023fairness}; in-training vs. post-hoc
+% mitigation (relevant to option O1).
+
+\subsection{Summary and Implications}
+\label{subsec:lr-fair-recourse-summary}
+
+\section{Causal Modelling for Counterfactual Inference}
+\label{sec:lr-causal-models}
+
+% (W6) Comparison table:
+% model | family | identifiability | mixed data? | interpretable mechanisms?
+
+\subsection{Deep Structural Causal Models}
+\label{subsec:lr-dscm}
+
+% \cite{pawlowski2020deep, xia2023neural}.
+
+\subsection{Flow-, Autoencoder- and Diffusion-Based Causal Models}
+\label{subsec:lr-causal-generative}
+
+% \cite{khemakhem2021causal, sanchezmartin2022vaca, javaloy2023causal, chao2023interventional}.
+
+\subsection{Recourse under Imperfect Causal Knowledge}
+\label{subsec:lr-imperfect-causal}
+
+% \cite{karimi2020algorithmic}. Relevant to option O2: where does the graph come from?
+
+\subsection{Summary and Implications}
+\label{subsec:lr-causal-summary}
+
+\section{Kolmogorov-Arnold Networks in Trustworthy Machine Learning}
+\label{sec:lr-kan}
+
+% (W7) Comparison table:
+% variant/work | basis function | claim | tabular evaluation? | fairness/XAI/causal use?
+% Surveys: \cite{somvanshi2024survey, hou2024comprehensive}.
+
+\subsection{Variants and Efficiency}
+\label{subsec:lr-kan-variants}
+
+% \cite{li2024kolmogorov, yu2024kan} + variants found by the search.
+
+\subsection{KANs on Tabular Data}
+\label{subsec:lr-kan-tabular}
+
+% \cite{poeta2024benchmarking, yadav2025kolmogorov}.
+
+\subsection{Interpretability Claims and Evidence}
+\label{subsec:lr-kan-interpretability}
+
+% \cite{liu2025kan, liu2024kan}; contrast with \cite{rudin2019stop, agarwal2021neural}.
+
+\subsection{KANs for Fairness, Explainability and Causality}
+\label{subsec:lr-kan-trustworthy}
+
+% \cite{priyadarshini2026learning} + works found by S5. State the gap
+% (no KAN-based recourse work as of the search freeze), backed by the search log.
+
+\subsection{Summary and Implications}
+\label{subsec:lr-kan-summary}
+
+\section{Datasets, Metrics and Benchmarking Practice}
+\label{sec:lr-datasets}
+
+% (W8) Datasets table:
+% dataset | domain | n | features | sensitive attribute | actionable features | causal graph? | used by.
+% \cite{lequy2022survey, becker1996adult, hofmann1994statlog, angwin2016machine,
+%       wightman1998lsac, yeh2009comparisons}; benchmarking \cite{pawelczyk2021carla}.
+% Also: which metrics and statistical tests are reported.
+
+\section{Synthesis and Research Gaps}
+\label{sec:lr-gaps}
+
+% (W8) 1--2 pages. Cross-cluster synthesis -> explicit gaps -> final RQs
+% (copy them back to Section~\ref{sec:intro-objectives}). End with the decision
+% matrix for the KAN's role (options O1--O4).

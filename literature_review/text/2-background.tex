@@ -1,0 +1,105 @@
+\chapter{Background Knowledge}
+\label{chap:background}
+
+% PLAN: written alongside the clusters (W2--W6), ~15--18 pages.
+% Intro paragraph: this chapter introduces the concepts needed to follow
+% Chapter~\ref{chap:literature-review}. Notation is fixed here and reused
+% everywhere else.
+
+\section{Supervised Learning Setting and Notation}
+\label{sec:bg-notation}
+
+% (W2) Input space, label, classifier, sensitive attribute, cost function
+% between an instance and its counterfactual, set of feasible actions.
+% Keep it short; this is the reference for all later formulas.
+
+\section{Kolmogorov-Arnold Networks}
+\label{sec:bg-kan}
+
+\subsection{The Kolmogorov-Arnold Representation Theorem}
+\label{subsec:bg-ka-theorem}
+
+% (W3) Statement of the theorem \cite{kolmogorov1957representation, arnold1957functions};
+% why it was long considered irrelevant for learning \cite{girosi1989representation}.
+
+\subsection{Architecture and Training}
+\label{subsec:bg-kan-architecture}
+
+% (W3) Learnable univariate edge functions (B-splines + residual basis),
+% grid extension, KAN layers vs. MLP layers \cite{liu2025kan};
+% caveats from fair comparisons \cite{yu2024kan}. Figure: KAN vs. MLP schematic.
+
+\subsection{Interpretability: Pruning and Symbolic Regression}
+\label{subsec:bg-kan-interpretability}
+
+% (W3) Sparsification, pruning, symbolic formula extraction
+% \cite{liu2025kan, liu2024kan}; relation to additive models
+% \cite{agarwal2021neural}.
+
+\section{Algorithmic Fairness}
+\label{sec:bg-fairness}
+
+\subsection{Sources of Bias}
+\label{subsec:bg-bias-sources}
+
+% (W5) Taxonomy of bias sources \cite{mehrabi2021survey, barocas2023fairness}.
+
+\subsection{Group Fairness Criteria}
+\label{subsec:bg-group-fairness}
+
+% (W5) Demographic parity, equal opportunity, equalized odds, calibration
+% \cite{hardt2016equality}; impossibility results
+% \cite{kleinberg2017inherent, chouldechova2017fair}.
+
+\subsection{Individual and Causal Fairness}
+\label{subsec:bg-individual-causal-fairness}
+
+% (W5) Fairness through awareness \cite{dwork2012fairness}; counterfactual
+% fairness \cite{kusner2017counterfactual}; causal reasoning about
+% discrimination \cite{kilbertus2017avoiding}.
+
+\subsection{Bias Mitigation Strategies}
+\label{subsec:bg-mitigation}
+
+% (W5) Pre-, in- and post-processing \cite{caton2024fairness};
+% fair representations \cite{zemel2013learning}.
+
+\section{Causal Inference Foundations}
+\label{sec:bg-causality}
+
+\subsection{Structural Causal Models}
+\label{subsec:bg-scm}
+
+% (W6) SCMs, causal graphs, structural equations, exogenous noise
+% \cite{pearl2009causality, peters2017elements}.
+
+\subsection{Interventions and Counterfactuals}
+\label{subsec:bg-counterfactuals}
+
+% (W6) Ladder of causation; do-operator; abduction--action--prediction.
+% Figure: a small SCM with an intervention (reuse it in Section~\ref{sec:bg-recourse}).
+
+\section{Counterfactual Explanations and Algorithmic Recourse}
+\label{sec:bg-recourse}
+
+\subsection{Counterfactual Explanations}
+\label{subsec:bg-ce}
+
+% (W4) Optimisation formulation \cite{wachter2018counterfactual}; desiderata.
+
+\subsection{From Counterfactual Explanations to Recourse}
+\label{subsec:bg-ce-to-recourse}
+
+% (W4) Actionability and cost \cite{ustun2019actionable}; recourse as minimal
+% interventions instead of nearest counterfactuals \cite{karimi2021algorithmic}.
+
+\subsection{Evaluation Criteria}
+\label{subsec:bg-recourse-metrics}
+
+% (W4) Validity, proximity, sparsity, plausibility, diversity, cost, runtime
+% \cite{verma2024counterfactual, guidotti2024counterfactual}.
+
+\section{Summary}
+\label{sec:bg-summary}
+
+% Half a page: how the four building blocks connect to the thesis.
