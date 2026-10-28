@@ -2,9 +2,19 @@
 \label{chap:literature-review}
 
 % PLAN: the core of the January delivery, ~25--32 pages (W3--W8).
-% Intro paragraph: positioning at the intersection of recourse, fairness and
-% KANs, with causal modelling as the enabler (positioning figure). Explain that
-% the chapter ends with a decision about the role of the KAN (decision model,
+% Intro paragraph: the review is organised by the part of the recourse pipeline
+% each work studies (pipeline figure: recourse generator -> causal model ->
+% decision model, with the cost of recourse compared across groups):
+% G1 counterfactual search (Section~\ref{sec:lr-cf-search}), G2 plausibility and
+% causality (Section~\ref{sec:lr-plausibility}), G3 fairness of recourse
+% (Section~\ref{sec:lr-fair-recourse}) and G4 KAN components (Section~\ref{sec:lr-kan}).
+% Foundations (surveys, position papers) are summarised here and in
+% Chapter~\ref{chap:background}: \cite{karimi2022survey, verma2024counterfactual,
+% guidotti2024counterfactual, venkatasubramanian2020philosophical, barocas2020hidden}.
+% Evaluation (datasets, metrics, tools) has no section of its own: every
+% comparison table records datasets and metrics, and the datasets table is in
+% Chapter~\ref{chap:proposed-approach}.
+% The chapter ends with a decision about the role of the KAN (decision model,
 % causal model or recourse generator), taken up in Chapter~\ref{chap:proposed-approach}.
 % Rule: every section ends with ``Summary and Implications'' tied to the thesis.
 
@@ -17,12 +27,13 @@
 \subsection{Review Questions}
 \label{subsec:lr-review-questions}
 
-% The review's own questions (one per cluster), not the thesis RQs.
+% The review's own questions (one per group G1--G4), not the thesis RQs.
 
 \subsection{Search Strategy}
 \label{subsec:lr-search}
 
-% Databases, preprint servers, venues, strings S1--S5 (table), search dates.
+% Databases, preprint servers, venues, strings S1--S4 (table, with the groups
+% each string feeds), search dates.
 
 \subsection{Inclusion and Exclusion Criteria}
 \label{subsec:lr-criteria}
@@ -34,132 +45,152 @@
 
 % PRISMA flow diagram with the logged counts (finish in W8).
 
-\section{Counterfactual Explanation and Recourse Generation Methods}
-\label{sec:lr-recourse-methods}
+\section{Counterfactual Search Methods}
+\label{sec:lr-cf-search}
 
-% (W4) Taxonomy figure + comparison table:
-% method | year | model access | causal? | actionability | plausibility | data | code.
-% Seeds: \cite{karimi2022survey, verma2024counterfactual, guidotti2024counterfactual}.
+% G1 (W4). How is a valid counterfactual found, and which model access does it need?
+% Comparison table: method | year | search strategy | model access | diversity? |
+% robustness? | datasets | metrics | code.
 
-\subsection{Optimisation-Based Methods}
-\label{subsec:lr-optimisation}
+\subsection{Exact Solver-Based Methods}
+\label{subsec:lr-solver-search}
 
-% \cite{wachter2018counterfactual, ustun2019actionable, mothilal2020explaining}.
+% Integer programming \cite{ustun2019actionable}; mixed-integer programming
+% \cite{russell2019efficient}; SMT solving, MACE \cite{karimi2020model}.
+% Note: these need the model in closed form. Can spline-based KANs be encoded?
 
-\subsection{Data-Manifold and Generative Methods}
-\label{subsec:lr-generative}
+\subsection{Gradient-Based Methods}
+\label{subsec:lr-gradient-search}
 
-% \cite{poyiadzi2020face, joshi2019towards, pawelczyk2020learning}.
-% Note amortized generators (relevant to option O3).
+% \cite{wachter2018counterfactual}; diversity via determinantal point processes
+% \cite{mothilal2020explaining}. A KAN is differentiable, so these apply directly.
 
-\subsection{Causality-Aware Recourse}
-\label{subsec:lr-causal-recourse}
+\subsection{Evolutionary and Surrogate-Based Methods}
+\label{subsec:lr-heuristic-search}
 
-% \cite{mahajan2019preserving, karimi2021algorithmic}.
+% Multi-objective evolutionary search, MOC \cite{dandl2020multiobjective}; genetic
+% algorithm \cite{sharma2020certifai}; local regression surrogate
+% CLEAR \cite{white2019measurable}. Black-box: only query the model.
 
-\subsection{Robustness and Global Recourse}
+\subsection{Robust and Global Recourse}
 \label{subsec:lr-robust-global}
 
-% \cite{upadhyay2021towards, dominguezolmedo2022adversarial, rawal2020beyond};
-% critical perspectives \cite{venkatasubramanian2020philosophical, barocas2020hidden}.
+% \cite{upadhyay2021towards, rawal2020beyond}. Note amortised generators
+% (relevant to option O3).
 
 \subsection{Summary and Implications}
-\label{subsec:lr-recourse-summary}
+\label{subsec:lr-cf-search-summary}
 
-\section{Fairness of Algorithmic Recourse}
-\label{sec:lr-fair-recourse}
+\section{Plausibility and Causal Consistency}
+\label{sec:lr-plausibility}
 
-% (W5) Comparison table:
-% notion | definition | needs SCM? | mitigation proposed? | datasets.
+% G2 (W5--W6), the largest section. Does the counterfactual stay on the data and
+% respect causal structure? SCM basics are in Section~\ref{sec:bg-causality}.
+% Comparison table: method | year | mechanism | causal input (none / constraints /
+% graph / full SCM) | mixed data? | interpretable mechanisms?
 
-\subsection{Group-Level Notions of Recourse Fairness}
-\label{subsec:lr-group-recourse-fairness}
+\subsection{Data-Manifold Methods}
+\label{subsec:lr-data-manifold}
 
-% Cost parity and burden \cite{gupta2019equalizing, sharma2020certifai};
-% social burden \cite{barrainkua2026revisiting}; substantive equality
-% \cite{bell2024fairness}.
+% (W5) Latent-space search \cite{joshi2019towards, pawelczyk2020learning};
+% density-weighted paths \cite{poyiadzi2020face}; class prototypes
+% \cite{vanlooveren2020interpretable}; distribution-aware MILP, DACE \cite{kanamori2020dace};
+% disentangled conditional-VAE subspaces, CRUDS \cite{downs2020cruds}.
+% None of these uses causal knowledge.
 
-\subsection{Individual and Causal Notions of Recourse Fairness}
-\label{subsec:lr-causal-recourse-fairness}
+\subsection{Causal Constraints and Recourse as Interventions}
+\label{subsec:lr-causal-recourse}
 
-% \cite{vonkugelgen2022fairness, ehyaei2023robustness}.
-
-\subsection{Auditing and Mitigating Unfair Recourse}
-\label{subsec:lr-recourse-mitigation}
-
-% Subgroup audits \cite{kavouras2023fairness}; in-training vs. post-hoc
-% mitigation (relevant to option O1).
-
-\subsection{Summary and Implications}
-\label{subsec:lr-fair-recourse-summary}
-
-\section{Causal Modelling for Counterfactual Inference}
-\label{sec:lr-causal-models}
-
-% (W6) Comparison table:
-% model | family | identifiability | mixed data? | interpretable mechanisms?
-
-\subsection{Deep Structural Causal Models}
-\label{subsec:lr-dscm}
-
-% \cite{pawlowski2020deep, xia2023neural}.
-
-\subsection{Flow-, Autoencoder- and Diffusion-Based Causal Models}
-\label{subsec:lr-causal-generative}
-
-% \cite{khemakhem2021causal, sanchezmartin2022vaca, javaloy2023causal, chao2023interventional}.
+% (W5) Causal inverse classification, Prophit \cite{lash2018prophit}; causal-constraint
+% loss \cite{mahajan2019preserving}; recourse as minimal interventions on an SCM
+% \cite{karimi2021algorithmic}.
 
 \subsection{Recourse under Imperfect Causal Knowledge}
 \label{subsec:lr-imperfect-causal}
 
-% \cite{karimi2020algorithmic}. Relevant to option O2: where does the graph come from?
+% (W5) \cite{karimi2020algorithmic, dominguezolmedo2022adversarial}. Relevant to
+% option O2: where does the graph come from, and what if it is wrong?
+
+\subsection{Deep Causal Generative Models}
+\label{subsec:lr-causal-generative}
+
+% (W6) \cite{pawlowski2020deep, xia2023neural, khemakhem2021causal,
+% sanchezmartin2022vaca, javaloy2023causal, chao2023interventional}.
+% Which answer counterfactual (rung-3) queries, under which assumptions, on
+% mixed-type tabular data? How is counterfactual quality evaluated?
+% KAN-based causal models are reviewed in Section~\ref{sec:lr-kan}.
 
 \subsection{Summary and Implications}
-\label{subsec:lr-causal-summary}
+\label{subsec:lr-plausibility-summary}
 
-\section{Kolmogorov-Arnold Networks in Trustworthy Machine Learning}
+\section{Fairness of Recourse}
+\label{sec:lr-fair-recourse}
+
+% G3 (W7). Is the cost of recourse equal across groups and individuals?
+% General fairness definitions are in Section~\ref{sec:bg-fairness}.
+% Comparison table: notion | definition | compares (distance / cost / burden) |
+% needs SCM? | mitigation proposed? | datasets.
+
+\subsection{Group-Level Notions}
+\label{subsec:lr-group-recourse-fairness}
+
+% Distance to the boundary \cite{gupta2019equalizing}; burden
+% \cite{sharma2020certifai}; subgroup audits \cite{kavouras2023fairness};
+% substantive equality \cite{bell2024fairness}; worst-case social burden
+% \cite{barrainkua2026revisiting}.
+
+\subsection{Individual and Causal Notions}
+\label{subsec:lr-causal-recourse-fairness}
+
+% \cite{vonkugelgen2022fairness, ehyaei2023robustness}; individual and group
+% fairness together \cite{ezzeddine2026fair}. These need an SCM: link to
+% Section~\ref{sec:lr-plausibility}.
+
+\subsection{Mitigating Unfair Recourse}
+\label{subsec:lr-recourse-mitigation}
+
+% Training-time regularisers \cite{gupta2019equalizing}; generation-time
+% constraints \cite{ezzeddine2026fair}; how fair classifiers interact with fair
+% recourse \cite{barrainkua2026revisiting}. Relevant to option O1.
+
+\subsection{Summary and Implications}
+\label{subsec:lr-fair-recourse-summary}
+
+\section{Kolmogorov-Arnold Networks as Model Components}
 \label{sec:lr-kan}
 
-% (W7) Comparison table:
-% variant/work | basis function | claim | tabular evaluation? | fairness/XAI/causal use?
-% Surveys: \cite{somvanshi2024survey, hou2024comprehensive}.
+% G4 (W8). Which components of the pipeline have been built with KANs, and with
+% what evidence? Theory and architecture are in Section~\ref{sec:bg-kan}.
+% Surveys: \cite{somvanshi2025survey, noorizadegan2025practitioners, hou2024comprehensive}.
+% Comparison table: work | year | KAN role in the pipeline | data | interpretability
+% evidence | relation to the thesis.
 
-\subsection{Variants and Efficiency}
-\label{subsec:lr-kan-variants}
-
-% \cite{li2024kolmogorov, yu2024kan} + variants found by the search.
-
-\subsection{KANs on Tabular Data}
+\subsection{Variants and Evidence on Tabular Data}
 \label{subsec:lr-kan-tabular}
 
-% \cite{poeta2024benchmarking, yadav2025kolmogorov}.
+% \cite{yu2024kan, li2024kolmogorov, poeta2024benchmarking, yadav2025kolmogorov}
+% + variants found by S4.
 
 \subsection{Interpretability Claims and Evidence}
 \label{subsec:lr-kan-interpretability}
 
 % \cite{liu2025kan, liu2024kan}; contrast with \cite{rudin2019stop, agarwal2021neural}.
 
-\subsection{KANs for Fairness, Explainability and Causality}
-\label{subsec:lr-kan-trustworthy}
+\subsection{KANs in the Recourse Pipeline}
+\label{subsec:lr-kan-pipeline}
 
-% \cite{priyadarshini2026learning} + works found by S5. State the gap
-% (no KAN-based recourse work as of the search freeze), backed by the search log.
+% By role: causal generative model, KaCGM \cite{almodovar2026kolmogorov}; counterfactual
+% explanations for an RL agent \cite{valencia2026counterfactual}; fair representations
+% \cite{priyadarshini2026learning}. Out of scope, counted only: on-chip online
+% learning \cite{hoang2026ultrafast}. State the gap (no KAN-based fair recourse as of
+% the search freeze), backed by the search log.
 
 \subsection{Summary and Implications}
 \label{subsec:lr-kan-summary}
 
-\section{Datasets, Metrics and Benchmarking Practice}
-\label{sec:lr-datasets}
-
-% (W8) Datasets table:
-% dataset | domain | n | features | sensitive attribute | actionable features | causal graph? | used by.
-% \cite{lequy2022survey, becker1996adult, hofmann1994statlog, angwin2016machine,
-%       wightman1998lsac, yeh2009comparisons}; benchmarking \cite{pawelczyk2021carla}.
-% Also: which metrics and statistical tests are reported.
-
 \section{Synthesis and Research Gaps}
 \label{sec:lr-gaps}
 
-% (W8) 1--2 pages. Cross-cluster synthesis -> explicit gaps -> final RQs
-% (copy them back to Section~\ref{sec:intro-objectives}). End with the decision
-% matrix for the KAN's role (options O1--O4).
+% (W8) 1--2 pages. Intersections found (counts from the extraction spreadsheet)
+% -> explicit gaps -> final RQs (copy them back to Section~\ref{sec:intro-objectives}).
+% End with the decision matrix for the KAN's role (options O1--O4).

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.10.7)  27 OCT 2026 15:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.10.7)  27 OCT 2026 22:06
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -927,7 +927,7 @@ Package babel Info: Main language set to 'english'.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<frontmatter/logo-uc-gold.pdf, id=266, 285.065pt x 241.90375pt>
+<frontmatter/logo-uc-gold.pdf, id=258, 285.065pt x 241.90375pt>
 File: frontmatter/logo-uc-gold.pdf Graphic file (type pdf)
 <use frontmatter/logo-uc-gold.pdf>
 Package pdftex.def Info: frontmatter/logo-uc-gold.pdf  used on input line 15.
@@ -972,7 +972,7 @@ Package pdftex.def Info: frontmatter/logo-uc-gold.pdf  used on input line 15.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<frontmatter/logo-dei.pdf, id=281, 459.7175pt x 334.24875pt>
+<frontmatter/logo-dei.pdf, id=273, 459.7175pt x 334.24875pt>
 File: frontmatter/logo-dei.pdf Graphic file (type pdf)
 <use frontmatter/logo-dei.pdf>
 Package pdftex.def Info: frontmatter/logo-dei.pdf  used on input line 15.
@@ -1117,15 +1117,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [4]
 Chapter 3.
-
-Overfull \hbox (9.23117pt too wide) in paragraph at lines 120--120
-|[]\T1/ppl/b/n/17.28 Kolmogorov-Arnold Net-works in Trust-wor-thy Ma-
- []
-
 ) (text/4-proposed-approach.tex [5
 
 ]
-Overfull \vbox (604.83742pt too high) has occurred while \output is active []
+Overfull \vbox (496.07658pt too high) has occurred while \output is active []
 
 
 
@@ -1171,20 +1166,20 @@ LaTeX2e <2026-06-01>
 L3 programming layer <2026-08-10>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 8F62FB16AE8E965E2D17ABD734A99C6F;13440.
+(rerunfilecheck)             Checksum: F60ED085C56929366D2E8D2B303218F4;12833.
  ) 
 Here is how much of TeX's memory you used:
- 34066 strings out of 467441
- 677226 string characters out of 5407591
- 1125287 words of memory out of 5000000
- 62669 multiletter control sequences out of 15000+600000
+ 34060 strings out of 467441
+ 677137 string characters out of 5407591
+ 1125139 words of memory out of 5000000
+ 62665 multiletter control sequences out of 15000+600000
  658562 words of font info for 85 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  107i,11n,131p,2528b,640s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplb8a.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb>
-Output written on main.pdf (37 pages, 474705 bytes).
+Output written on main.pdf (37 pages, 473463 bytes).
 PDF statistics:
- 548 PDF objects out of 1000 (max. 8388607)
- 110 named destinations out of 1000 (max. 500000)
- 543 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 536 PDF objects out of 1000 (max. 8388607)
+ 108 named destinations out of 1000 (max. 500000)
+ 527 words of extra memory for PDF output out of 10000 (max. 10000000)
 

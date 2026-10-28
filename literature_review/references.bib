@@ -1,22 +1,14 @@
-% Seed bibliography for the literature review (see PLAN.md, Section 5).
-% Entries are grouped by reading cluster. Uncertain fields (pages, DOIs) were
-% left out rather than guessed; check every entry against DBLP or the publisher
-% before submission (PLAN.md, W12). Lines marked VERIFY need special attention.
+% Bibliography for the literature review. It mirrors the extraction spreadsheet
+% (Literature Review.xlsx): one entry per logged paper, grouped as in PLAN.md
+% (G1--G4, Foundations, Evaluation). Add a paper here and to the spreadsheet at
+% the same time. Uncertain fields (pages, DOIs) were left out rather than guessed;
+% check every entry against DBLP or the publisher before submission (PLAN.md, W12).
+% Lines marked VERIFY need special attention.
 % Once Zotero + Better BibTeX is set up, let it own this file.
 
 % ---------------------------------------------------------------------------
-% Cluster A -- Counterfactual explanations and algorithmic recourse
+% G1 -- Counterfactual search
 % ---------------------------------------------------------------------------
-
-@article{wachter2018counterfactual,
-  author  = {Wachter, Sandra and Mittelstadt, Brent and Russell, Chris},
-  title   = {Counterfactual Explanations without Opening the Black Box: Automated Decisions and the {GDPR}},
-  journal = {Harvard Journal of Law \& Technology},
-  volume  = {31},
-  number  = {2},
-  pages   = {841--887},
-  year    = {2018}
-}
 
 @inproceedings{ustun2019actionable,
   author    = {Ustun, Berk and Spangher, Alexander and Liu, Yang},
@@ -26,30 +18,23 @@
   year      = {2019}
 }
 
-@article{karimi2022survey,
-  author  = {Karimi, Amir-Hossein and Barthe, Gilles and Sch{\"o}lkopf, Bernhard and Valera, Isabel},
-  title   = {A Survey of Algorithmic Recourse: Contrastive Explanations and Consequential Recommendations},
-  journal = {ACM Computing Surveys},
-  volume  = {55},
-  number  = {5},
-  year    = {2022}
+@inproceedings{russell2019efficient,
+  author    = {Russell, Chris},
+  title     = {Efficient Search for Diverse Coherent Explanations},
+  booktitle = {Proceedings of the Conference on Fairness, Accountability, and Transparency (FAT*)},
+  pages     = {20--28},
+  year      = {2019},
+  doi       = {10.1145/3287560.3287569}
 }
 
-@article{verma2024counterfactual,
-  author  = {Verma, Sahil and Boonsanong, Varich and Hoang, Minh and Hines, Keegan and Dickerson, John and Shah, Chirag},
-  title   = {Counterfactual Explanations and Algorithmic Recourses for Machine Learning: A Review},
-  journal = {ACM Computing Surveys},
-  volume  = {56},
-  number  = {12},
-  year    = {2024}
-}
-
-@article{guidotti2024counterfactual,
-  author  = {Guidotti, Riccardo},
-  title   = {Counterfactual Explanations and How to Find Them: Literature Review and Benchmarking},
-  journal = {Data Mining and Knowledge Discovery},
-  volume  = {38},
-  year    = {2024}
+@inproceedings{karimi2020model,
+  author    = {Karimi, Amir-Hossein and Barthe, Gilles and Balle, Borja and Valera, Isabel},
+  title     = {Model-Agnostic Counterfactual Explanations for Consequential Decisions},
+  booktitle = {Proceedings of the 23rd International Conference on Artificial Intelligence and Statistics (AISTATS)},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {108},
+  pages     = {895--905},
+  year      = {2020}
 }
 
 @inproceedings{mothilal2020explaining,
@@ -60,171 +45,14 @@
   year      = {2020}
 }
 
-@inproceedings{poyiadzi2020face,
-  author    = {Poyiadzi, Rafael and Sokol, Kacper and Santos-Rodriguez, Raul and De Bie, Tijl and Flach, Peter},
-  title     = {{FACE}: Feasible and Actionable Counterfactual Explanations},
-  booktitle = {Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society (AIES)},
-  pages     = {344--350},
-  year      = {2020}
-}
-
-@misc{joshi2019towards,
-  author       = {Joshi, Shalmali and Koyejo, Oluwasanmi and Vijitbenjaronk, Warut and Kim, Been and Ghosh, Joydeep},
-  title        = {Towards Realistic Individual Recourse and Actionable Explanations in Black-Box Decision Making Systems},
-  howpublished = {arXiv:1907.09615},
-  year         = {2019}
-}
-
-@inproceedings{pawelczyk2020learning,
-  author    = {Pawelczyk, Martin and Broelemann, Klaus and Kasneci, Gjergji},
-  title     = {Learning Model-Agnostic Counterfactual Explanations for Tabular Data},
-  booktitle = {Proceedings of The Web Conference (WWW)},
-  pages     = {3126--3132},
-  year      = {2020}
-}
-
-@misc{mahajan2019preserving,
-  author       = {Mahajan, Divyat and Tan, Chenhao and Sharma, Amit},
-  title        = {Preserving Causal Constraints in Counterfactual Explanations for Machine Learning Classifiers},
-  howpublished = {arXiv:1912.03277},
-  year         = {2019}
-}
-
-@inproceedings{upadhyay2021towards,
-  author    = {Upadhyay, Sohini and Joshi, Shalmali and Lakkaraju, Himabindu},
-  title     = {Towards Robust and Reliable Algorithmic Recourse},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {34},
-  year      = {2021}
-}
-
-@inproceedings{rawal2020beyond,
-  author    = {Rawal, Kaivalya and Lakkaraju, Himabindu},
-  title     = {Beyond Individualized Recourse: Interpretable and Interactive Summaries of Actionable Recourses},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {33},
-  year      = {2020}
-}
-
-@inproceedings{pawelczyk2021carla,
-  author    = {Pawelczyk, Martin and Bielawski, Sascha and van den Heuvel, Johannes and Richter, Tobias and Kasneci, Gjergji},
-  title     = {{CARLA}: A Python Library to Benchmark Algorithmic Recourse and Counterfactual Explanation Algorithms},
-  booktitle = {Proceedings of the Neural Information Processing Systems Track on Datasets and Benchmarks},
-  year      = {2021}
-}
-
-@inproceedings{venkatasubramanian2020philosophical,
-  author    = {Venkatasubramanian, Suresh and Alfano, Mark},
-  title     = {The Philosophical Basis of Algorithmic Recourse},
-  booktitle = {Proceedings of the Conference on Fairness, Accountability, and Transparency (FAT*)},
-  pages     = {284--293},
-  year      = {2020}
-}
-
-@inproceedings{barocas2020hidden,
-  author    = {Barocas, Solon and Selbst, Andrew D. and Raghavan, Manish},
-  title     = {The Hidden Assumptions behind Counterfactual Explanations and Principal Reasons},
-  booktitle = {Proceedings of the Conference on Fairness, Accountability, and Transparency (FAT*)},
-  pages     = {80--89},
-  year      = {2020}
-}
-
-% ---------------------------------------------------------------------------
-% Cluster B -- Algorithmic fairness and fairness of recourse
-% ---------------------------------------------------------------------------
-
-@article{mehrabi2021survey,
-  author  = {Mehrabi, Ninareh and Morstatter, Fred and Saxena, Nripsuta and Lerman, Kristina and Galstyan, Aram},
-  title   = {A Survey on Bias and Fairness in Machine Learning},
-  journal = {ACM Computing Surveys},
-  volume  = {54},
-  number  = {6},
-  year    = {2021}
-}
-
-@article{caton2024fairness,
-  author  = {Caton, Simon and Haas, Christian},
-  title   = {Fairness in Machine Learning: A Survey},
-  journal = {ACM Computing Surveys},
-  volume  = {56},
-  number  = {7},
-  year    = {2024}
-}
-
-@book{barocas2023fairness,
-  author    = {Barocas, Solon and Hardt, Moritz and Narayanan, Arvind},
-  title     = {Fairness and Machine Learning: Limitations and Opportunities},
-  publisher = {MIT Press},
-  year      = {2023}
-}
-
-@inproceedings{dwork2012fairness,
-  author    = {Dwork, Cynthia and Hardt, Moritz and Pitassi, Toniann and Reingold, Omer and Zemel, Richard},
-  title     = {Fairness through Awareness},
-  booktitle = {Proceedings of the 3rd Innovations in Theoretical Computer Science Conference (ITCS)},
-  pages     = {214--226},
-  year      = {2012}
-}
-
-@inproceedings{hardt2016equality,
-  author    = {Hardt, Moritz and Price, Eric and Srebro, Nathan},
-  title     = {Equality of Opportunity in Supervised Learning},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {29},
-  year      = {2016}
-}
-
-@inproceedings{kleinberg2017inherent,
-  author    = {Kleinberg, Jon and Mullainathan, Sendhil and Raghavan, Manish},
-  title     = {Inherent Trade-Offs in the Fair Determination of Risk Scores},
-  booktitle = {Proceedings of the 8th Innovations in Theoretical Computer Science Conference (ITCS)},
-  series    = {LIPIcs},
-  volume    = {67},
-  pages     = {43:1--43:23},
-  year      = {2017}
-}
-
-@article{chouldechova2017fair,
-  author  = {Chouldechova, Alexandra},
-  title   = {Fair Prediction with Disparate Impact: A Study of Bias in Recidivism Prediction Instruments},
-  journal = {Big Data},
-  volume  = {5},
-  number  = {2},
-  pages   = {153--163},
-  year    = {2017}
-}
-
-@inproceedings{kusner2017counterfactual,
-  author    = {Kusner, Matt J. and Loftus, Joshua and Russell, Chris and Silva, Ricardo},
-  title     = {Counterfactual Fairness},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {30},
-  year      = {2017}
-}
-
-@inproceedings{kilbertus2017avoiding,
-  author    = {Kilbertus, Niki and Rojas-Carulla, Mateo and Parascandolo, Giambattista and Hardt, Moritz and Janzing, Dominik and Sch{\"o}lkopf, Bernhard},
-  title     = {Avoiding Discrimination through Causal Reasoning},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {30},
-  year      = {2017}
-}
-
-@inproceedings{zemel2013learning,
-  author    = {Zemel, Rich and Wu, Yu and Swersky, Kevin and Pitassi, Toni and Dwork, Cynthia},
-  title     = {Learning Fair Representations},
-  booktitle = {Proceedings of the 30th International Conference on Machine Learning (ICML)},
-  series    = {PMLR},
-  volume    = {28},
-  pages     = {325--333},
-  year      = {2013}
-}
-
-@misc{gupta2019equalizing,
-  author       = {Gupta, Vivek and Nokhiz, Pegah and Roy, Chitradeep Dutta and Venkatasubramanian, Suresh},
-  title        = {Equalizing Recourse across Groups},
-  howpublished = {arXiv:1909.03166},
-  year         = {2019}
+@inproceedings{dandl2020multiobjective,
+  author    = {Dandl, Susanne and Molnar, Christoph and Binder, Martin and Bischl, Bernd},
+  title     = {Multi-Objective Counterfactual Explanations},
+  booktitle = {Parallel Problem Solving from Nature -- {PPSN} {XVI}},
+  publisher = {Springer},
+  pages     = {448--469},
+  year      = {2020},
+  doi       = {10.1007/978-3-030-58112-1_31}
 }
 
 @inproceedings{sharma2020certifai,
@@ -235,71 +63,71 @@
   year      = {2020}
 }
 
-@inproceedings{vonkugelgen2022fairness,
-  author    = {von K{\"u}gelgen, Julius and Karimi, Amir-Hossein and Bhatt, Umang and Valera, Isabel and Weller, Adrian and Sch{\"o}lkopf, Bernhard},
-  title     = {On the Fairness of Causal Algorithmic Recourse},
-  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
-  volume    = {36},
-  pages     = {9584--9594},
-  year      = {2022}
-}
-
-@inproceedings{ehyaei2023robustness,
-  author    = {Ehyaei, Ahmad-Reza and Karimi, Amir-Hossein and Sch{\"o}lkopf, Bernhard and Maghsudi, Setareh},
-  title     = {Robustness Implies Fairness in Causal Algorithmic Recourse},
-  booktitle = {Proceedings of the ACM Conference on Fairness, Accountability, and Transparency (FAccT)},
-  year      = {2023}
-}
-
-@inproceedings{kavouras2023fairness,
-  author    = {Kavouras, Loukas and Tsopelas, Konstantinos and Giannopoulos, Giorgos and Sacharidis, Dimitris and Psaroudaki, Eleni and Theologitis, Nikolaos and Rontogiannis, Dimitrios and Fotakis, Dimitris and Emiris, Ioannis},
-  title     = {Fairness Aware Counterfactuals for Subgroups},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {36},
-  year      = {2023}
-}
-
-% VERIFY: author list and whether a peer-reviewed version exists.
-@misc{bell2024fairness,
-  author       = {Bell, Andrew and Fonseca, Joao and Abrate, Carlo and Bonchi, Francesco and Stoyanovich, Julia},
-  title        = {Fairness in Algorithmic Recourse Through the Lens of Substantive Equality of Opportunity},
-  howpublished = {arXiv:2401.16088},
-  year         = {2024}
-}
-
-@inproceedings{barrainkua2026revisiting,
-  author    = {Barrainkua, Ainhize and De Toni, Giovanni and Lozano, Jose Antonio and Quadrianto, Novi},
-  title     = {Revisiting (Un)Fairness in Recourse by Minimizing Worst-Case Social Burden},
-  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
-  volume    = {40},
-  year      = {2026}
+% VERIFY: a peer-reviewed version may exist; prefer it over arXiv.
+@misc{white2019measurable,
+  author       = {White, Adam and d'Avila Garcez, Artur},
+  title        = {Measurable Counterfactual Local Explanations for Any Classifier},
+  howpublished = {arXiv:1908.03020},
+  year         = {2019}
 }
 
 % ---------------------------------------------------------------------------
-% Cluster C -- Causality and causal modelling for recourse
+% G2 -- Plausibility and causality
 % ---------------------------------------------------------------------------
 
-@book{pearl2009causality,
-  author    = {Pearl, Judea},
-  title     = {Causality: Models, Reasoning, and Inference},
-  edition   = {2nd},
-  publisher = {Cambridge University Press},
-  year      = {2009}
+@misc{joshi2019towards,
+  author       = {Joshi, Shalmali and Koyejo, Oluwasanmi and Vijitbenjaronk, Warut and Kim, Been and Ghosh, Joydeep},
+  title        = {Towards Realistic Individual Recourse and Actionable Explanations in Black-Box Decision Making Systems},
+  howpublished = {arXiv:1907.09615},
+  year         = {2019}
 }
 
-@book{peters2017elements,
-  author    = {Peters, Jonas and Janzing, Dominik and Sch{\"o}lkopf, Bernhard},
-  title     = {Elements of Causal Inference: Foundations and Learning Algorithms},
-  publisher = {MIT Press},
-  year      = {2017}
+% VERIFY: a peer-reviewed version may exist; prefer it over arXiv.
+@misc{vanlooveren2020interpretable,
+  author       = {Van Looveren, Arnaud and Klaise, Janis},
+  title        = {Interpretable Counterfactual Explanations Guided by Prototypes},
+  howpublished = {arXiv:1907.02584},
+  year         = {2020}
 }
 
-@inproceedings{karimi2021algorithmic,
-  author    = {Karimi, Amir-Hossein and Sch{\"o}lkopf, Bernhard and Valera, Isabel},
-  title     = {Algorithmic Recourse: from Counterfactual Explanations to Interventions},
-  booktitle = {Proceedings of the ACM Conference on Fairness, Accountability, and Transparency (FAccT)},
-  pages     = {353--362},
-  year      = {2021}
+@inproceedings{poyiadzi2020face,
+  author    = {Poyiadzi, Rafael and Sokol, Kacper and Santos-Rodriguez, Raul and De Bie, Tijl and Flach, Peter},
+  title     = {{FACE}: Feasible and Actionable Counterfactual Explanations},
+  booktitle = {Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society (AIES)},
+  pages     = {344--350},
+  year      = {2020}
+}
+
+@inproceedings{kanamori2020dace,
+  author    = {Kanamori, Kentaro and Takagi, Takuya and Kobayashi, Ken and Arimura, Hiroki},
+  title     = {{DACE}: Distribution-Aware Counterfactual Explanation by Mixed-Integer Linear Optimization},
+  booktitle = {Proceedings of the Twenty-Ninth International Joint Conference on Artificial Intelligence (IJCAI)},
+  pages     = {2855--2862},
+  year      = {2020},
+  doi       = {10.24963/ijcai.2020/395}
+}
+
+% VERIFY: the spreadsheet lists the last author as "P. WeiWei"; this entry uses Weiwei Pan.
+@inproceedings{downs2020cruds,
+  author    = {Downs, Michael and Chu, Jonathan L. and Yacoby, Yaniv and Doshi-Velez, Finale and Pan, Weiwei},
+  title     = {{CRUDS}: Counterfactual Recourse Using Disentangled Subspaces},
+  booktitle = {ICML Workshop on Human Interpretability in Machine Learning (WHI)},
+  pages     = {1--23},
+  year      = {2020}
+}
+
+@misc{lash2018prophit,
+  author       = {Lash, Michael T. and Lin, Qihang and Street, W. Nick},
+  title        = {Prophit: Causal Inverse Classification for Multiple Continuously Valued Treatment Policies},
+  howpublished = {arXiv:1802.04918},
+  year         = {2018}
+}
+
+@misc{mahajan2019preserving,
+  author       = {Mahajan, Divyat and Tan, Chenhao and Sharma, Amit},
+  title        = {Preserving Causal Constraints in Counterfactual Explanations for Machine Learning Classifiers},
+  howpublished = {arXiv:1912.03277},
+  year         = {2019}
 }
 
 @inproceedings{karimi2020algorithmic,
@@ -310,147 +138,32 @@
   year      = {2020}
 }
 
-@inproceedings{dominguezolmedo2022adversarial,
-  author    = {Dominguez-Olmedo, Ricardo and Karimi, Amir-Hossein and Sch{\"o}lkopf, Bernhard},
-  title     = {On the Adversarial Robustness of Causal Algorithmic Recourse},
-  booktitle = {Proceedings of the 39th International Conference on Machine Learning (ICML)},
-  series    = {PMLR},
-  volume    = {162},
-  year      = {2022}
-}
-
-@inproceedings{pawlowski2020deep,
-  author    = {Pawlowski, Nick and Castro, Daniel C. and Glocker, Ben},
-  title     = {Deep Structural Causal Models for Tractable Counterfactual Inference},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {33},
-  year      = {2020}
-}
-
-@inproceedings{khemakhem2021causal,
-  author    = {Khemakhem, Ilyes and Monti, Ricardo and Leech, Robert and Hyv{\"a}rinen, Aapo},
-  title     = {Causal Autoregressive Flows},
-  booktitle = {Proceedings of the 24th International Conference on Artificial Intelligence and Statistics (AISTATS)},
-  series    = {PMLR},
-  volume    = {130},
-  pages     = {3520--3528},
+@inproceedings{karimi2021algorithmic,
+  author    = {Karimi, Amir-Hossein and Sch{\"o}lkopf, Bernhard and Valera, Isabel},
+  title     = {Algorithmic Recourse: from Counterfactual Explanations to Interventions},
+  booktitle = {Proceedings of the ACM Conference on Fairness, Accountability, and Transparency (FAccT)},
+  pages     = {353--362},
   year      = {2021}
 }
 
-@inproceedings{sanchezmartin2022vaca,
-  author    = {S{\'a}nchez-Mart{\'i}n, Pablo and Rateike, Miriam and Valera, Isabel},
-  title     = {{VACA}: Designing Variational Graph Autoencoders for Causal Queries},
-  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
-  volume    = {36},
-  pages     = {8159--8168},
-  year      = {2022}
-}
+% ---------------------------------------------------------------------------
+% G3 -- Fairness of recourse
+% ---------------------------------------------------------------------------
 
-@inproceedings{javaloy2023causal,
-  author    = {Javaloy, Adri{\'a}n and S{\'a}nchez-Mart{\'i}n, Pablo and Valera, Isabel},
-  title     = {Causal Normalizing Flows: From Theory to Practice},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {36},
-  year      = {2023}
-}
-
-@misc{chao2023interventional,
-  author       = {Chao, Patrick and Bl{\"o}baum, Patrick and Kasiviswanathan, Shiva Prasad},
-  title        = {Interventional and Counterfactual Inference with Diffusion Models},
-  howpublished = {arXiv:2302.00860},
-  year         = {2023}
-}
-
-@inproceedings{xia2023neural,
-  author    = {Xia, Kevin and Pan, Yushu and Bareinboim, Elias},
-  title     = {Neural Causal Models for Counterfactual Identification and Estimation},
-  booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2023}
+@article{ezzeddine2026fair,
+  author  = {Ezzeddine, Fatima and Ammar, Obaida and Giordano, Silvia and Ayoub, Omran},
+  title   = {Fair Recourse for All: Ensuring Individual and Group Fairness in Counterfactual Explanations},
+  journal = {IEEE Transactions on Artificial Intelligence},
+  volume  = {7},
+  number  = {10},
+  pages   = {5496--5511},
+  year    = {2026},
+  doi     = {10.1109/TAI.2026.3688207}
 }
 
 % ---------------------------------------------------------------------------
-% Cluster D -- Kolmogorov-Arnold Networks and interpretable models
+% G4 -- KAN components
 % ---------------------------------------------------------------------------
-
-@article{kolmogorov1957representation,
-  author  = {Kolmogorov, Andrei N.},
-  title   = {On the Representation of Continuous Functions of Several Variables by Superposition of Continuous Functions of One Variable and Addition},
-  journal = {Doklady Akademii Nauk SSSR},
-  volume  = {114},
-  pages   = {953--956},
-  year    = {1957}
-}
-
-@article{arnold1957functions,
-  author  = {Arnold, Vladimir I.},
-  title   = {On Functions of Three Variables},
-  journal = {Doklady Akademii Nauk SSSR},
-  volume  = {114},
-  pages   = {679--681},
-  year    = {1957}
-}
-
-@article{girosi1989representation,
-  author  = {Girosi, Federico and Poggio, Tomaso},
-  title   = {Representation Properties of Networks: {Kolmogorov's} Theorem Is Irrelevant},
-  journal = {Neural Computation},
-  volume  = {1},
-  number  = {4},
-  pages   = {465--469},
-  year    = {1989}
-}
-
-@inproceedings{liu2025kan,
-  author    = {Liu, Ziming and Wang, Yixuan and Vaidya, Sachin and Ruehle, Fabian and Halverson, James and Solja{\v{c}}i{\'c}, Marin and Hou, Thomas Y. and Tegmark, Max},
-  title     = {{KAN}: {Kolmogorov-Arnold} Networks},
-  booktitle = {International Conference on Learning Representations (ICLR)},
-  year      = {2025}
-}
-
-@misc{liu2024kan,
-  author       = {Liu, Ziming and Ma, Pingchuan and Wang, Yixuan and Matusik, Wojciech and Tegmark, Max},
-  title        = {{KAN} 2.0: {Kolmogorov-Arnold} Networks Meet Science},
-  howpublished = {arXiv:2408.10205},
-  year         = {2024}
-}
-
-@misc{yu2024kan,
-  author       = {Yu, Runpeng and Yu, Weihao and Wang, Xinchao},
-  title        = {{KAN} or {MLP}: A Fairer Comparison},
-  howpublished = {arXiv:2407.16674},
-  year         = {2024}
-}
-
-@misc{li2024kolmogorov,
-  author       = {Li, Ziyao},
-  title        = {{Kolmogorov-Arnold} Networks are Radial Basis Function Networks},
-  howpublished = {arXiv:2405.06721},
-  year         = {2024}
-}
-
-% VERIFY: full author list.
-@misc{somvanshi2024survey,
-  author       = {Somvanshi, Shriyank and others},
-  title        = {A Survey on {Kolmogorov-Arnold} Network},
-  howpublished = {arXiv:2411.06078},
-  year         = {2024}
-}
-
-% VERIFY: full author list (latest arXiv version is from 2025).
-@misc{hou2024comprehensive,
-  author       = {Hou, Yuntian and others},
-  title        = {A Comprehensive Survey on {Kolmogorov Arnold} Networks ({KAN})},
-  howpublished = {arXiv:2407.11075},
-  year         = {2024}
-}
-
-% VERIFY: author list and whether a peer-reviewed version exists.
-@misc{poeta2024benchmarking,
-  author       = {Poeta, Eleonora and Giobergia, Flavio and Pastor, Eliana and Cerquitelli, Tania and Baralis, Elena},
-  title        = {A Benchmarking Study of {Kolmogorov-Arnold} Networks on Tabular Data},
-  howpublished = {arXiv:2406.14529},
-  year         = {2024}
-}
 
 @inproceedings{priyadarshini2026learning,
   author    = {Priyadarshini, Amisha and Gago-Masague, Sergio},
@@ -460,107 +173,103 @@
   year      = {2026}
 }
 
-@misc{yadav2025kolmogorov,
-  author       = {Yadav, Pankaj and Vijay, Vivek},
-  title        = {{Kolmogorov Arnold} Networks ({KANs}) for Imbalanced Data -- An Empirical Perspective},
-  howpublished = {arXiv:2507.14121},
-  year         = {2025}
+@misc{almodovar2026kolmogorov,
+  author       = {Almod{\'o}var, Alejandro and Elizo, Mar and Apell{\'a}niz, Patricia A. and Zazo, Santiago and Parras, Juan},
+  title        = {{Kolmogorov-Arnold} Causal Generative Models},
+  howpublished = {arXiv:2603.20184},
+  year         = {2026}
 }
 
-@inproceedings{agarwal2021neural,
-  author    = {Agarwal, Rishabh and Melnick, Levi and Frosst, Nicholas and Zhang, Xuezhou and Lengerich, Ben and Caruana, Rich and Hinton, Geoffrey E.},
-  title     = {Neural Additive Models: Interpretable Machine Learning with Neural Nets},
-  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
-  volume    = {34},
-  year      = {2021}
+@inproceedings{valencia2026counterfactual,
+  author    = {Valencia, Agust{\'\i}n and D'Alto, Michele Antonio and Terra, Ahmad},
+  title     = {Counterfactual Explanations for Reinforcement Learning Agents Using {Kolmogorov-Arnold} Networks},
+  booktitle = {Proceedings of the IEEE Network Operations and Management Symposium (NOMS)},
+  pages     = {1--12},
+  year      = {2026},
+  doi       = {10.1109/NOMS69089.2026.11668198}
 }
 
-@article{rudin2019stop,
-  author  = {Rudin, Cynthia},
-  title   = {Stop Explaining Black Box Machine Learning Models for High Stakes Decisions and Use Interpretable Models Instead},
-  journal = {Nature Machine Intelligence},
-  volume  = {1},
-  number  = {5},
-  pages   = {206--215},
-  year    = {2019}
+@misc{hoang2026ultrafast,
+  author       = {Hoang, Duc and Gupta, Aarush and Harris, Philip},
+  title        = {Ultrafast On-Chip Online Learning via Spline Locality in {Kolmogorov-Arnold} Networks},
+  howpublished = {arXiv:2602.02056},
+  year         = {2026}
 }
 
 % ---------------------------------------------------------------------------
-% Cluster E -- Datasets and benchmarking
+% Foundations -- surveys and position papers
 % ---------------------------------------------------------------------------
 
-@article{lequy2022survey,
-  author  = {Le Quy, Tai and Roy, Arjun and Iosifidis, Vasileios and Zhang, Wenbin and Ntoutsi, Eirini},
-  title   = {A Survey on Datasets for Fairness-Aware Machine Learning},
-  journal = {WIREs Data Mining and Knowledge Discovery},
-  volume  = {12},
-  number  = {3},
-  year    = {2022}
+@article{verma2024counterfactual,
+  author  = {Verma, Sahil and Boonsanong, Varich and Hoang, Minh and Hines, Keegan and Dickerson, John and Shah, Chirag},
+  title   = {Counterfactual Explanations and Algorithmic Recourses for Machine Learning: A Review},
+  journal = {ACM Computing Surveys},
+  volume  = {56},
+  number  = {12},
+  year    = {2024}
 }
 
-@misc{becker1996adult,
-  author       = {Becker, Barry and Kohavi, Ronny},
-  title        = {Adult},
-  howpublished = {UCI Machine Learning Repository},
-  year         = {1996}
+@article{karimi2022survey,
+author = {Karimi, Amir-Hossein and Barthe, Gilles and Sch{\"o}lkopf, Bernhard and Valera, Isabel},
+title = {A Survey of Algorithmic Recourse: Contrastive Explanations and Consequential Recommendations},
+year = {2022},
+issue_date = {May 2023},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {55},
+number = {5},
+issn = {0360-0300},
+url = {https://doi.org/10.1145/3527848},
+doi = {10.1145/3527848},
+abstract = {Machine learning is increasingly used to inform decision making in sensitive situations where decisions have consequential effects on individuals’ lives. In these settings, in addition to requiring models to be accurate and robust, socially relevant values such as fairness, privacy, accountability, and explainability play an important role in the adoption and impact of said technologies. In this work, we focus on algorithmic recourse, which is concerned with providing explanations and recommendations to individuals who are unfavorably treated by automated decision-making systems. We first perform an extensive literature review, and align the efforts of many authors by presenting unified definitions, formulations, and solutions to recourse. Then, we provide an overview of the prospective research directions toward which the community may engage, challenging existing assumptions and making explicit connections to other ethical challenges such as security, privacy, and fairness.},
+journal = {ACM Comput. Surv.},
+month = dec,
+articleno = {95},
+numpages = {29},
+keywords = {Algorithmic recourse, contrastive explanations and consequential recommendations}
 }
 
-@misc{hofmann1994statlog,
-  author       = {Hofmann, Hans},
-  title        = {Statlog ({German} Credit Data)},
-  howpublished = {UCI Machine Learning Repository},
-  year         = {1994}
+@inproceedings{venkatasubramanian2020philosophical,
+  author    = {Venkatasubramanian, Suresh and Alfano, Mark},
+  title     = {The Philosophical Basis of Algorithmic Recourse},
+  booktitle = {Proceedings of the Conference on Fairness, Accountability, and Transparency (FAT*)},
+  pages     = {284--293},
+  year      = {2020}
 }
 
-@misc{angwin2016machine,
-  author       = {Angwin, Julia and Larson, Jeff and Mattu, Surya and Kirchner, Lauren},
-  title        = {Machine Bias},
-  howpublished = {ProPublica},
-  year         = {2016}
-}
-
-@techreport{wightman1998lsac,
-  author      = {Wightman, Linda F.},
-  title       = {{LSAC} National Longitudinal Bar Passage Study},
-  institution = {Law School Admission Council},
-  type        = {LSAC Research Report Series},
-  year        = {1998}
-}
-
-@article{yeh2009comparisons,
-  author  = {Yeh, I-Cheng and Lien, Che-hui},
-  title   = {The Comparisons of Data Mining Techniques for the Predictive Accuracy of Probability of Default of Credit Card Clients},
-  journal = {Expert Systems with Applications},
-  volume  = {36},
+@article{somvanshi2025survey,
+  author  = {Somvanshi, Shriyank and Javed, Syed Aaqib and Islam, Md Monzurul and Pandit, Diwas and Das, Subasish},
+  title   = {A Survey on {Kolmogorov-Arnold} Network},
+  journal = {ACM Computing Surveys},
+  volume  = {58},
   number  = {2},
-  pages   = {2473--2480},
-  year    = {2009}
+  pages   = {1--35},
+  year    = {2025},
+  doi     = {10.1145/3743128}
+}
+
+% VERIFY: the year (2025) and the DOI (cosrev.2026) disagree; check the issue date.
+@article{noorizadegan2025practitioners,
+  author  = {Noorizadegan, Amir and Wang, Sifan and Ling, Leevan},
+  title   = {A Practitioner's Guide to {Kolmogorov-Arnold} Networks},
+  journal = {Computer Science Review},
+  volume  = {62},
+  pages   = {100991},
+  year    = {2025},
+  doi     = {10.1016/j.cosrev.2026.100991}
 }
 
 % ---------------------------------------------------------------------------
-% Review methodology
+% Evaluation -- datasets, metrics and tools
 % ---------------------------------------------------------------------------
 
-@techreport{kitchenham2007guidelines,
-  author      = {Kitchenham, Barbara and Charters, Stuart},
-  title       = {Guidelines for Performing Systematic Literature Reviews in Software Engineering},
-  institution = {Keele University and Durham University},
-  number      = {EBSE-2007-01},
-  year        = {2007}
-}
-
-@article{page2021prisma,
-  author  = {Page, Matthew J. and McKenzie, Joanne E. and Bossuyt, Patrick M. and Boutron, Isabelle and Hoffmann, Tammy C. and Mulrow, Cynthia D. and others},
-  title   = {The {PRISMA} 2020 Statement: An Updated Guideline for Reporting Systematic Reviews},
-  journal = {BMJ},
-  volume  = {372},
-  pages   = {n71},
-  year    = {2021}
-}
-
-@inproceedings{wohlin2014guidelines,
-  author    = {Wohlin, Claes},
-  title     = {Guidelines for Snowballing in Systematic Literature Studies and a Replication in Software Engineering},
-  booktitle = {Proceedings of the 18th International Conference on Evaluation and Assessment in Software Engineering (EASE)},
-  year      = {2014}
+@article{wexler2020whatif,
+  author  = {Wexler, James and Pushkarna, Mahima and Bolukbasi, Tolga and Wattenberg, Martin and Vi{\'e}gas, Fernanda and Wilson, Jimbo},
+  title   = {The {What-If} Tool: Interactive Probing of Machine Learning Models},
+  journal = {IEEE Transactions on Visualization and Computer Graphics},
+  volume  = {26},
+  number  = {1},
+  pages   = {56--65},
+  year    = {2020},
+  doi     = {10.1109/TVCG.2019.2934619}
 }

@@ -1,0 +1,402 @@
+% Fair Recourse with KANs --- literature review status and grouping. CISUC template, Beamer version (copied from the FADO deck).
+% Compiles with pdfLaTeX, XeLaTeX, or LuaLaTeX (run twice for the TikZ overlays).
+\documentclass[aspectratio=169]{beamer}
+\usepackage{geometry}
+\geometry{paperwidth=13.333in,paperheight=7.5in}
+\usepackage{iftex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{amsmath, amsthm}
+
+% ---- fonts (engine-agnostic; TeXLive-bundled Helvetica/Courier clones, no fontspec) ----
+\ifPDFTeX\usepackage[utf8]{inputenc}\fi
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{tgheros}   % Helvetica clone (Arial-like) sans
+\usepackage{tgcursor}  % Courier clone mono
+\renewcommand{\familydefault}{\sfdefault}
+\newcommand{\monofont}{\ttfamily}
+
+% ---- colours ----
+\definecolor{cred}{HTML}{DA0725}
+\definecolor{ink}{HTML}{141414}
+\definecolor{body}{HTML}{262626}
+\definecolor{grey}{HTML}{9A9A9A}
+\definecolor{lgrey}{HTML}{C4C4C4}
+\definecolor{rulec}{HTML}{2A2A2A}
+\definecolor{green}{HTML}{2E9E5B}
+\definecolor{amber}{HTML}{C77A18}
+
+\setbeamercolor{normal text}{fg=body}
+\setbeamercolor{itemize item}{fg=cred}
+\setbeamercolor{itemize subitem}{fg=cred}
+\setbeamercolor{itemize subsubitem}{fg=cred}
+\setbeamercolor{enumerate item}{fg=cred}
+\setbeamercolor{enumerate subitem}{fg=cred}
+\setbeamercolor{enumerate subsubitem}{fg=cred}
+\setbeamercolor{item projected}{fg=cred}
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=0.85in,text margin right=0.85in}
+
+% ---- running header (shown on non-plain frames) ----
+\newcommand{\hdrsec}{}
+\newcommand{\hdrpg}{}
+\newcommand{\pageset}[2]{\renewcommand{\hdrsec}{#1}\renewcommand{\hdrpg}{#2}}
+\setbeamertemplate{headline}{%
+  \vskip3mm%
+  \makebox[\paperwidth][c]{%
+    \hspace{9mm}%
+    \parbox[t]{4.2in}{\monofont\color{grey}\fontsize{9}{11}\selectfont
+      Towards Fair Algorithmic Recourse with\\ Kolmogorov-Arnold Networks}%
+    \hfill
+    \parbox[t]{4.2in}{\centering\monofont\color{grey}\fontsize{10}{12}\selectfont \hdrsec}%
+    \hfill
+    \parbox[t]{2.6in}{\raggedleft\monofont\fontsize{13}{15}\selectfont
+      \textbf{\color{ink}\hdrpg}{\color{grey}/11}}%
+    \hspace{9mm}%
+  }%
+}
+\setbeamertemplate{theorems}[numbered]
+\makeatletter
+\setbeamertemplate{theorem begin}{%
+  \begin{\inserttheoremblockenv}
+    {%
+      \centering
+      \inserttheoremname
+      \inserttheoremnumber
+      \ifx\inserttheoremaddition\@empty\else\ (\inserttheoremaddition)\fi%
+    }%
+}
+\makeatother
+\setbeamertemplate{proof begin}{\begin{block}{\insertproofname}\sffamily}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{}
+
+% ---- helpers (absolute placement via TikZ overlay) ----
+% \tb{width-in}{x-in}{y-in}{content}  --- anchored top-left at (x,y) from page NW
+% optional #1 = extra node options (use font=... for large text so spacing scales)
+\newcommand{\tb}[5][]{\begin{tikzpicture}[remember picture,overlay]%
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=#2in,align=left,#1]
+    at ([xshift=#3in,yshift=-#4in]current page.north west){\raggedright #5\par};\end{tikzpicture}}
+\newcommand{\fs}[2]{\fontsize{#1}{#2}\selectfont}
+\newcommand{\hrl}[3]{\tb{#3}{#1}{#2}{{\color{lgrey}\rule{#3in}{0.9pt}}}}
+% square outline cell with centred label: \boxcell{x}{y}{size-in}{label}
+\newcommand{\boxcell}[4]{\begin{tikzpicture}[remember picture,overlay]%
+  \node[draw=lgrey,line width=0.8pt,anchor=north west,minimum width=#3in,minimum height=#3in,
+    align=center,text=ink,font=\fontsize{14}{16}\selectfont]
+    at ([xshift=#1in,yshift=-#2in]current page.north west){#4};\end{tikzpicture}}
+% arrow from (x1,y1) to (x2,y2) in inches from page NW
+\newcommand{\parrow}[4]{\begin{tikzpicture}[remember picture,overlay]%
+  \draw[-{Latex[length=2mm]},line width=1.3pt,ink]
+    ([xshift=#1in,yshift=-#2in]current page.north west)--([xshift=#3in,yshift=-#4in]current page.north west);\end{tikzpicture}}
+% column helpers (fixed y per slide type) --- defined once, avoid in-frame defs
+\newcommand{\colblk}[4]{%
+  \tb{3.5}{#1}{2.45}{\bfseries\color{ink}\fs{17}{20}#2}%
+  \tb{3.5}{#1}{2.9}{\itshape\color{grey}\fs{12}{14}#3}%
+  \hrl{#1}{3.32}{3.3}%
+  \tb{3.3}{#1}{3.5}{\color{body}\fs{13.5}{17}#4}}
+\newcommand{\phaseblk}[4]{%
+  \tb{3.5}{#1}{2.5}{\bfseries\color{cred}\fs{17}{20}#2}%
+  \tb{3.5}{#1}{2.95}{\itshape\color{grey}\fs{13}{15}#3}%
+  \hrl{#1}{3.35}{3.1}%
+  \tb{3.2}{#1}{3.5}{\color{body}\fs{13}{16}#4}}
+\newcommand{\dcolblk}[3]{%
+  \tb{3.6}{#1}{2.55}{\bfseries\color{ink}\fs{16}{19}#2}%
+  \hrl{#1}{3.35}{3.3}%
+  \tb{3.4}{#1}{3.5}{\color{body}\fs{14}{18}#3}}
+\newcommand{\ctitle}[1]{\tb[font=\fontsize{28}{28}\selectfont\bfseries]{11.6}{0.85}{1.4}{\color{ink}#1}}
+\newcommand{\divider}[2]{\tb[font=\fontsize{40}{46}\selectfont\bfseries]{11.3}{1.0}{3.05}{%
+  \centering{\color{cred}#1.\ }{\color{ink}#2}}}
+\newcommand{\body}[1]{\tb{7.1}{0.85}{2.5}{\color{body}\fs{17}{23}\setlength{\parskip}{9pt}#1}}
+\newcommand{\centerimage}[3]{%
+  \pgfmathsetmacro{\centerimagex}{(13.333-#1)/2}%
+  \tb{#1}{\centerimagex}{#2}{\includegraphics[width=#1in]{#3}}}
+\newcommand{\codepanel}[3]{%
+  \tb{5.45}{#1}{2.25}{\bfseries\color{cred}\fs{16}{19}#2}%
+  \hrl{#1}{2.8}{5.45}%
+  \tb{5.45}{#1}{3.05}{\color{body}\ttfamily\fs{10.2}{12.5}#3}}
+\newcommand{\slidefoot}[1]{%
+  \tb{11.6}{0.85}{6.45}{\centering\color{grey}\fs{13}{16}#1}}
+\newcommand{\question}[4]{\hrl{8.35}{#1}{4.1}\tb{4.1}{8.35}{#2}{\fs{14}{18}{\color{cred}\bfseries #3}\par\smallskip{\color{ink}#4}}}
+\newcommand{\outlineitem}[2]{\color{cred}\bfseries #1.\hspace{0.6em}{\color{ink}#2}\par}
+\newcommand{\titleSlide}[2]{%
+  \tb[font=\fontsize{46}{50}\selectfont\bfseries]{11.4}{0.9}{2.4}{\color{ink}#1}%
+  \tb[font=\fontsize{30}{36}\selectfont\bfseries]{11.4}{0.9}{3.4}{\color{ink}#2}%
+  \tb{2.5}{0.9}{6.75}{\includegraphics[width=2.5in]{assets/cisuc_logo.png}}}
+
+\begin{document}
+
+% ===================================================== 1 LOGO
+\begin{frame}[plain]
+  \tb{4.6}{4.37}{3.35}{\includegraphics[width=4.6in]{assets/cisuc_logo.png}}
+\end{frame}
+
+% ===================================================== 2 TITLE
+\begin{frame}[plain]
+  \titleSlide{Fair Recourse with KANs} {Literature Review: Status and Grouping}
+  \tb{11}{0.92}{4.55}{\color{ink}\fs{19}{22}Tiago Silva}
+  \tb{11}{0.92}{4.95}{\color{grey}\fs{13}{16}Supervisors: Prof.\ Pedro Henriques Abreu \textperiodcentered{} Prof.\ Bruno Veloso}
+  \tb{11}{0.92}{5.45}{\color{ink}\fs{14}{18}\textbf{CISUC \textperiodcentered{} Data-Centric AI Lab}\\
+    {\color{body}\fs{14}{18}Department of Informatics Engineering, University of Coimbra}}
+  \tb{2.5}{0.9}{6.75}{\includegraphics[width=2.5in]{assets/cisuc_logo.png}}
+\end{frame}
+
+% ===================================================== 3 OUTLINE (01)
+\pageset{Outline}{01}
+\begin{frame}
+  \ctitle{Outline}
+  \body{%
+    \begin{enumerate}
+      \item \textbf{Problem and scope};
+      \item \textbf{State of the review}: 27 papers logged;
+      \item \textbf{Review structure}: G1--G4;
+      \item \textbf{The four groups}, paper by paper;
+      \item \textbf{Intersections and gap};
+      \item \textbf{Next steps and decisions}.
+    \end{enumerate}
+  }
+\end{frame}
+
+% ===================================================== PROBLEM (02)
+\pageset{Problem and scope}{02}
+\begin{frame}
+  \ctitle{Problem and scope}
+  \tb{11.6}{0.85}{2.2}{\fs{16}{19}{\color{cred}\bfseries Recourse} {\color{grey}(Karimi et al.\ 2021)}}
+  \tb{11.6}{0.85}{2.62}{\color{ink}\fs{20}{24}$a^\star(\mathbf{x})=\arg\min_{a\in\mathcal{A}(\mathbf{x})}\, c(a;\mathbf{x}) \quad\text{s.t.}\quad h\big(\mathbf{x}^{\mathrm{SCF}}(a;\mathbf{x})\big)=1$}
+  \tb{11.6}{0.85}{3.2}{\color{grey}\fs{13}{16}$\mathcal{A}(\mathbf{x})$: actionable interventions \textperiodcentered{} $c$: cost \textperiodcentered{} $\mathbf{x}^{\mathrm{SCF}}$: structural counterfactual of $\mathbf{x}$ under $a$ \textperiodcentered{} $h$: classifier}
+  \hrl{0.85}{3.65}{11.6}
+  \tb{11.6}{0.85}{3.85}{\fs{16}{19}{\color{cred}\bfseries Group fairness of recourse} {\color{grey}(von K\"ugelgen et al.\ 2022)}}
+  \tb{11.6}{0.85}{4.27}{\color{ink}\fs{20}{24}$\mathbb{E}\big[\,c(a^\star;\mathbf{x}) \mid h(\mathbf{x})=0,\ S=s\,\big]$ is equal for every protected group $s$}
+  \hrl{0.85}{4.95}{11.6}
+  \tb{11.6}{0.85}{5.15}{\fs{16}{19}{\color{cred}\bfseries Thesis goal}}
+  \tb{11.6}{0.85}{5.55}{\color{ink}\fs{16}{20}A recourse method that satisfies both, with KANs as one or more of its components: the classifier $h$, the causal model, or the generator of $a^\star$.}
+\end{frame}
+
+% ===================================================== STATUS (03)
+\pageset{State of the review}{03}
+\begin{frame}
+  \ctitle{State of the review: 27 papers logged}
+  % left: papers per group (1 paper = 0.2in); review groups in red, supporting groups in grey
+  \tb{5.45}{0.85}{2.25}{\bfseries\color{cred}\fs{16}{19}By group}
+  \hrl{0.85}{2.8}{5.45}
+  \begin{tikzpicture}[remember picture,overlay]
+    \begin{scope}[shift={(current page.north west)},x=1in,y=-1in]
+      \draw[lgrey,line width=0.8pt] (3.7,2.95) -- (3.7,5.41);
+      \foreach \lbl/\n/\top/\col in {G1 Search/7/3.0/cred, G2 Plausibility \& causality/9/3.4/cred,
+          G3 Fairness of recourse/1/3.8/cred, G4 KAN components/4/4.2/cred,
+          Foundations/5/4.7/grey, Evaluation/1/5.1/grey} {
+        \node[anchor=east,text=body,font=\fontsize{13}{16}\selectfont] at (3.6,\top+0.13) {\lbl};
+        \fill[\col] (3.7,\top) rectangle (3.7+0.2*\n,\top+0.26);
+        \node[anchor=west,text=ink,font=\fontsize{13}{16}\selectfont] at (3.76+0.2*\n,\top+0.13) {\n};
+      }
+    \end{scope}
+  \end{tikzpicture}
+  % right: papers per publication year (1 paper = 0.16in)
+  \tb{5.45}{7.03}{2.25}{\bfseries\color{cred}\fs{16}{19}By publication year}
+  \hrl{7.03}{2.8}{5.45}
+  \begin{tikzpicture}[remember picture,overlay]
+    \begin{scope}[shift={(current page.north west)},x=1in,y=-1in]
+      \draw[lgrey,line width=0.8pt] (7.03,5.15) -- (12.48,5.15);
+      \foreach \yr/\n [count=\i from 0] in {2018/1,2019/4,2020/12,2021/1,2022/1,2023/0,2024/1,2025/3,2026/4} {
+        \pgfmathsetmacro{\xl}{7.13+0.6*\i}
+        \ifnum\n>0
+          \fill[cred] (\xl,5.15) rectangle (\xl+0.42,5.15-0.16*\n);
+          \node[anchor=south,text=ink,font=\fontsize{12}{14}\selectfont] at (\xl+0.21,5.13-0.16*\n) {\n};
+        \fi
+        \node[anchor=north,text=grey,font=\fontsize{11}{13}\selectfont] at (\xl+0.21,5.2) {\yr};
+      }
+    \end{scope}
+  \end{tikzpicture}
+  \slidefoot{16 of 27 papers are from 2019--2020 \textperiodcentered{} 6 more fairness-of-recourse papers identified, not yet logged \textperiodcentered{} no datasets logged yet}
+\end{frame}
+
+% ===================================================== REVIEW STRUCTURE (04)
+\pageset{Review structure}{04}
+\begin{frame}
+  \ctitle{Review structure: one group per part of the pipeline}
+  \tb{1.75}{2.45}{2.2}{\centering\bfseries\color{cred}\fs{14}{17}G1 Search}
+  \tb{3.3}{4.625}{2.2}{\centering\bfseries\color{cred}\fs{14}{17}G2 Plausibility and causality}
+  \tb{0.9}{0.85}{3.25}{\centering\color{ink}\fs{15}{19}$\mathbf{x}$\\$h(\mathbf{x})=0$}
+  \parrow{1.8}{3.52}{2.4}{3.52}
+  \boxcell{2.45}{2.65}{1.75}{Recourse\\generator}
+  \tb{1.2}{4.2}{3.1}{\centering\color{ink}\fs{14}{16}$a$}
+  \parrow{4.25}{3.52}{5.35}{3.52}
+  \boxcell{5.4}{2.65}{1.75}{Causal\\model}
+  \tb{1.2}{7.15}{3.05}{\centering\color{ink}\fs{12}{14}$\mathbf{x}^{\mathrm{SCF}}$}
+  \parrow{7.2}{3.52}{8.3}{3.52}
+  \boxcell{8.35}{2.65}{1.75}{Decision\\model $h$}
+  \parrow{10.15}{3.52}{10.95}{3.52}
+  \tb{1.5}{11.0}{3.35}{\centering\color{ink}\fs{15}{19}$h(\mathbf{x}^{\mathrm{SCF}})=1$}
+  \begin{tikzpicture}[remember picture,overlay]
+    \begin{scope}[shift={(current page.north west)},x=1in,y=-1in]
+      \draw[grey,line width=0.9pt,dash pattern=on 4pt off 3pt] (2.3,2.55) rectangle (10.25,4.5);
+      \draw[-{Latex[length=2mm]},line width=1.3pt,ink] (3.325,4.42) -- (3.325,5.12);
+    \end{scope}
+  \end{tikzpicture}
+  \tb{4.85}{5.4}{4.58}{\raggedleft\color{body}\fs{14}{17}{\color{cred}\bfseries G4 KAN components}: any box can be a KAN}
+  \tb{9.0}{2.45}{5.2}{\color{body}\fs{14}{17}{\color{cred}\bfseries G3 Fairness of recourse}: the cost $c(a^\star;\mathbf{x})$ compared across protected groups}
+  \slidefoot{Not tied to one part: \textbf{Foundations} (surveys, position papers) and \textbf{Evaluation} (datasets, metrics, tools)}
+\end{frame}
+
+% ===================================================== GROUPS (05)
+\pageset{Review structure}{05}
+\begin{frame}
+  \ctitle{Groups, questions and papers}
+  \tb{11.6}{0.85}{2.05}{\fs{14}{18}\renewcommand{\arraystretch}{1.35}%
+    \begin{tabular}{@{}>{\bfseries}l >{\raggedright\arraybackslash}p{5.0in} c >{\raggedright\arraybackslash}p{1.75in}@{}}
+      \toprule
+      Group & Question it answers & Papers & Chapter 3 \\
+      \midrule
+      {\color{cred}G1} Search & How is a valid counterfactual found, with which model access? & 7 & \S3.2 \\
+      \addlinespace
+      {\color{cred}G2} Plausibility and causality & Does it stay on the data and respect causal structure? & 9 & \S3.3 \\
+      \addlinespace
+      {\color{cred}G3} Fairness of recourse & Is the cost of recourse equal across groups and individuals? & 1 & \S3.4 \\
+      \addlinespace
+      {\color{cred}G4} KAN components & Which components have been built with KANs? & 4 & \S3.5 \\
+      \midrule
+      Foundations & Surveys and position papers & 5 & Ch.~2, \S3 intro \\
+      Evaluation & Datasets, metrics, tools & 1 & each section, Ch.~4 \\
+      \midrule
+      Total & & 27 & \\
+      \bottomrule
+    \end{tabular}}
+  \slidefoot{Papers logged on 28 Oct 2026 \textperiodcentered{} \S3.1 review method, \S3.6 synthesis and gaps}
+\end{frame}
+
+% ===================================================== G1 (06)
+\pageset{G1 Search}{06}
+\begin{frame}
+  \ctitle{G1. Counterfactual search}
+  \tb{11.6}{0.85}{2.05}{\fs{14}{18}\renewcommand{\arraystretch}{1.35}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.3in} c >{\raggedright\arraybackslash}p{3.7in} >{\raggedright\arraybackslash}p{2.3in}@{}}
+      \toprule
+      Method & Year & Search strategy & Model access \\
+      \midrule
+      Actionable Recourse (Ustun et al.) & 2019 & Integer programming & Linear \\
+      Diverse coherent explanations (Russell) & 2019 & Mixed-integer programming & Linear \\
+      CLEAR (White \& d'Avila Garcez) & 2019 & Local regression surrogate & Black-box \\
+      MACE (Karimi et al.) & 2020 & SMT solving & Model as logic formula \\
+      DiCE (Mothilal et al.) & 2020 & Gradient descent with a diversity term & Differentiable \\
+      MOC (Dandl et al.) & 2020 & Multi-objective evolutionary (NSGA-II) & Black-box \\
+      CERTIFAI (Sharma et al.) & 2020 & Genetic algorithm & Black-box \\
+      \bottomrule
+    \end{tabular}}
+  \slidefoot{Exact solvers need the model in closed form; evolutionary and surrogate methods only query it.\\
+    Not in the logged papers: encoding spline-based models such as KANs for IP, MIP or SMT solvers.}
+\end{frame}
+
+% ===================================================== G2 (07)
+\pageset{G2 Plausibility and causality}{07}
+\begin{frame}
+  \ctitle{G2. Plausibility and causality}
+  \tb{11.6}{0.85}{2.0}{\fs{14}{18}\renewcommand{\arraystretch}{1.25}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.0in} c >{\raggedright\arraybackslash}p{4.6in} >{\raggedright\arraybackslash}p{1.7in}@{}}
+      \toprule
+      Method & Year & Mechanism & Causal input \\
+      \midrule
+      \multicolumn{4}{@{}l}{\itshape\color{grey}Data manifold} \\
+      REVISE (Joshi et al.) & 2019 & Search in a VAE latent space & None \\
+      Prototypes (Van Looveren \& Klaise) & 2020 & Class prototypes guide the search & None \\
+      FACE (Poyiadzi et al.) & 2020 & Shortest paths on a density-weighted graph & None \\
+      DACE (Kanamori et al.) & 2020 & MILP with a Mahalanobis and outlier-aware cost & None \\
+      CRUDS (Downs et al.) & 2020 & Disentangled subspaces of a conditional VAE & None \\
+      \addlinespace
+      \multicolumn{4}{@{}l}{\itshape\color{grey}Causal structure} \\
+      Prophit (Lash et al.) & 2018 & Causal inverse classification, continuous treatments & Treatment model \\
+      Mahajan et al. & 2020 & VAE with a causal-constraint loss & Constraints or SCM \\
+      Karimi et al. & 2020 & Probabilistic recourse under uncertainty & Causal graph \\
+      Karimi et al. & 2021 & Recourse as minimal interventions & Full SCM \\
+      \bottomrule
+    \end{tabular}}
+  \slidefoot{Data-manifold methods use no causal knowledge; causal methods range from known constraints to a full SCM.}
+\end{frame}
+
+% ===================================================== G3 (08)
+\pageset{G3 Fairness of recourse}{08}
+\begin{frame}
+  \ctitle{G3. Fairness of recourse}
+  \tb{11.6}{0.85}{2.05}{\fs{14}{18}\renewcommand{\arraystretch}{1.35}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.0in} c >{\raggedright\arraybackslash}p{5.0in} l@{}}
+      \toprule
+      Paper & Year & Fairness notion & Status \\
+      \midrule
+      CERTIFAI (Sharma et al.) & 2020 & Group burden: mean counterfactual distance per group & Logged \\
+      Fair Recourse for All (Ezzeddine et al.) & 2026 & Individual and group fairness enforced in generation & Logged \\
+      \midrule
+      Equalizing Recourse (Gupta et al.) & 2019 & Group gap in distance to the boundary & Seed \\
+      von K\"ugelgen et al. & 2022 & Group and individual fairness of causal recourse & Seed \\
+      Ehyaei et al. & 2023 & Robustness and individual fairness of causal recourse & Seed \\
+      Kavouras et al. & 2023 & Subgroup audits with counterfactuals & Seed \\
+      Bell et al. & 2024 & Substantive equality of opportunity & Seed \\
+      Barrainkua et al. & 2026 & Worst-case social burden & Seed \\
+      \bottomrule
+    \end{tabular}}
+  \slidefoot{Logged: read and recorded \textperiodcentered{} Seed: identified, not yet logged\\
+    The notions differ in what they compare (distance, cost, burden) and in whether they need an SCM.}
+\end{frame}
+
+% ===================================================== G4 (09)
+\pageset{G4 KAN components}{09}
+\begin{frame}
+  \ctitle{G4. KAN components}
+  \tb{11.6}{0.85}{2.05}{\fs{14}{18}\renewcommand{\arraystretch}{1.35}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.6in} c >{\raggedright\arraybackslash}p{3.7in} >{\raggedright\arraybackslash}p{3.0in}@{}}
+      \toprule
+      Paper & Year & KAN role & Relation to the thesis \\
+      \midrule
+      Priyadarshini \& Gago-Masague & 2025 & Model in adversarial fair-representation learning & Fairness with KANs; no recourse \\
+      \addlinespace
+      Almod\'ovar et al.\ (KaCGM) & 2026 & Causal generative model & KAN as causal model \\
+      \addlinespace
+      Valencia et al. & 2026 & Counterfactual explanations for an RL agent & KANs and CEs; RL, not tabular \\
+      \addlinespace
+      Hoang et al. & 2026 & On-chip online learning & Out of scope \\
+      \bottomrule
+    \end{tabular}}
+  \slidefoot{Surveys (under Foundations): Somvanshi et al.\ 2025, ACM CSUR \textperiodcentered{} Noorizadegan et al.\ 2025, Comput.\ Sci.\ Rev.\\
+    Limitation reported for KaCGM: low-complexity functional decompositions trade accuracy for auditability.}
+\end{frame}
+
+% ===================================================== INTERSECTIONS (10)
+\pageset{Intersections and gap}{10}
+\begin{frame}
+  \ctitle{Intersections found so far}
+  \tb{11.6}{0.85}{2.05}{\fs{15}{19}\renewcommand{\arraystretch}{1.35}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.6in} >{\raggedright\arraybackslash}p{6.6in} c@{}}
+      \toprule
+      Intersection & Logged papers & Count \\
+      \midrule
+      Recourse $\times$ causal structure & Lash et al.\ 2018; Mahajan et al.\ 2020; Karimi et al.\ 2020, 2021 & 4 \\
+      Recourse $\times$ fairness & Sharma et al.\ 2020; Ezzeddine et al.\ 2026 & 2 \\
+      CE $\times$ KANs & Valencia et al.\ 2026 (RL agents) & 1 \\
+      Causal model $\times$ KANs & Almod\'ovar et al.\ 2026 & 1 \\
+      Fairness $\times$ KANs & Priyadarshini \& Gago-Masague 2025 (representations) & 1 \\
+      \midrule
+      \textbf{Fair recourse $\times$ KANs} & -- & \textbf{0} \\
+      \bottomrule
+    \end{tabular}}
+  \slidefoot{Counts from the 27 papers logged on 28 Oct 2026, before the systematic search (S1--S4, planned for 2--8 Nov).}
+\end{frame}
+
+% ===================================================== NEXT STEPS (11)
+\pageset{Next steps}{11}
+\begin{frame}
+  \ctitle{Next steps and decisions}
+  \tb{7.1}{0.85}{2.5}{\color{body}\fs{16}{21}\setlength{\parskip}{6pt}%
+    \begin{enumerate}
+      \item Log the 6 fairness-of-recourse seeds \hfill{\color{grey}1 Nov}
+      \item Run S1--S4 in all sources; log counts \hfill{\color{grey}8 Nov}
+      \item Log datasets, metrics and benchmarks (CARLA) \hfill{\color{grey}15 Nov}
+      \item Full Chapter 3 draft \hfill{\color{grey}20 Dec}
+    \end{enumerate}}
+  \question{2.5}{2.65}{Experiments}{Are preliminary results expected in January (e.g.\ KAN vs MLP on Adult)?}
+  \question{3.75}{3.9}{Scope}{Include RL-based CE work (Valencia et al.\ 2026), or only tabular classification?}
+  \question{5.0}{5.15}{Delivery date}{What is the exact January deadline? The plan assumes \textasciitilde 22 Jan.}
+\end{frame}
+
+\end{document}
