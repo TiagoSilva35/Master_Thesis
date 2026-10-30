@@ -5,7 +5,7 @@
 **Intermediate delivery:** January 2027. The plan assumes **~22 Jan 2027**; confirm the official date and shift the last two weeks if needed.
 **Plan start:** Tue 27 Oct 2026, which gives about 13 weeks including the Christmas break.
 **Slides for the supervisors:** `presentation/lit_review_plan/presentation.tex` (same grouping as this plan).
-**Extraction spreadsheet:** `D:\Literature Review.xlsx` (27 papers logged as of 28 Oct 2026).
+**Extraction spreadsheet:** `D:\Literature Review.xlsx` (28 papers logged as of 29 Oct 2026).
 
 ---
 
@@ -40,11 +40,11 @@ Frontmatter to fill in during the final weeks (template files, format unchanged)
   Not tied to one part: Foundations (surveys, position papers) · Evaluation (datasets, metrics, tools)
 ```
 
-| Group | Question it answers | Logged (28 Oct) | Ch. 3 |
+| Group | Question it answers | Logged (29 Oct) | Ch. 3 |
 |---|---|---|---|
 | **G1 Counterfactual search** | How is a valid counterfactual found, and which model access does it need? | 7 | §3.2 |
 | **G2 Plausibility and causality** | Does the counterfactual stay on the data and respect causal structure? | 9 | §3.3 |
-| **G3 Fairness of recourse** | Is the cost of recourse equal across groups and individuals? | 1 (+1 shared with G1, +6 seeds not yet logged) | §3.4 |
+| **G3 Fairness of recourse** | Is the cost of recourse equal across groups and individuals? | 2 (+1 shared with G1, +5 seeds not yet logged) | §3.4 |
 | **G4 KAN components** | Which components of the pipeline have been built with KANs, and with what evidence? | 4 | §3.5 |
 | Foundations | Surveys and position papers | 5 | Ch. 2, §3 intro |
 | Evaluation | Datasets, metrics, tools | 1 | every section's table, Ch. 4 |
@@ -58,12 +58,12 @@ Frontmatter to fill in during the final weeks (template files, format unchanged)
 
 Mapping of the 27 logged papers: G1 ← 7 from A; G2 ← 4 from A + 5 from B; G3 ← 1 from A; G4 ← 1 from A + 3 from C; Foundations ← 3 from A + 2 from C; Evaluation ← 1 from A.
 
-**Intersections found so far (spreadsheet, 28 Oct 2026; to be confirmed by the systematic search):**
+**Intersections found so far (spreadsheet, 29 Oct 2026; to be confirmed by the systematic search):**
 
 | Intersection | Logged papers | Count |
 |---|---|---|
-| Recourse × causal structure | Lash et al. 2018; Mahajan et al. 2020; Karimi et al. 2020, 2021 | 4 |
-| Recourse × fairness | Sharma et al. 2020; Ezzeddine et al. 2026 | 2 |
+| Recourse × causal structure | Lash et al. 2018; Mahajan et al. 2020; Karimi et al. 2020, 2021; von Kügelgen et al. 2022 | 5 |
+| Recourse × fairness | Sharma et al. 2020; von Kügelgen et al. 2022; Ezzeddine et al. 2026 | 3 |
 | CE × KANs | Valencia et al. 2026 (RL agents, not tabular classification) | 1 |
 | Causal model × KANs | Almodóvar et al. 2026 (KaCGM) | 1 |
 | Fairness × KANs | Priyadarshini & Gago-Masague 2025 (fair representations) | 1 |
@@ -154,7 +154,7 @@ S1 hits are assigned to G1 or G2 during screening by their main contribution (ho
 
 ## 5. Groups, seed papers and must-answer questions
 
-`references.bib` mirrors the spreadsheet: it holds exactly the 27 logged papers. **Keys marked ○ are planned seeds that are not logged yet**, so they are not in `references.bib`: add each one to the spreadsheet and to `references.bib` together when you read it (the earlier 66-entry seed file is in git commit eb06687). **Verify the volume, pages and venue of every entry against DBLP or the publisher before final submission.**
+`references.bib` mirrors the spreadsheet: it holds exactly the 28 logged papers. **Keys marked ○ are planned seeds that are not logged yet**, so they are not in `references.bib`: add each one to the spreadsheet and to `references.bib` together when you read it (the earlier 66-entry seed file is in git commit eb06687). **Verify the volume, pages and venue of every entry against DBLP or the publisher before final submission.**
 
 ### G1. Counterfactual search (§2.5, §3.2)
 - **Seeds:**
@@ -177,8 +177,8 @@ S1 hits are assigned to G1 or G2 during screening by their main contribution (ho
 
 ### G3. Fairness of recourse (§2.3, §3.4)
 - **Seeds:**
-  - Logged: `sharma2020certifai` (burden), `ezzeddine2026fair` (individual and group fairness in generation)
-  - Not yet logged: `gupta2019equalizing`○, `vonkugelgen2022fairness`○, `ehyaei2023robustness`○, `kavouras2023fairness`○, `bell2024fairness`○, `barrainkua2026revisiting`○
+  - Logged: `sharma2020certifai` (burden), `vonkugelgen2022fairness` (group and individual fairness of causal recourse; cite the AAAI 2022 version, the spreadsheet has the arXiv preprint), `ezzeddine2026fair` (individual and group fairness in generation)
+  - Not yet logged: `gupta2019equalizing`○, `ehyaei2023robustness`○, `kavouras2023fairness`○, `bell2024fairness`○, `barrainkua2026revisiting`○
 - **Must answer:** Which recourse-fairness notions exist (distance gap, burden, cost parity, individual/causal fairness of recourse, substantive equality, worst-case social burden), what does each compare, and which require an SCM? Are there in-training or generation-time mitigation methods (O1, O3) or only post-hoc audits? How do fair classifiers interact with fair recourse (the Barrainkua et al. finding)?
 - **Deliverable:** **fairness-of-recourse notions table** (notion | definition | compares | needs SCM? | mitigation? | datasets).
 
@@ -209,7 +209,7 @@ S1 hits are assigned to G1 or G2 during screening by their main contribution (ho
 
 | Week | Dates | Reading / searching | Writing | Checkpoint |
 |---|---|---|---|---|
-| W1 | 27 Oct – 1 Nov | Set up Zotero + BBT. Reorganise the spreadsheet into G1–G4, Foundations and Evaluation; fill missing author/year fields; log the 6 G3 seeds. Skim the anchor surveys (`karimi2022survey`, `verma2024counterfactual`, `liu2025kan`). | One-page scope note and draft RQs | **Meeting with supervisors** (slides in `presentation/lit_review_plan/`): grouping, scope (RL work in or out), RQs, delivery date, whether preliminary experiments are expected |
+| W1 | 27 Oct – 1 Nov | Set up Zotero + BBT. Reorganise the spreadsheet into G1–G4, Foundations and Evaluation; fill missing author/year fields; log the remaining 5 G3 seeds. Skim the anchor surveys (`karimi2022survey`, `verma2024counterfactual`, `liu2025kan`). | One-page scope note and draft RQs | **Meeting with supervisors** (slides in `presentation/lit_review_plan/`): grouping, scope (RL work in or out), RQs, delivery date, whether preliminary experiments are expected |
 | W2 | 2 – 8 Nov | Finalize strings, run S1–S4, deduplicate, log counts, screen titles/abstracts | §2.1 notation (start fixing notation early) | — |
 | W3 | 9 – 15 Nov | Full-text screening + snowballing; fill the spreadsheet; fill the Evaluation tab (datasets, metrics, CARLA) | §3.1 review method; §2.2 KAN fundamentals | — |
 | W4 | 16 – 22 Nov | **G1** counterfactual search | §2.5 + §3.2 + search-methods table | — |
@@ -245,7 +245,7 @@ S1 hits are assigned to G1 or G2 during screening by their main contribution (ho
 | Huge KAN literature, mostly application papers | Screen S4 only. Review application-only papers as a count, not individually. |
 | G2 is the largest group (data manifold + causal recourse + deep causal models) | It gets two weeks (W5–W6). |
 | W8 combines G4, the search freeze and the synthesis | G4 builds on §2.2 (written in W3) and has the fewest papers. If W8 overruns, move §3.6 synthesis to W9. |
-| G3 is thin in the spreadsheet (2 of 27 papers) | Log the 6 seeds in W1; S2 targets it directly. |
+| G3 is thin in the spreadsheet (3 of 28 papers) | Log the remaining 5 seeds in W1; S2 targets it directly. |
 | Field moves fast; the gap gets filled by a new preprint | Weekly alerts. If scooped, shift the angle (e.g., KAN interpretability for *auditing* recourse unfairness, or a different fairness notion). |
 | Scope creep into general XAI/fairness or RL | Apply IC1–IC2 strictly, settle the RL scope in W1, and use the background chapter for general material. |
 | Christmas break | W9–10 are buffer weeks, and Ch. 3 is due before the break. |

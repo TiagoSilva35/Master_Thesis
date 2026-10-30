@@ -152,7 +152,7 @@
   \body{%
     \begin{enumerate}
       \item \textbf{Problem and scope};
-      \item \textbf{State of the review}: 27 papers logged;
+      \item \textbf{State of the review}: 28 papers logged;
       \item \textbf{Review structure}: G1--G4;
       \item \textbf{The four groups}, paper by paper;
       \item \textbf{Intersections and gap};
@@ -179,7 +179,7 @@
 % ===================================================== STATUS (03)
 \pageset{State of the review}{03}
 \begin{frame}
-  \ctitle{State of the review: 27 papers logged}
+  \ctitle{State of the review: 28 papers logged}
   % left: papers per group (1 paper = 0.2in); review groups in red, supporting groups in grey
   \tb{5.45}{0.85}{2.25}{\bfseries\color{cred}\fs{16}{19}By group}
   \hrl{0.85}{2.8}{5.45}
@@ -187,7 +187,7 @@
     \begin{scope}[shift={(current page.north west)},x=1in,y=-1in]
       \draw[lgrey,line width=0.8pt] (3.7,2.95) -- (3.7,5.41);
       \foreach \lbl/\n/\top/\col in {G1 Search/7/3.0/cred, G2 Plausibility \& causality/9/3.4/cred,
-          G3 Fairness of recourse/1/3.8/cred, G4 KAN components/4/4.2/cred,
+          G3 Fairness of recourse/2/3.8/cred, G4 KAN components/4/4.2/cred,
           Foundations/5/4.7/grey, Evaluation/1/5.1/grey} {
         \node[anchor=east,text=body,font=\fontsize{13}{16}\selectfont] at (3.6,\top+0.13) {\lbl};
         \fill[\col] (3.7,\top) rectangle (3.7+0.2*\n,\top+0.26);
@@ -201,7 +201,7 @@
   \begin{tikzpicture}[remember picture,overlay]
     \begin{scope}[shift={(current page.north west)},x=1in,y=-1in]
       \draw[lgrey,line width=0.8pt] (7.03,5.15) -- (12.48,5.15);
-      \foreach \yr/\n [count=\i from 0] in {2018/1,2019/4,2020/12,2021/1,2022/1,2023/0,2024/1,2025/3,2026/4} {
+      \foreach \yr/\n [count=\i from 0] in {2018/1,2019/4,2020/12,2021/1,2022/2,2023/0,2024/1,2025/3,2026/4} {
         \pgfmathsetmacro{\xl}{7.13+0.6*\i}
         \ifnum\n>0
           \fill[cred] (\xl,5.15) rectangle (\xl+0.42,5.15-0.16*\n);
@@ -211,7 +211,7 @@
       }
     \end{scope}
   \end{tikzpicture}
-  \slidefoot{16 of 27 papers are from 2019--2020 \textperiodcentered{} 6 more fairness-of-recourse papers identified, not yet logged \textperiodcentered{} no datasets logged yet}
+  \slidefoot{16 of 28 papers are from 2019--2020 \textperiodcentered{} 5 more fairness-of-recourse papers identified, not yet logged \textperiodcentered{} no datasets logged yet}
 \end{frame}
 
 % ===================================================== REVIEW STRUCTURE (04)
@@ -255,17 +255,17 @@
       \addlinespace
       {\color{cred}G2} Plausibility and causality & Does it stay on the data and respect causal structure? & 9 & \S3.3 \\
       \addlinespace
-      {\color{cred}G3} Fairness of recourse & Is the cost of recourse equal across groups and individuals? & 1 & \S3.4 \\
+      {\color{cred}G3} Fairness of recourse & Is the cost of recourse equal across groups and individuals? & 2 & \S3.4 \\
       \addlinespace
       {\color{cred}G4} KAN components & Which components have been built with KANs? & 4 & \S3.5 \\
       \midrule
       Foundations & Surveys and position papers & 5 & Ch.~2, \S3 intro \\
       Evaluation & Datasets, metrics, tools & 1 & each section, Ch.~4 \\
       \midrule
-      Total & & 27 & \\
+      Total & & 28 & \\
       \bottomrule
     \end{tabular}}
-  \slidefoot{Papers logged on 28 Oct 2026 \textperiodcentered{} \S3.1 review method, \S3.6 synthesis and gaps}
+  \slidefoot{Papers logged on 29 Oct 2026 \textperiodcentered{} \S3.1 review method, \S3.6 synthesis and gaps}
 \end{frame}
 
 % ===================================================== G1 (06)
@@ -326,10 +326,10 @@
       Paper & Year & Fairness notion & Status \\
       \midrule
       CERTIFAI (Sharma et al.) & 2020 & Group burden: mean counterfactual distance per group & Logged \\
+      von K\"ugelgen et al. & 2022 & Group and individual fairness of causal recourse & Logged \\
       Fair Recourse for All (Ezzeddine et al.) & 2026 & Individual and group fairness enforced in generation & Logged \\
       \midrule
       Equalizing Recourse (Gupta et al.) & 2019 & Group gap in distance to the boundary & Seed \\
-      von K\"ugelgen et al. & 2022 & Group and individual fairness of causal recourse & Seed \\
       Ehyaei et al. & 2023 & Robustness and individual fairness of causal recourse & Seed \\
       Kavouras et al. & 2023 & Subgroup audits with counterfactuals & Seed \\
       Bell et al. & 2024 & Substantive equality of opportunity & Seed \\
@@ -371,8 +371,8 @@
       \toprule
       Intersection & Logged papers & Count \\
       \midrule
-      Recourse $\times$ causal structure & Lash et al.\ 2018; Mahajan et al.\ 2020; Karimi et al.\ 2020, 2021 & 4 \\
-      Recourse $\times$ fairness & Sharma et al.\ 2020; Ezzeddine et al.\ 2026 & 2 \\
+      Recourse $\times$ causal structure & Lash et al.\ 2018; Mahajan et al.\ 2020; Karimi et al.\ 2020, 2021; von~K\"ugelgen et al.\ 2022 & 5 \\
+      Recourse $\times$ fairness & Sharma et al.\ 2020; von K\"ugelgen et al.\ 2022; Ezzeddine et al.\ 2026 & 3 \\
       CE $\times$ KANs & Valencia et al.\ 2026 (RL agents) & 1 \\
       Causal model $\times$ KANs & Almod\'ovar et al.\ 2026 & 1 \\
       Fairness $\times$ KANs & Priyadarshini \& Gago-Masague 2025 (representations) & 1 \\
@@ -380,7 +380,7 @@
       \textbf{Fair recourse $\times$ KANs} & -- & \textbf{0} \\
       \bottomrule
     \end{tabular}}
-  \slidefoot{Counts from the 27 papers logged on 28 Oct 2026, before the systematic search (S1--S4, planned for 2--8 Nov).}
+  \slidefoot{Counts from the 28 papers logged on 29 Oct 2026, before the systematic search (S1--S4, planned for 2--8 Nov).}
 \end{frame}
 
 % ===================================================== NEXT STEPS (11)
@@ -389,7 +389,7 @@
   \ctitle{Next steps and decisions}
   \tb{7.1}{0.85}{2.5}{\color{body}\fs{16}{21}\setlength{\parskip}{6pt}%
     \begin{enumerate}
-      \item Log the 6 fairness-of-recourse seeds \hfill{\color{grey}1 Nov}
+      \item Log the 5 remaining fairness-of-recourse seeds \hfill{\color{grey}1 Nov}
       \item Run S1--S4 in all sources; log counts \hfill{\color{grey}8 Nov}
       \item Log datasets, metrics and benchmarks (CARLA) \hfill{\color{grey}15 Nov}
       \item Full Chapter 3 draft \hfill{\color{grey}20 Dec}
