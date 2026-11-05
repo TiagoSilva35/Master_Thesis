@@ -1,196 +1,304 @@
 \chapter{Literature Review}
 \label{chap:literature-review}
-
-% PLAN: the core of the January delivery, ~25--32 pages (W3--W8).
-% Intro paragraph: the review is organised by the part of the recourse pipeline
-% each work studies (pipeline figure: recourse generator -> causal model ->
-% decision model, with the cost of recourse compared across groups):
-% G1 counterfactual search (Section~\ref{sec:lr-cf-search}), G2 plausibility and
-% causality (Section~\ref{sec:lr-plausibility}), G3 fairness of recourse
-% (Section~\ref{sec:lr-fair-recourse}) and G4 KAN components (Section~\ref{sec:lr-kan}).
-% Foundations (surveys, position papers) are summarised here and in
-% Chapter~\ref{chap:background}: \cite{karimi2022survey, verma2024counterfactual,
-% guidotti2024counterfactual, venkatasubramanian2020philosophical, barocas2020hidden}.
-% Evaluation (datasets, metrics, tools) has no section of its own: every
-% comparison table records datasets and metrics, and the datasets table is in
-% Chapter~\ref{chap:proposed-approach}.
-% The chapter ends with a decision about the role of the KAN (decision model,
-% causal model or recourse generator), taken up in Chapter~\ref{chap:proposed-approach}.
-% Rule: every section ends with ``Summary and Implications'' tied to the thesis.
-
-\section{Review Methodology}
-\label{sec:lr-methodology}
-
-% (W3) Protocol following \cite{kitchenham2007guidelines}; reporting following
-% \cite{page2021prisma}; snowballing following \cite{wohlin2014guidelines}.
-
-\subsection{Review Questions}
-\label{subsec:lr-review-questions}
-
-% The review's own questions (one per group G1--G4), not the thesis RQs.
-
-\subsection{Search Strategy}
-\label{subsec:lr-search}
-
-% Databases, preprint servers, venues, strings S1--S4 (table, with the groups
-% each string feeds), search dates.
-
-\subsection{Inclusion and Exclusion Criteria}
-\label{subsec:lr-criteria}
-
-% IC1--IC4, EC1--EC5, time windows.
-
-\subsection{Study Selection}
-\label{subsec:lr-selection}
-
-% PRISMA flow diagram with the logged counts (finish in W8).
+This chapter reviews the work on which a causal, fair and drift-aware recourse method can build.
+Section~\ref{sec:lr-cf-search} covers how counterfactuals are searched for, and
+Section~\ref{sec:lr-plausibility} how they are kept plausible and causally consistent.
+Section~\ref{sec:lr-fair-recourse} asks whether recourse is fair, and Section~\ref{sec:lr-drift}
+examines what happens when models, populations or causal mechanisms change over time.
+Finally, Section~\ref{sec:lr-readable-structural-equations} turns to readable representations of
+structural equations, including those based on Kolmogorov--Arnold Networks (KANs).
 
 \section{Counterfactual Search Methods}
 \label{sec:lr-cf-search}
-
-% G1 (W4). How is a valid counterfactual found, and which model access does it need?
-% Comparison table: method | year | search strategy | model access | diversity? |
-% robustness? | datasets | metrics | code.
+In this section, we analyse the current landscape of counterfactual search methods, focusing on
+which strategies are used to find valid counterfactuals and which trade-offs they make between
+search efficiency, plausibility and causal consistency. We group the methods into three categories:
+exact solver-based methods, gradient-based methods, and evolutionary and surrogate-based methods.
 
 \subsection{Exact Solver-Based Methods}
 \label{subsec:lr-solver-search}
 
-% Integer programming \cite{ustun2019actionable}; mixed-integer programming
-% \cite{russell2019efficient}; SMT solving, MACE \cite{karimi2020model}.
-% Note: these need the model in closed form. Can spline-based KANs be encoded?
+\citet{russell2019efficient} proposes a mixed-integer programming approach to generating
+counterfactual explanations for linear classifiers, including logistic regression, linear regression
+and support vector machines. The search is formulated as an optimisation problem that minimises a
+weighted $\ell_1$ distance between the original instance and the counterfactual, which keeps changes
+sparse (i.e., as few features as possible are changed). Its main contribution is a set of constraints,
+called a mixed polytope, that guarantees coherent counterfactuals: solutions that map back onto the
+underlying data structure, even when a variable can take either a continuous value or one of several
+discrete states. Diversity is obtained by restricting the variables altered in previously generated
+counterfactuals. Results on the LSAT and FICO datasets show that the method finds counterfactuals that
+are close to the original instance and cross the model's decision boundary, while avoiding the
+brute-force enumeration required by earlier approaches. However, the approach is designed for linear
+models, so it does not extend directly to complex neural networks. It is also blind to causal
+relationships between features: it guarantees coherence, not causal consistency. Finally, explanations
+are presented as short text statements, and the author notes that a complete set can be overwhelming
+and that more work is needed on how to present and navigate it interactively.
+
+\citet{kanamori2020dace} also rely on mathematical optimisation, using mixed-integer linear optimisation
+for linear models and tree ensembles, but do so in a distribution-aware manner. Their cost function
+combines the Mahalanobis distance, which accounts for feature correlations, with the local outlier
+factor, which avoids counterfactuals in low-density regions. However, this comes at a computational
+price: on the FICO dataset with a random forest, DACE took 519 seconds on average under a 600-second
+limit, against 22 to 34 seconds for the baselines. Moreover, although it encourages counterfactuals not
+to break correlations, it does not guarantee causal consistency.
+
+\citet{karimi2020model} propose MACE, a model-agnostic method that generates counterfactuals using
+Satisfiability Modulo Theories (SMT) solvers. The model, the distance function and the constraints are
+all translated into logic formulae, and additional constraints make the counterfactuals plausible and
+diverse. The method finds a counterfactual for every individual considered (100\% coverage) at provably
+optimal distances. The problem is that the model must be expressible in first-order logic, which may
+not be feasible for all types of models, especially complex ones. Once again, the method is blind to
+causal relationships between features, and it can be computationally expensive because its running
+time depends directly on the solver: under five seconds for logistic regression, but between one
+minute and three hours for a multilayer perceptron.
 
 \subsection{Gradient-Based Methods}
 \label{subsec:lr-gradient-search}
+\citet{vanlooveren2020interpretable} use class prototypes to guide the counterfactual search. A term
+added to the loss function encourages the counterfactual to be close to the prototype of the desired
+class, obtained either from an encoder or from class-specific k-d trees, which makes the generated
+counterfactuals more interpretable and keeps them closer to the data manifold. Evaluation on the MNIST
+and Breast Cancer Wisconsin datasets shows that the method generates counterfactuals that are close to
+the original instance and cross the decision boundary, and that it is faster than searches without
+prototypes. It also removes the bottleneck of numerical gradient evaluation for black-box models.
+Notwithstanding, the method relies heavily on the quality of the prototypes and is, again, blind to
+causal relationships between features. Matching a prototype can also lead to less sparse
+counterfactuals, as many features may have to change, and the authors report a trade-off between
+sparsity and interpretability.
 
-% \cite{wachter2018counterfactual}; diversity via determinantal point processes
-% \cite{mothilal2020explaining}. A KAN is differentiable, so these apply directly.
+\citet{mothilal2020explaining} propose DiCE, a framework that generates multiple, diverse and actionable
+counterfactuals for machine learning classifiers. It moves explainability from showing a single path of
+recourse to offering individuals a variety of options to choose from. DiCE initialises $k$ candidates
+randomly and optimises them using a determinantal point process (DPP) term to ensure diversity, along
+with proximity to the original instance. The novelty of the search mechanism is that it optimises all
+candidates jointly. The framework is evaluated on the COMPAS, Adult-Income, German-Credit and Lending
+Club datasets. Its limitations are that it assumes a differentiable and static model, and that it varies
+features independently, which can produce causally infeasible counterfactuals; causal constraints are
+only used to filter these out afterwards.
 
 \subsection{Evolutionary and Surrogate-Based Methods}
 \label{subsec:lr-heuristic-search}
+\citet{white2019measurable} introduce CLEAR and a definition of the fidelity of local explanation models
+to the underlying classifier, based on distances to a decision boundary. The method generates
+b-counterfactuals, which state the minimum changes necessary to flip the classifier's prediction, and
+uses them to measure and improve the fidelity of local regression models. Across five case studies,
+CLEAR improves on the fidelity of LIME by an average of over 40\%. However, its neighbourhood datasets
+do not always represent the relevant regions of the feature space, fidelity varies considerably between
+datasets, and b-counterfactuals that change several features are left as future work.
 
-% Multi-objective evolutionary search, MOC \cite{dandl2020multiobjective}; genetic
-% algorithm \cite{sharma2020certifai}; local regression surrogate
-% CLEAR \cite{white2019measurable}. Black-box: only query the model.
-
-\subsection{Robust and Global Recourse}
-\label{subsec:lr-robust-global}
-
-% \cite{upadhyay2021towards, rawal2020beyond}. Note amortised generators
-% (relevant to option O3).
-
-\subsection{Summary and Implications}
-\label{subsec:lr-cf-search-summary}
+\citet{dandl2020multiobjective} propose MOC which, to the best of the authors' knowledge, is the first
+method to formalise the counterfactual search as a multi-objective optimisation problem. It adapts the
+NSGA-II algorithm to return a set of Pareto-optimal counterfactuals with different trade-offs between
+four objectives: reaching the desired prediction, staying close to the original instance, changing few
+features and staying close to the observed data. The method is model-agnostic and can be applied to any
+black-box model. Nevertheless, the benchmark is limited to binary classification on datasets with at
+most 40 features, which raises concerns about scalability to high-dimensional data. The work also leaves
+open how one should choose the final counterfactual from the Pareto front, gives no guarantee of causal
+consistency, and can be computationally expensive due to the nature of evolutionary algorithms.
 
 \section{Plausibility and Causal Consistency}
 \label{sec:lr-plausibility}
-
-% G2 (W5--W6), the largest section. Does the counterfactual stay on the data and
-% respect causal structure? SCM basics are in Section~\ref{sec:bg-causality}.
-% Comparison table: method | year | mechanism | causal input (none / constraints /
-% graph / full SCM) | mixed data? | interpretable mechanisms?
+A counterfactual that is close to the original instance is not necessarily one that a person can reach.
+This section reviews two responses to that problem: keeping counterfactuals on the data manifold, and
+explicitly modelling the causal relationships between features.
 
 \subsection{Data-Manifold Methods}
 \label{subsec:lr-data-manifold}
+\citet{poyiadzi2020face} propose FACE, a graph-based method for generating counterfactuals. It constructs
+a graph where nodes are observed data points (e.g., people's financial profiles), edges connect nearby
+nodes, and density-weighted edge weights represent the cost of moving from one node to another, which
+favours paths through high-density regions. The method then searches for the shortest path from the
+original instance to a node of the desired class that satisfies prediction and density thresholds. On a
+synthetic dataset and on MNIST, the authors show that the method generates not only counterfactuals but
+also intermediate steps that explain how to reach them. However, the method does not guarantee that
+real-world actions will succeed: it ensures plausibility, which should not be confused with causality,
+nor with proof that an individual can take that set of actions. Evaluation on real-world data of a
+dynamic nature is left as future work.
 
-% (W5) Latent-space search \cite{joshi2019towards, pawelczyk2020learning};
-% density-weighted paths \cite{poyiadzi2020face}; class prototypes
-% \cite{vanlooveren2020interpretable}; distribution-aware MILP, DACE \cite{kanamori2020dace};
-% disentangled conditional-VAE subspaces, CRUDS \cite{downs2020cruds}.
-% None of these uses causal knowledge.
+\citet{Olson_2021} introduce counterfactual state explanations for deep reinforcement learning agents via
+generative deep learning. An encoder maps the game state to a latent representation, which is fed
+together with the agent's action distribution into a generator. The result is the minimal visual
+modification that makes the agent choose a different action. The networks are trained using a
+combination of adversarial and reconstruction losses, so that the counterfactual states are both
+realistic and close to the original state. Two user studies on Atari games with non-experts show that
+(i) the generated states have sufficient fidelity to the actual game, and (ii) they help participants
+identify a flawed agent, which the authors deliberately blinded to its own ship's position, more
+effectively than a nearest-neighbour baseline or no explanation at all. The method could therefore serve
+as an auditing tool to identify agent misbehaviour before real-world deployment. Beyond being restricted
+to reinforcement learning agents and evaluated on Atari games rather than on high-stakes real-world
+problems, the method does not explain the long-term effects of the chosen action on the environment, so
+no temporal consistency is guaranteed. The generative model also has no concern for causal consistency,
+which increases the risk of providing misleading explanations.
+
+\citet{joshi2019towards} introduce REVISE, a method for plausible algorithmic recourse through generative
+models. A variational autoencoder (VAE) encodes a person into a latent space, where gradient descent
+pushes the candidate towards the desired label while keeping it close to the original instance. Recourse
+is the difference between the original and the generated instance. Identified limitations include that
+the suggested changes are not sparse, which may make them difficult for a person to act upon; that the
+reported evaluation is mainly qualitative, with quantitative results relegated to the appendix; and that
+realism depends on the VAE. Although the authors use a method (CEVAE) that captures the effect of a
+treatment on the outcome adjusted for confounders (variables that influence both the treatment and the
+outcome), they do not model causal relationships between features, so recourse is still a list of
+independent feature changes, and they provide no guarantee that it works. They also show that recourse
+can act as a diagnostic, revealing whether a classifier is systematically confounded by specific
+attributes.
 
 \subsection{Causal Constraints and Recourse as Interventions}
 \label{subsec:lr-causal-recourse}
+\citet{mahajan2019preserving} are among the first to connect the feasibility of counterfactuals with
+causal relationships between features, arguing that feasibility is fundamentally a causal concept. They
+use a VAE-based generator with constraints derived from a partial structural causal model (SCM) and, when
+such constraints cannot be expressed, learn feasibility from users' binary feedback. However, causal
+relationships are soft constraints and are therefore not guaranteed to be satisfied, the output is still
+a counterfactual state rather than a set of actions, and the comparison covers only one external baseline.
 
-% (W5) Causal inverse classification, Prophit \cite{lash2018prophit}; causal-constraint
-% loss \cite{mahajan2019preserving}; recourse as minimal interventions on an SCM
-% \cite{karimi2021algorithmic}.
+\citet{karimi2021algorithmic}, in contrast, present a method that outputs actions as interventions on an
+SCM, thus guaranteeing causal consistency when the SCM is correct. They prove that acting on a nearest
+counterfactual explanation is only guaranteed to achieve recourse when the acted-upon variables have no
+descendants, and that a minimal intervention never costs more than a counterfactual-based action that
+achieves recourse. The method extends the aforementioned MACE framework and distinguishes immutable,
+mutable but non-actionable, and actionable features, successfully reframing recourse from a nearest-point
+search to actions and their consequences. Regarding limitations, the method requires the true SCM, with
+no hidden confounders and invertible equations, and the experiments are limited to small graphs, with
+little robustness analysis. The authors leave open (i) actions that affect multiple features,
+(ii) sequential actions and (iii) the choice of cost functions.
 
-\subsection{Recourse under Imperfect Causal Knowledge}
-\label{subsec:lr-imperfect-causal}
-
-% (W5) \cite{karimi2020algorithmic, dominguezolmedo2022adversarial}. Relevant to
-% option O2: where does the graph come from, and what if it is wrong?
-
-\subsection{Deep Causal Generative Models}
-\label{subsec:lr-causal-generative}
-
-% (W6) \cite{pawlowski2020deep, xia2023neural, khemakhem2021causal,
-% sanchezmartin2022vaca, javaloy2023causal, chao2023interventional}.
-% Which answer counterfactual (rung-3) queries, under which assumptions, on
-% mixed-type tabular data? How is counterfactual quality evaluated?
-% KAN-based causal models are reviewed in Section~\ref{sec:lr-kan}.
-
-\subsection{Summary and Implications}
-\label{subsec:lr-plausibility-summary}
+\citet{karimi2020algorithmic} tackle the weakness of having to know the true SCM. They start by showing
+that two causal models that are observationally equivalent can lead to different recourse
+recommendations, so unless we know the true structural equations, we cannot guarantee that recourse is
+valid, no matter how much data is available. They then propose two probabilistic methods for the case
+where the structural equations are unknown but the causal graph is known: individual recourse using a
+Gaussian process SCM (GP-SCM), and subpopulation recourse based on the conditional average treatment
+effect (CATE). The first assumes that each structural equation is a function of its parents plus Gaussian
+noise, yielding a distribution over a person's counterfactuals. The second drops all assumptions about
+the structural equations and estimates the average effect of the action on people who share the same
+non-descendant features. The limitations are that (i) the causal graph is still required, as only the
+equations are relaxed, (ii) the additive Gaussian noise assumption may not hold under the true SCM,
+leading to sub-optimal solutions, (iii) the experiments are small, and (iv) subpopulation recourse only
+ensures that the average effect of the action is positive for a group of people, not that it works for
+a given individual. The authors treat the classifier as given, and they point to fair decision making
+with a classifier that evolves over time as an important direction for future research.
 
 \section{Fairness of Recourse}
 \label{sec:lr-fair-recourse}
+Even when recourse is valid, it may be harder for some people to achieve than for others. This section
+reviews how that inequality has been measured, first through distance-based audits, then through causal
+notions of fairness, and finally over time.
 
-% G3 (W7). Is the cost of recourse equal across groups and individuals?
-% General fairness definitions are in Section~\ref{sec:bg-fairness}.
-% Comparison table: notion | definition | compares (distance / cost / burden) |
-% needs SCM? | mitigation proposed? | datasets.
+\citet{sharma2020certifai} propose CERTIFAI, a framework that uses counterfactual explanations generated by
+a genetic algorithm as a model-agnostic way of auditing machine learning models for fairness, robustness
+and interpretability. They introduce CERScore, a black-box robustness metric defined as the average
+distance between inputs and their counterfactuals, and burden, the expected distance to the counterfactual
+for a group, which allows groups to be compared. The main limitations are that a genetic approach does
+not guarantee optimality, that actionability depends on feature constraints set by the user, and that
+causal consistency is not considered.
 
-\subsection{Group-Level Notions}
-\label{subsec:lr-group-recourse-fairness}
+\citet{vonkugelgen2022fairness} make recourse a fairness criterion and connect it formally to counterfactual
+fairness. They define group-level and individual-level notions of fair causal recourse and show that:
+(i) group-level fairness does not imply individual-level fairness; (ii) a counterfactually fair classifier
+does not guarantee fair recourse (fair prediction and fair recourse are complementary, not substitutes);
+and (iii) if the classifier only uses features that are non-descendants of the protected attribute, and the
+feasible actions and their costs do not change under a counterfactual change of that attribute, then
+recourse is individually fair. They also show that non-causal metrics misrepresent recourse unfairness, and
+they detect recourse discrimination in a case study on the Adult dataset. Regarding limitations, the
+individual-level notion needs a counterfactual on the protected attribute, which requires the full SCM;
+the fix based on non-descendant features can lead to a drop in accuracy; constraining training directly is
+difficult because the search over intervention targets is combinatorial; and the individual-level measure
+is a maximum over individuals, so it may be dominated by outliers. As changing the classifier does not
+address the root of the problem, the authors also propose societal interventions on the data-generating
+process as an alternative.
 
-% Distance to the boundary \cite{gupta2019equalizing}; burden
-% \cite{sharma2020certifai}; subgroup audits \cite{kavouras2023fairness};
-% substantive equality \cite{bell2024fairness}; worst-case social burden
-% \cite{barrainkua2026revisiting}.
+\citet{fonseca2023setting} move the question to a dynamic setting. In agent-based simulations, they define a
+recourse reliability metric and study two effects: competition with other agents acting on recourse, and
+competition with new agents entering the environment. Only a small set of parameter settings yields recourse
+that is reliable over time. However, these results rest on simulated adaptation functions, which only
+approximate human behaviour, and no causal model is used.
 
-\subsection{Individual and Causal Notions}
-\label{subsec:lr-causal-recourse-fairness}
+\citet{bell2025much} build on this simulation work and define two new metrics, grounded in substantive equality
+of opportunity, for measuring fairness in this context: Effort-to-Recourse (ETR) and Time-to-Recourse (TTR).
+Disadvantaged groups need more of both, even under a fair classifier. The proposed Circumstance-Normalized
+Selection (CNS) adjusts selection after scoring to reduce that gap. In terms of limitations, the work relies
+on agent simulations, so its results depend on assumed human behaviour, it uses no causal models, and the
+experiments use a simple logistic classifier. The authors also point to the lack of public real-world
+recourse data as a main limitation.
 
-% \cite{vonkugelgen2022fairness, ehyaei2023robustness}; individual and group
-% fairness together \cite{ezzeddine2026fair}. These need an SCM: link to
-% Section~\ref{sec:lr-plausibility}.
+\section{Recourse and Causal Models Under Drift}
+\label{sec:lr-drift}
+Most of the works above assume that the model, the population and the causal mechanisms stay fixed. This
+section relaxes that assumption in three steps: the world changes and invalidates recourse, recourse itself
+causes change, and causal structure has to be learned from change.
 
-\subsection{Mitigating Unfair Recourse}
-\label{subsec:lr-recourse-mitigation}
+\subsection{Recourse in a Changing World}
+\label{subsec:lr-changing-world}
+One of the most relevant works on recourse in changing environments is \citet{de2025time}, where the authors
+treat the world as a causal process that changes over time, rather than treating the model as the only
+shifting component. They start by proving that counterfactual recourse for a future time cannot be optimal
+unless the noise has zero variance, and that robust uncertainty sets are not enough (i.e., searching for a
+counterfactual and giving it an error margin does not counteract time). Their solution, T-SAR, gives
+subpopulation recourse using an estimator of the stochastic process. Notwithstanding, the estimator is fitted
+once and the classifier is also trained once, so trends in the classifier and in the cost are not studied,
+and the results depend on the quality of the estimator. The work covers one class of time-series SCM
+(TiMINo), does not identify which mechanism changed, and has no fairness analysis.
 
-% Training-time regularisers \cite{gupta2019equalizing}; generation-time
-% constraints \cite{ezzeddine2026fair}; how fair classifiers interact with fair
-% recourse \cite{barrainkua2026revisiting}. Relevant to option O1.
+\citet{kostrzewa2026counterfactual} repair counterfactuals as the classifier updates, instead of making a
+prediction about the future, keeping a set of counterfactuals valid and plausible across time. A
+counterfactual is repaired when it becomes invalid or its target-class confidence is low, and it is retired
+once the updated classifier already gives the original instance the target class. Repairing is cheaper than
+regenerating, although repaired counterfactuals can move further from the original instance. The main
+limitation of this work is that it is a proof of concept: it uses a local linear surrogate, does not model
+causal relationships, has no fairness mechanisms, and covers only gradual drift on low-dimensional synthetic
+datasets.
 
-\subsection{Summary and Implications}
-\label{subsec:lr-fair-recourse-summary}
+\citet{upadhyay2021towards} propose ROAR, a framework that hardens recourse in advance against a bounded model
+shift through a minimax objective, and prove that the extra cost of this robustness is bounded by a 1-Lipschitz
+function. Unfortunately, the framework applies only to linear models (non-linear models are first approximated
+using LIME) and to non-causal recourse. It also assumes bounded shifts rather than continuous drift.
 
-\section{Kolmogorov-Arnold Networks as Model Components}
-\label{sec:lr-kan}
+\citet{rawal2020algorithmic} give this problem a theoretical basis. They establish a lower bound on the
+probability that recourse is invalidated by a model update, and show a trade-off between that probability and
+recourse cost. Experiments on temporal, geospatial and data-correction shifts confirm that invalidation happens
+in practice, and that causally generated recourse is not immune to it. The work offers no solution, however,
+and its theory covers only sparse counterfactual recourse.
 
-% G4 (W8). Which components of the pipeline have been built with KANs, and with
-% what evidence? Theory and architecture are in Section~\ref{sec:bg-kan}.
-% Surveys: \cite{somvanshi2025survey, noorizadegan2025practitioners, hou2024comprehensive}.
-% Comparison table: work | year | KAN role in the pipeline | data | interpretability
-% evidence | relation to the thesis.
+\subsection{Recourse That Causes Its Own Drift}
+\label{subsec:lr-recourse-drift}
+\citet{konig2026performative} define performative validity as whether recourse still holds under the best model
+after people act on it. Their work proves that recourse can fail when actions intervene on, or are influenced
+by, effect variables. Improvement-focused causal recourse stays valid across a broad range of settings, whereas
+standard counterfactual and causal recourse often do not. The main limitations are that the work considers a
+single step, without repeated applications, that it assumes a single, static SCM, and that it requires causal
+knowledge.
 
-\subsection{Variants and Evidence on Tabular Data}
-\label{subsec:lr-kan-tabular}
+\citet{liu2025understanding}, on the other hand, follow the loop over many rounds with a limited number of positive
+decisions. Recourse pushes decision standards up, raising cost and failure rates. Fair-top-k and Dynamic Continual
+Learning reduce the damage, with recourse costs falling by around 70\%: the former encourages diversity in the
+feature space by favouring people from less crowded regions, and the latter reduces how sharply the model changes.
+Here, there is no causal model, and the theory focuses on logistic regression in a saturated system. In both
+papers, drift comes from recourse and not from the outside world.
 
-% \cite{yu2024kan, li2024kolmogorov, poeta2024benchmarking, yadav2025kolmogorov}
-% + variants found by S4.
+\subsection{Learning Causal Structure from Change}
+\label{subsec:lr-learning-causal-structure}
+\citet{huang2020causal} propose Constraint-based causal Discovery from heterogeneous/NOnstationary Data (CD-NOD), a
+framework that leverages distribution shifts to learn causal structure. It also extracts a low-dimensional
+``driving force'' of the change and allows edges to appear and vanish over time. \citet{perry2022causal} make
+sparsity explicit through the sparse mechanism shift hypothesis and propose the Mechanism Shift Score, proving
+that the full graph can be identified with high probability if the hypothesis holds. Although promising, both
+works are limited in scale: they are batch methods, so neither fits a data stream directly, and the kernel-based
+tests used by CD-NOD have a cost of $O(N^3)$ in the number of samples. Both also rule out most hidden confounders,
+sparse shift remains a hypothesis rather than an established fact, and neither work produces counterfactuals or
+recourse.
 
-\subsection{Interpretability Claims and Evidence}
-\label{subsec:lr-kan-interpretability}
+\section{Readable Structural Equations}
+\label{sec:lr-readable-structural-equations}
+\citet{ma2025causal} propose Causal-KAN, which puts SCM functions into KANs and encodes causal direction through
+initialisation and constraints, claiming less overfitting and more readable mappings. Alongside it,
+\citet{almodovar2026kolmogorov} show that KANs can be used to learn the structural equations of a known causal
+graph, so that the learned mechanisms can be inspected directly. Their method assumes causal sufficiency, and the
+authors note that it cannot guarantee that the learned mechanisms coincide with the true structural equations.
 
-% \cite{liu2025kan, liu2024kan}; contrast with \cite{rudin2019stop, agarwal2021neural}.
+Additive structural equations also have a statistical precursor in \citet{buhlmann2014cam}, whose causal additive
+models (CAM) separate the search for a variable order from the sparse selection of edges, with consistency results
+in both low and high dimensions. CAM assumes that there are no hidden variables or cycles, and the authors note that
+such models are not closed under marginalisation, so a hidden variable can take the data outside the model class.
 
-\subsection{KANs in the Recourse Pipeline}
-\label{subsec:lr-kan-pipeline}
-
-% By role: causal generative model, KaCGM \cite{almodovar2026kolmogorov}; counterfactual
-% explanations for an RL agent \cite{valencia2026counterfactual}; fair representations
-% \cite{priyadarshini2026learning}. Out of scope, counted only: on-chip online
-% learning \cite{hoang2026ultrafast}. State the gap (no KAN-based fair recourse as of
-% the search freeze), backed by the search log.
-
-\subsection{Summary and Implications}
-\label{subsec:lr-kan-summary}
-
-\section{Synthesis and Research Gaps}
-\label{sec:lr-gaps}
-
-% (W8) 1--2 pages. Intersections found (counts from the extraction spreadsheet)
-% -> explicit gaps -> final RQs (copy them back to Section~\ref{sec:intro-objectives}).
-% End with the decision matrix for the KAN's role (options O1--O4).
+Nevertheless, none of these works provides any connection to recourse, much less to drift and fairness.
