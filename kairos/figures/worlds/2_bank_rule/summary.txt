@@ -1,0 +1,12 @@
+World: 2_bank_rule
+Drift: the bank changes how income counts: 1.5·(income − 2) instead of 2·sin(1.5·income)
+
+edge                    truly changed  gap (spreads)  flagged (gap > 3.0)
+income → savings                   no            1.3                   no
+income → Y                        yes           13.3                  yes
+savings → Y                        no            0.3                   no
+
+Error in P(Y=1) against the true chance, averaged over people:
+  old model, people from before the drift  0.009
+  old model, people from after the drift   0.329
+  new model, people from after the drift   0.003

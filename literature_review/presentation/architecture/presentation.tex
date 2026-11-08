@@ -1,0 +1,875 @@
+% Living Causal KAN --- the causal graph, its splines and how it updates.
+% Compiles with pdfLaTeX, XeLaTeX, or LuaLaTeX (run twice for the TikZ overlays).
+\documentclass[aspectratio=169]{beamer}
+\usepackage{geometry}
+\geometry{paperwidth=13.333in,paperheight=7.5in}
+\usepackage{iftex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{array}
+
+% ---- fonts (engine-agnostic; TeXLive-bundled Helvetica/Courier clones, no fontspec) ----
+\ifPDFTeX\usepackage[utf8]{inputenc}\fi
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{tgheros}   % Helvetica clone (Arial-like) sans
+\usepackage{tgcursor}  % Courier clone mono
+\renewcommand{\familydefault}{\sfdefault}
+\newcommand{\monofont}{\ttfamily}
+
+% ---- colours ----
+\definecolor{cred}{HTML}{DA0725}
+\definecolor{ink}{HTML}{141414}
+\definecolor{body}{HTML}{262626}
+\definecolor{grey}{HTML}{8A8A8A}
+\definecolor{lgrey}{HTML}{C4C4C4}
+\definecolor{rulec}{HTML}{2A2A2A}
+\definecolor{amber}{HTML}{C77A18}
+
+\setbeamercolor{normal text}{fg=body}
+\setbeamercolor{itemize item}{fg=cred}
+\setbeamercolor{itemize subitem}{fg=cred}
+\setbeamercolor{enumerate item}{fg=cred}
+\setbeamercolor{item projected}{fg=cred}
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=0.85in,text margin right=0.85in}
+
+% ---- running header (shown on non-plain frames) ----
+\newcommand{\hdrtotal}{24}
+\newcommand{\hdrsec}{}
+\newcommand{\hdrpg}{}
+\newcommand{\pageset}[2]{\renewcommand{\hdrsec}{#1}\renewcommand{\hdrpg}{#2}}
+\setbeamertemplate{headline}{%
+  \vskip3mm%
+  \makebox[\paperwidth][c]{%
+    \hspace{9mm}%
+    \parbox[t]{4.2in}{\monofont\color{grey}\fontsize{9}{11}\selectfont
+      Towards Fair Algorithmic Recourse with\\ Kolmogorov-Arnold Networks}%
+    \hfill
+    \parbox[t]{4.2in}{\centering\monofont\color{grey}\fontsize{10}{12}\selectfont \hdrsec}%
+    \hfill
+    \parbox[t]{2.6in}{\raggedleft\monofont\fontsize{13}{15}\selectfont
+      \textbf{\color{ink}\hdrpg}{\color{grey}/\hdrtotal}}%
+    \hspace{9mm}%
+  }%
+}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{}
+
+% ---- helpers (absolute placement via TikZ overlay) ----
+% \tb{width-in}{x-in}{y-in}{content}  --- anchored top-left at (x,y) from page NW
+% optional #1 = extra node options (use font=... for large text so spacing scales)
+\newcommand{\tb}[5][]{\begin{tikzpicture}[remember picture,overlay]%
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=#2in,align=left,#1]
+    at ([xshift=#3in,yshift=-#4in]current page.north west){\raggedright #5\par};\end{tikzpicture}}
+\newcommand{\fs}[2]{\fontsize{#1}{#2}\selectfont}
+\newcommand{\hrl}[3]{\tb{#3}{#1}{#2}{{\color{lgrey}\rule{#3in}{0.9pt}}}}
+\newcommand{\ctitle}[1]{\tb[font=\fontsize{28}{32}\selectfont\bfseries]{11.6}{0.85}{1.3}{\color{ink}#1}}
+% design-question slide: \qtitle{the part it leads to}{the question}
+\newcommand{\qtitle}[2]{%
+  \tb{11.6}{0.85}{0.98}{\monofont\bfseries\color{cred}\fs{12.5}{15}Design question \textperiodcentered{} #1}%
+  \ctitle{#2}}
+% the line that closes a design-question slide: \choice{y}{text}
+\newcommand{\choice}[2]{\tb{11.6}{0.85}{#1}{\color{ink}\bfseries\fs{16}{20}{\color{cred}Choice:} #2\par}}
+% update-step slide: \steptitle{n}{when}{title}
+\newcommand{\steptitle}[3]{%
+  \tb{11.6}{0.85}{0.98}{\monofont\bfseries\color{cred}\fs{12.5}{15}Update step #1 of 4 \textperiodcentered{} #2}%
+  \ctitle{#3}}
+% small red tag above a title
+\newcommand{\toptag}[1]{\tb{11.6}{0.85}{0.98}{\monofont\bfseries\color{cred}\fs{12.5}{15}#1}}
+\newcommand{\slidefoot}[1]{%
+  \tb{11.6}{0.85}{6.5}{\centering\color{grey}\fs{13}{16}#1}}
+\newcommand{\titleSlide}[2]{%
+  \tb[font=\fontsize{46}{50}\selectfont\bfseries]{11.4}{0.9}{2.4}{\color{ink}#1}%
+  \tb[font=\fontsize{30}{36}\selectfont\bfseries]{11.4}{0.9}{3.4}{\color{ink}#2}%
+  \tb{2.5}{0.9}{6.75}{\includegraphics[width=2.5in]{assets/cisuc_logo.png}}}
+% everything drawn in inches from the page's top-left corner, y pointing down
+\newenvironment{page}{\begin{tikzpicture}[remember picture,overlay]
+  \begin{scope}[shift={(current page.north west)},x=1in,y=-1in]}{\end{scope}\end{tikzpicture}}
+% titled text block: \lowcol{x}{y}{width}{title}{text}
+\newcommand{\lowcol}[5]{\tb{#3}{#1}{#2}{{\bfseries\color{cred}\fs{16}{19}#4\par}\vspace{5pt}{\color{body}\fs{15}{19}#5\par}}}
+% requirement column: \reqcol{x}{title}{text}
+\newcommand{\reqcol}[3]{%
+  \tb{2.6}{#1}{2.2}{\bfseries\color{cred}\fs{18}{22}#2}%
+  \hrl{#1}{2.66}{2.6}%
+  \tb{2.6}{#1}{2.85}{\color{body}\fs{15}{19.5}#3}}
+% numbered step next to a small diagram: \pstep{colour}{y}{n}{text}
+\newcommand{\pstep}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=#1,text=white,inner sep=0pt,minimum size=0.3in,font=\bfseries\fontsize{13}{13}\selectfont]
+      at ([xshift=9.05in,yshift=-#2in-0.13in]current page.north west) {#3};
+  \end{tikzpicture}%
+  \tb{3.1}{9.35}{#2}{\color{body}\fs{14.5}{18}#4}}
+% numbered point: \npoint{y}{n}{title}{text}
+\newcommand{\npoint}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=cred,text=white,inner sep=0pt,minimum size=0.32in,font=\bfseries\fontsize{13}{13}\selectfont]
+      at ([xshift=8.56in,yshift=-#1in-0.14in]current page.north west) {#2};
+  \end{tikzpicture}%
+  \tb{3.65}{8.85}{#1}{{\bfseries\color{ink}\fs{16}{19}#3\par}\vspace{3pt}{\color{body}\fs{14}{18}#4\par}}}
+% numbered column: \chain{x}{n}{title}{text}
+\newcommand{\chain}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=cred,text=white,inner sep=0pt,minimum size=0.34in,font=\bfseries\fontsize{13}{13}\selectfont]
+      at ([xshift=#1in+0.17in,yshift=-2.2in]current page.north west) {#2};
+  \end{tikzpicture}%
+  \tb{2.7}{#1}{2.5}{{\bfseries\color{ink}\fs{16}{19}#3\par}\vspace{4pt}{\color{body}\fs{14}{18}#4\par}}}
+% small curve inside a box, for a function of \t on [0,1]
+\newcommand{\minibox}[5]{\draw[#5,line width=0.8pt,fill=white,rounded corners=2pt] (#1-#3/2,#2-#4/2) rectangle (#1+#3/2,#2+#4/2);}
+\newcommand{\minicurve}[6]{\draw[#5,domain=0:1,samples=25,smooth,variable=\t]
+    plot ({#1-#3/2+0.08+(#3-0.16)*\t},{#2+#4/2-0.07-(#4-0.14)*(#6)});}
+
+% ---- the architecture diagram -----------------------------------------------
+% \archdiagram{x}{y}{scale}{mode}  mode: 0 all, 1 decision path, 2 learning path, 3 change path, 4 causal model and Learner only
+% with \archfulltrue it shows box details and arrow labels; with \archfullfalse only names and step numbers
+\newif\ifarchfull
+\newcommand{\archset}[1]{%
+  \def\archmode{#1}%
+  \def\cD{ink}\def\cL{amber}\def\cC{cred}%
+  \def\wD{1.2pt}\def\wL{1.6pt}\def\wC{1.6pt}%
+  \def\onP{1}\def\onK{1}\def\onG{1}\def\onS{1}\def\onM{1}\def\onE{1}\def\onR{1}%
+  \ifnum#1=1 \def\cL{lgrey}\def\cC{lgrey}\def\wL{0.8pt}\def\wC{0.8pt}\def\wD{1.6pt}\def\onE{0}\def\onR{0}\fi
+  \ifnum#1=2 \def\cD{lgrey}\def\cC{lgrey}\def\wD{0.8pt}\def\wC{0.8pt}\def\onK{0}\def\onG{0}\def\onS{0}\def\onR{0}\fi
+  \ifnum#1=3 \def\cD{lgrey}\def\cL{lgrey}\def\wD{0.8pt}\def\wL{0.8pt}\def\onP{0}\def\onK{0}\def\onM{0}\fi
+  \ifnum#1=4 \def\cD{lgrey}\def\cC{lgrey}\def\wD{0.8pt}\def\wC{0.8pt}\def\onK{0}\def\onG{0}\def\onS{0}\def\onR{0}\fi
+  \ifarchfull\def\bsize{0.27in}\def\bfont{11}\else\def\bsize{0.4in}\def\bfont{16}\fi}
+\newcommand{\boxcols}[1]{\ifnum#1=1 \def\bdraw{ink}\def\btext{ink}\def\bline{body}\else\def\bdraw{lgrey}\def\btext{grey}\def\bline{grey}\fi}
+\newcommand{\abox}[9]{\boxcols{#1}%
+  \draw[\bdraw,line width=1pt,fill=white,rounded corners=3pt] (#2,#3) rectangle ++(#4,#5);
+  \ifarchfull
+    \node[anchor=north west,inner sep=0pt,text=\btext,font=\bfseries\fontsize{14.5}{17}\selectfont] at (#2+0.13,#3+0.1) {#6};
+    \node[anchor=north west,inner sep=0pt,text=\bline,align=left,font=\fontsize{11.5}{14.5}\selectfont] at (#2+0.13,#3+0.38) {#7\\#8};
+  \else
+    \node[text=\btext,align=center,font=\bfseries\fontsize{20}{23}\selectfont] at (#2+#4/2,#3+#5/2) {#9};
+  \fi}
+\newcommand{\ainner}[6]{\boxcols{#1}%
+  \draw[\bdraw,line width=0.8pt,fill=black!3,rounded corners=2pt] (#2,#3) rectangle ++(2.85,0.75);
+  \ifarchfull
+    \node[text=\btext,font=\bfseries\fontsize{13}{15}\selectfont] at (#2+1.425,#3+0.25) {#4};
+    \node[text=\bline,font=\fontsize{11.5}{14}\selectfont] at (#2+1.425,#3+0.52) {#5};
+  \else
+    \node[text=\btext,font=\bfseries\fontsize{17}{20}\selectfont] at (#2+1.425,#3+0.375) {#6};
+  \fi}
+\newcommand{\aarr}[3]{\draw[-{Latex[length=2mm]},#1,line width=#2,rounded corners=4pt] #3;}
+\newcommand{\alab}[4][center]{\ifarchfull\node[anchor=#1,inner sep=1.5pt,text=body,font=\fontsize{10.5}{12}\selectfont,fill=white,align=left] at (#2,#3) {#4};\fi}
+\newcommand{\abadgeraw}[4]{\ifcase#1\or\def\bcol{ink}\or\def\bcol{amber}\or\def\bcol{cred}\fi
+  \node[circle,fill=\bcol,text=white,inner sep=0pt,minimum size=\bsize,font=\bfseries\fontsize{\bfont}{\bfont}\selectfont] at (#3,#4) {#2};}
+\newcommand{\abadge}[4]{\ifnum\archmode=0 \abadgeraw{#1}{#2}{#3}{#4}\else\ifnum\archmode=#1 \abadgeraw{#1}{#2}{#3}{#4}\fi\fi}
+\newcommand{\archdiagram}[4]{\archset{#4}%
+\begin{page}
+\begin{scope}[shift={(#1,#2)},scale=#3,transform shape]
+  % boxes
+  \boxcols{\onP}
+  \draw[\bdraw,line width=1pt,fill=white,rounded corners=11pt] (0,0.55) rectangle ++(1.0,0.5);
+  \ifarchfull
+    \node[text=\btext,font=\bfseries\fontsize{13.5}{15}\selectfont] at (0.5,0.8) {People};
+  \else
+    \node[text=\btext,font=\bfseries\fontsize{16}{18}\selectfont] at (0.5,0.8) {People};
+  \fi
+  \abox{\onK}{1.75}{0.35}{2.25}{0.9}{Classifier}{In: Y's parents}{Out: accept or reject}{Classifier}
+  \abox{\onG}{5.15}{0.35}{2.85}{0.9}{Counterfactual generator}{In: one rejected person}{Out: cheapest good action}{Counterfactual\\generator}
+  \abox{\onS}{9.15}{0.35}{1.95}{0.9}{Action store}{Rechecks what a}{Change affects}{Action store}
+  \abox{\onE}{1.75}{3.8}{3.0}{0.9}{Learner}{Every sample: update statistics}{Strong evidence: update the model}{Learner}
+  \abox{\onR}{5.4}{3.8}{2.6}{0.9}{Monitor}{Curves, group gaps,}{the edge behind a gap}{Monitor}
+  \boxcols{\onM}
+  \draw[\bdraw,line width=1pt,fill=white,rounded corners=3pt] (1.75,1.85) rectangle ++(6.25,1.2);
+  \ifarchfull
+    \node[text=\btext,font=\bfseries\fontsize{14.5}{17}\selectfont] at (4.875,2.03) {Causal model};
+  \else
+    \node[text=\btext,font=\bfseries\fontsize{17}{20}\selectfont] at (4.875,2.03) {Causal model};
+  \fi
+  \ainner{\onM}{1.9}{2.2}{Y equation}{the classifier's curves}{Y equation}
+  \ainner{\onM}{5.0}{2.2}{Feature equations}{how variables move each other}{Feature equations}
+  % decision path
+  \aarr{\cD}{\wD}{(1.0,0.8) -- (1.75,0.8)}
+  \aarr{\cD}{\wD}{(4.0,0.6) -- (5.15,0.6)}
+  \aarr{\cD}{\wD}{(5.15,1.0) -- (4.0,1.0)}
+  \aarr{\cD}{\wD}{(8.0,0.6) -- (9.15,0.6)}
+  \aarr{\cD}{\wD}{(10.1,0.35) -- (10.1,0.1) -- (0.5,0.1) -- (0.5,0.55)}
+  \aarr{\cD}{\wD}{(2.875,0.35) -- (2.875,0.12)}
+  \aarr{\cD}{\wD}{(2.875,2.2) -- (2.875,1.25)}
+  \aarr{\cD}{\wD}{(6.575,2.2) -- (6.575,1.25)}
+  % learning path
+  \aarr{\cL}{\wL}{(0.5,1.05) -- (0.5,4.25) -- (1.75,4.25)}
+  \aarr{\cL}{\wL}{(3.25,3.8) -- (3.25,3.05)}
+  % change path
+  \aarr{\cC}{\wC}{(4.4,3.8) -- (4.4,3.32) -- (10.1,3.32) -- (10.1,1.25)}
+  \aarr{\cC}{\wC}{(6.7,3.32) -- (6.7,3.8)}
+  \aarr{\cC}{\wC}{(9.15,1.0) -- (8.0,1.0)}
+  \aarr{\cC}{\wC}{(10.9,1.25) -- (10.9,4.25) -- (8.0,4.25)}
+  \fill[\cC] (6.7,3.32) circle (0.05);
+  % arrow labels (detailed version only)
+  \alab{1.375}{0.5}{applies}
+  \alab{4.575}{0.33}{rejected}
+  \alab{4.575}{1.2}{checks}
+  \alab{8.575}{0.33}{action}
+  \alab{8.575}{1.2}{repair}
+  \alab{6.3}{0.1}{decisions and actions go back to people}
+  \alab[west]{2.95}{0.23}{accepted}
+  \alab[east]{2.8}{1.55}{reads the curves}
+  \alab[east]{6.33}{1.55}{simulates actions}
+  \alab[west]{0.6}{3.15}{data, late\\outcomes}
+  \alab[west]{3.45}{3.42}{commit}
+  \alab{8.95}{3.5}{Change: edge, knot range, $\delta$}
+  \alab{9.45}{4.09}{validity results}
+  % step numbers
+  \abadge{1}{1}{1.375}{0.8}
+  \abadge{1}{2}{4.575}{0.6}
+  \abadge{1}{3}{6.575}{1.55}
+  \abadge{1}{4}{8.575}{0.6}
+  \abadge{2}{5}{0.5}{2.6}
+  \abadge{2}{6}{3.25}{3.42}
+  \abadge{3}{7}{10.1}{2.3}
+  \abadge{3}{8}{6.98}{3.56}
+\end{scope}
+\end{page}}
+
+\newcommand{\pa}{\mathsf{pa}}
+% spline plots, drawn from their formulas: cubic and quadratic B-splines on uniform knots
+\pgfmathdeclarefunction{bthree}{1}{\pgfmathparse{abs(#1-2)}\let\bv\pgfmathresult
+  \pgfmathparse{\bv<1 ? (4-6*\bv*\bv+3*\bv*\bv*\bv)/6 : (\bv<2 ? (2-\bv)*(2-\bv)*(2-\bv)/6 : 0)}}
+\pgfmathdeclarefunction{bthreed}{1}{\pgfmathparse{abs(#1-2)}\let\bv\pgfmathresult
+  \pgfmathparse{(#1<2 ? 1 : -1)*(\bv<1 ? 2*\bv-1.5*\bv*\bv : (\bv<2 ? (2-\bv)*(2-\bv)/2 : 0))}}
+\pgfmathdeclarefunction{btwo}{1}{\pgfmathparse{#1<1 ? #1*#1/2 : (#1<2 ? (-2*#1*#1+6*#1-3)/2 : (#1<3 ? (3-#1)*(3-#1)/2 : 0))}}
+% example curves as weighted sums of cubic B-splines
+\pgfmathdeclarefunction{curvea}{1}{\pgfmathparse{.30*bthree(#1+3)+.46*bthree(#1+2)+.84*bthree(#1+1)+.82*bthree(#1)+.38*bthree(#1-1)+.34*bthree(#1-2)+.74*bthree(#1-3)+.70*bthree(#1-4)}}
+\pgfmathdeclarefunction{curveb}{1}{\pgfmathparse{.30*bthree(#1+3)+.42*bthree(#1+2)+.62*bthree(#1+1)+.80*bthree(#1)+.72*bthree(#1-1)+.52*bthree(#1-2)+.46*bthree(#1-3)+.58*bthree(#1-4)+.72*bthree(#1-5)+.62*bthree(#1-6)+.50*bthree(#1-7)}}
+\pgfmathdeclarefunction{curvec}{1}{\pgfmathparse{.5+.3*sin(270*#1)}}
+\pgfmathdeclarefunction{bumpc}{1}{\pgfmathparse{(#1>.3 && #1<.6) ? pow(sin(600*(#1-.3)),2) : 0}}
+% one schematic panel of coefficient scores: \scorepanel{x}{ten values}{heading}{text}{colour}
+\newcommand{\scorepanel}[5]{%
+  \tb{5.5}{#1}{2.62}{{\bfseries\color{cred}\fs{16}{19}#3\par}\vspace{4pt}{\color{body}\fs{15}{19}#4\par}}%
+  \begin{page}
+    \begin{scope}[shift={(#1,5.4)},x=0.55in,y=0.62in]
+      \draw[lgrey,line width=0.9pt] (0,0) -- (10,0);
+      \foreach \v [count=\i] in #2 {\pgfmathsetmacro{\bx}{\i-1+.15}\fill[#5] (\bx,0) rectangle ++(.7,\v);}
+    \end{scope}
+  \end{page}}
+
+\begin{document}
+
+% ===================================================== LOGO
+\begin{frame}[plain]
+  \tb{4.6}{4.37}{3.35}{\includegraphics[width=4.6in]{assets/cisuc_logo.png}}
+\end{frame}
+
+% ===================================================== TITLE
+\begin{frame}[plain]
+  \titleSlide{Living Causal KAN}{A Kolmogorov-Arnold causal graph that updates online}
+  \tb{11}{0.92}{4.3}{\color{ink}\fs{19}{22}Tiago Silva}
+  \tb{11}{0.92}{4.7}{\color{grey}\fs{13}{16}Supervisors: Prof.\ Pedro Henriques Abreu \textperiodcentered{} Prof.\ Bruno Veloso}
+  \tb{11}{0.92}{5.2}{\color{ink}\fs{14}{18}\textbf{CISUC \textperiodcentered{} Data-Centric AI Lab}\\
+    {\color{body}\fs{14}{18}Department of Informatics Engineering, University of Coimbra}}
+  \tb{11}{0.92}{5.95}{\color{grey}\fs{13}{16}Design proposal \textperiodcentered{} November 2026 \textperiodcentered{} not yet implemented or tested}
+\end{frame}
+
+% ===================================================== OUTLINE
+\pageset{Outline}{01}
+\begin{frame}
+  \ctitle{Outline}
+  \tb{10.2}{0.85}{2.25}{\color{body}\fs{19}{25}\setlength{\parskip}{8pt}%
+    \begin{enumerate}
+      \item \textbf{The causal graph}: a KAN whose nodes are real variables;
+      \item \textbf{Splines}: degree, knots, B-spline basis, coefficients;
+      \item \textbf{Updates}: evidence, score, decision, commit;
+      \item \textbf{Reading an update};
+      \item \textbf{The overall architecture}, in progress.
+    \end{enumerate}}
+\end{frame}
+
+% ===================================================== NOTATION
+\pageset{Notation}{02}
+\begin{frame}
+  \ctitle{Notation}
+  \tb{5.65}{0.85}{1.92}{\fs{13.5}{16.5}\renewcommand{\arraystretch}{1.24}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.05in} >{\raggedright\arraybackslash}p{4.4in}@{}}
+      \toprule
+      \multicolumn{2}{@{}l}{\bfseries\textcolor{cred}{The graph and its curves}} \\
+      \midrule
+      $x_j$ & Value of variable $j$ for one person \\
+      $i$, $j$ & A parent and its child \\
+      $d$ & Number of variables \\
+      $e$ & One edge \\
+      $\phi$ & A learned curve on one edge (small phi) \\
+      $u_j$ & Noise: what the parents do not explain \\
+      $\sigma$ & Sigmoid: turns any number into a chance \\
+      $\pa_Y$ & The parents of Y \\
+      $k$, $G$ & Spline degree, and number of intervals \\
+      $\xi_m$ & Knot number $m$ \\
+      $B_m$ & Bump number $m$ (one B-spline) \\
+      $\theta_m$ & Coefficient: the weight of bump $m$ \\
+      \bottomrule
+    \end{tabular}}
+  \tb{5.65}{6.8}{1.92}{\fs{13.5}{16.5}\renewcommand{\arraystretch}{1.24}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.05in} >{\raggedright\arraybackslash}p{4.4in}@{}}
+      \toprule
+      \multicolumn{2}{@{}l}{\bfseries\textcolor{cred}{The updates}} \\
+      \midrule
+      $\Phi_j$ & List of bump values for one sample (capital phi) \\
+      $\Phi_j^{\top}\theta_j$ & Prediction: multiply pairs, then add \\
+      $A_j$, $b_j$ & Running statistics of node $j$ \\
+      $\gamma$ & Share of old evidence kept at each sample \\
+      $t$, $r$ & The current sample, and a past sample \\
+      $s_j$, $s_e$ & Score of node $j$, and its part on edge $e$ \\
+      $\|s_e\|$ & Size of a list as one number: $\|[3,4]\|=5$ \\
+      $\delta$ & An edit to the coefficients \\
+      $\lambda$, $\lambda_2$ & Price of an edit: per edge, per coefficient \\
+      $S$ & The coefficients chosen for an edit \\
+      $y$, $p$ & Observed outcome, and predicted chance of $Y{=}1$ \\
+      $\leftarrow$ & Replace the old value with this one \\
+      \bottomrule
+    \end{tabular}}
+  \slidefoot{In $\phi^{t}$, the $t$ is a version label, not a power. In $\gamma^{\,t-r}$ it is a power: older samples count less.}
+\end{frame}
+
+% ===================================================== GRAPH AS A KAN
+\pageset{The causal graph}{03}
+\begin{frame}
+  \qtitle{causal graph}{Can the causal graph be a KAN?}
+  \tb{4.5}{0.85}{1.95}{\bfseries\color{grey}\fs{15}{18}A standard KAN}
+  \tb{6.3}{6.1}{1.95}{\bfseries\color{cred}\fs{15}{18}The causal graph as a KAN}
+  \begin{page}
+    % --- standard KAN: unnamed hidden nodes, every node to the next layer
+    \foreach \a in {2.6,3.15,3.7} {\foreach \b in {2.45,2.9,3.35,3.8} {\draw[lgrey,line width=0.7pt] (1.45,\a) -- (3.1,\b);}}
+    \foreach \b in {2.45,2.9,3.35,3.8} {\draw[lgrey,line width=0.7pt] (3.1,\b) -- (4.75,3.15);}
+    \foreach \a/\l in {2.6/$x_1$,3.15/$x_2$,3.7/$x_3$} {\node[circle,draw=ink,line width=0.9pt,fill=white,minimum size=0.36in,inner sep=0pt,text=ink,font=\fontsize{12}{14}\selectfont] at (1.45,\a) {\l};}
+    \foreach \b in {2.45,2.9,3.35,3.8} {\node[circle,draw=grey,line width=0.9pt,fill=white,minimum size=0.3in,inner sep=0pt,text=grey,font=\fontsize{12}{14}\selectfont] at (3.1,\b) {?};}
+    \node[circle,draw=ink,line width=0.9pt,fill=white,minimum size=0.36in,inner sep=0pt,text=ink,font=\bfseries\fontsize{12}{14}\selectfont] at (4.75,3.15) {Y};
+    % --- the causal graph with the same form
+    \tikzset{cn/.style={draw=ink,line width=1pt,fill=white,rounded corners=3pt,minimum height=0.44in,inner sep=2pt,text=ink,font=\bfseries\fontsize{12}{14}\selectfont}}
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (7.0,3.3) -- (8.05,3.3);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (8.85,3.3) -- (9.9,3.3);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (10.75,3.3) -- (11.85,3.3);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt,rounded corners=5pt] (8.45,3.08) -- (8.45,2.55) -- (12.07,2.55) -- (12.07,3.08);
+    \draw[-{Latex[length=1.6mm]},grey,line width=0.9pt] (8.45,3.84) -- (8.45,3.53);
+    \draw[-{Latex[length=1.6mm]},grey,line width=0.9pt] (10.33,3.84) -- (10.33,3.53);
+    \node[text=grey,inner sep=1pt,font=\fontsize{12}{14}\selectfont] at (8.45,3.95) {$u$};
+    \node[text=grey,inner sep=1pt,font=\fontsize{12}{14}\selectfont] at (10.33,3.95) {$u$};
+    \node[cn,minimum width=0.9in] at (6.55,3.3) {Education};
+    \node[cn,minimum width=0.8in] at (8.45,3.3) {Income};
+    \node[cn,minimum width=0.85in] at (10.33,3.3) {Savings};
+    \node[cn,minimum width=0.45in] at (12.07,3.3) {Y};
+    \minibox{7.5}{3.3}{0.66}{0.48}{ink}
+    \minicurve{7.5}{3.3}{0.66}{0.48}{ink,line width=1.2pt}{(1-exp(-3*\t))/0.95}
+    \minibox{9.37}{3.3}{0.66}{0.48}{ink}
+    \minicurve{9.37}{3.3}{0.66}{0.48}{ink,line width=1.2pt}{\t*\t}
+    \minibox{11.3}{3.3}{0.66}{0.48}{ink}
+    \minicurve{11.3}{3.3}{0.66}{0.48}{ink,line width=1.2pt}{\t}
+    \minibox{10.25}{2.55}{0.66}{0.48}{ink}
+    \minicurve{10.25}{2.55}{0.66}{0.48}{ink,line width=1.2pt}{0.5+0.45*sin(180*\t-90)}
+  \end{page}
+  \tb{11.6}{0.85}{4.2}{\fs{13.5}{16.5}\renewcommand{\arraystretch}{1.22}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{2.1in} >{\raggedright\arraybackslash}p{4.1in} >{\raggedright\arraybackslash}p{4.9in}@{}}
+      \toprule
+      & Standard KAN & Causal graph as a KAN \\
+      \midrule
+      Hidden nodes & Unnamed and unmeasured & Real variables you measure \\
+      Wiring & Every node to the next layer & Causal edges only, and they can skip a layer \\
+      Training & All at once, to predict Y & Each node on its own measured column \\
+      Action $\mathsf{do}(a)$ & Not defined & Set a node, then recompute what follows it \\
+      \bottomrule
+    \end{tabular}}
+  \choice{5.92}{Yes. Make the graph the KAN, with measured variables as its nodes, so an action has a meaning.}
+  \slidefoot{A KAN has learned curves on edges and sums at nodes (Liu et al.\ 2024), which is also the form of an additive causal model.}
+\end{frame}
+
+% ===================================================== INSIDE A NODE
+\pageset{The causal graph}{04}
+\begin{frame}
+  \qtitle{causal graph}{Why one curve per parent, and no hidden layers?}
+  \tb{11.6}{0.85}{1.98}{\color{body}\fs{16}{20}One curve per edge: a node adds the curves of its parents, so Y, with two parents, has two curves.\par}
+  \tb{11.6}{0.85}{2.5}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.32}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.4in} >{\raggedright\arraybackslash}p{1.65in} >{\raggedright\arraybackslash}p{2.15in} >{\raggedright\arraybackslash}p{2.75in}@{}}
+      \toprule
+      Inside a node & Interactions & Drift on one edge & Online update \\
+      \midrule
+      \textcolor{cred}{\textbf{One curve per parent}} (this design) & None & Yes & Exact, from running statistics \\
+      \textbf{Hidden layers}, as in a standard KAN & All & No & Needs gradient training \\
+      \bottomrule
+    \end{tabular}}
+  \lowcol{0.85}{4.25}{3.6}{Readable}{Each causal edge has its own curve, so a drift lands on one edge.}
+  \lowcol{4.85}{4.25}{3.6}{Online}{Each feature equation stays linear in its coefficients, so fixed-size statistics are enough.}
+  \lowcol{8.85}{4.25}{3.6}{Still deep}{Curves compose along causal paths: education reaches Y through income.}
+  \hrl{0.85}{5.42}{11.6}
+  \choice{5.56}{One curve per parent, added at the node.}
+\end{frame}
+
+% ===================================================== Y EQUATION
+\pageset{The causal graph}{05}
+\begin{frame}
+  \qtitle{causal graph}{What is Y, and what makes a variable its parent?}
+  \begin{page}
+    \tikzset{vn/.style={rounded corners=3pt,fill=white,minimum height=0.44in,inner sep=2pt,font=\bfseries\fontsize{12.5}{15}\selectfont},
+      vl/.style={inner sep=0pt,font=\fontsize{12}{14}\selectfont}}
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (1.85,2.75) -- (2.42,2.75);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (3.28,2.75) -- (3.75,2.75);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (4.65,2.75) -- (5.07,2.75);
+    \draw[-{Latex[length=2mm]},grey,line width=1.1pt] (5.53,2.75) -- (5.98,2.75);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt,rounded corners=5pt] (2.85,2.53) -- (2.85,2.12) -- (5.3,2.12) -- (5.3,2.53);
+    \node[vn,draw=ink,line width=1pt,text=ink,minimum width=1.0in] at (1.35,2.75) {Education};
+    \node[vn,draw=cred,line width=1.5pt,text=ink,minimum width=0.85in] at (2.85,2.75) {Income};
+    \node[vn,draw=cred,line width=1.5pt,text=ink,minimum width=0.9in] at (4.2,2.75) {Savings};
+    \node[vn,fill=ink,draw=ink,line width=1pt,text=white,minimum width=0.46in] at (5.3,2.75) {Y};
+    \node[vn,draw=grey,line width=1pt,text=grey,minimum width=1.05in] at (6.52,2.75) {Card limit};
+    \node[vl,text=grey] at (1.35,3.12) {indirect cause};
+    \node[vl,text=cred] at (2.85,3.12) {parent};
+    \node[vl,text=cred] at (4.2,3.12) {parent};
+    \node[vl,text=ink] at (5.3,3.12) {outcome};
+    \node[vl,text=grey] at (6.52,3.12) {effect of Y};
+  \end{page}
+  \tb{6.4}{0.85}{3.42}{\color{ink}\fs{15}{19}$P(Y{=}1\mid\pa_Y)=\sigma\big(\phi_{\text{income}}(\text{income})+\phi_{\text{savings}}(\text{savings})\big)$}
+  \tb{6.4}{0.85}{3.76}{\color{grey}\fs{13}{16}The Y equation: the chance of the favourable value, given Y's parents.}
+  \tb{4.75}{7.7}{1.92}{\color{body}\fs{14.5}{18}\setlength{\parskip}{6pt}{\bfseries\color{ink}Y} is what really happens: the person repays ($Y{=}1$, the favourable value) or does not ($Y{=}0$). The bank's decision only predicts it.\par
+    {\bfseries\color{ink}A parent} is a direct cause: change it with everything else held fixed, and Y's chance still moves.\par
+    In the model, a parent is an edge whose curve is not zero.\par}
+  \tb{11.6}{0.85}{4.15}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.3}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.0in} >{\raggedright\arraybackslash}p{3.0in} >{\raggedright\arraybackslash}p{2.8in} >{\raggedright\arraybackslash}p{3.28in}@{}}
+      \toprule
+      & Example & Changing it changes Y? & Its curve into Y \\
+      \midrule
+      \textcolor{cred}{\textbf{Parent}} & Income, savings & Yes, directly & Not zero \\
+      \textbf{Indirect cause} & Education & Yes, through income & Zero \\
+      \textbf{Effect of Y} & Card limit at other banks & No & None: it comes after Y in the order \\
+      \bottomrule
+    \end{tabular}}
+  \choice{5.8}{Y is one more node. Its parents are the edges with a non-zero curve, and the order keeps effects out.}
+  \slidefoot{Illustrative example.}
+\end{frame}
+
+% ===================================================== CAUSAL MODEL
+\pageset{The causal graph}{06}
+\begin{frame}
+  \ctitle{The causal graph: one equation per variable}
+  \tb{11.6}{0.85}{1.95}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.32}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{2.2in} >{\raggedright\arraybackslash}p{4.6in} >{\raggedright\arraybackslash}p{4.4in}@{}}
+      \toprule
+      Feature equations & $x_j=\sum_{i<j}\phi_{ij}^{t}(x_i)+u_j$ & How variables move each other \\
+      Y equation & $P(Y{=}1\mid\pa_Y)=\sigma\big(\sum_{i\in\pa_Y}\phi_{iY}^{t}(x_i)\big)$ & How Y's parents drive the outcome \\
+      Versioned curves & $\phi_e^{t}=\phi_e^{t-1}+\delta_e^{t}$ & Any past version can be rebuilt \\
+      \bottomrule
+    \end{tabular}}
+  \begin{page}
+    \tikzset{cn/.style={draw=ink,line width=1pt,fill=white,rounded corners=3pt,minimum height=0.46in,inner sep=2pt,text=ink,font=\bfseries\fontsize{12.5}{15}\selectfont}}
+    % kept edges
+    \draw[-{Latex[length=2mm]},ink,line width=1.2pt] (1.95,4.65) -- (2.62,4.65);
+    \draw[-{Latex[length=2mm]},ink,line width=1.2pt] (3.58,4.65) -- (4.3,4.65);
+    \draw[-{Latex[length=2mm]},ink,line width=1.2pt] (5.3,4.65) -- (6.15,4.65);
+    \draw[-{Latex[length=2mm]},ink,line width=1.2pt,rounded corners=5pt] (3.1,4.42) -- (3.1,3.92) -- (6.4,3.92) -- (6.4,4.42);
+    % candidate edges with a curve at zero
+    \draw[-{Latex[length=2mm]},amber,line width=1.5pt,dash pattern=on 5pt off 3pt,rounded corners=5pt] (1.55,4.88) -- (1.55,5.25) -- (4.8,5.25) -- (4.8,4.88);
+    \draw[-{Latex[length=2mm]},amber,line width=1.5pt,dash pattern=on 5pt off 3pt,rounded corners=5pt] (1.2,4.88) -- (1.2,5.55) -- (6.4,5.55) -- (6.4,4.88);
+    \node[cn,minimum width=1.1in] at (1.4,4.65) {Education};
+    \node[cn,minimum width=0.95in] at (3.1,4.65) {Income};
+    \node[cn,minimum width=1.0in] at (4.8,4.65) {Savings};
+    \node[cn,minimum width=0.5in] at (6.4,4.65) {Y};
+    % legend
+    \draw[ink,line width=1.2pt] (0.85,5.98) -- (1.3,5.98);
+    \node[anchor=west,inner sep=0pt,text=body,font=\fontsize{13}{15}\selectfont] at (1.4,5.98) {Kept: curve not zero (4)};
+    \draw[amber,line width=1.5pt,dash pattern=on 5pt off 3pt] (3.95,5.98) -- (4.4,5.98);
+    \node[anchor=west,inner sep=0pt,text=body,font=\fontsize{13}{15}\selectfont] at (4.5,5.98) {Candidate: curve at zero (2)};
+  \end{page}
+  \tb{4.95}{7.5}{3.5}{{\bfseries\color{cred}\fs{16}{19}Setup, once before the stream\par}\vspace{6pt}{\color{body}\fs{14.5}{18.5}\setlength{\parskip}{6pt}{\bfseries\color{ink}Order:} set from domain knowledge. A variable can only receive edges from earlier ones, so $d$ variables give $d(d-1)/2$ candidate edges.\par
+    {\bfseries\color{ink}Fit:} a sparse fit on warm-up data sends curves with no evidence to zero.\par
+    {\bfseries\color{ink}Afterwards:} zero curves stay as candidates, so an edge can appear during the stream.\par}}
+  \slidefoot{Built on CAM (B\"uhlmann et al.\ 2014) and KaCGM (Almod\'ovar et al.\ 2026). Not novel, except sparse versions of spline coefficients (adapted).}
+\end{frame}
+
+% ===================================================== WHAT A SPLINE IS
+\pageset{Splines}{07}
+\begin{frame}
+  \ctitle{What a spline is}
+  \tb{11.6}{0.85}{1.95}{\color{ink}\fs{18}{23}A spline of degree $k$ is a curve of polynomial pieces of degree $k$, joined smoothly at knots.\par}
+  \begin{page}
+    \begin{scope}[shift={(0.95,5.75)},x=1.2in,y=2.75in]
+      \foreach \k in {0,...,5} {\draw[lgrey,line width=0.8pt,dash pattern=on 3pt off 2.5pt] (\k,0) -- (\k,.92);}
+      \draw[lgrey,line width=0.9pt] (0,0) -- (5,0);
+      \draw[cred,line width=1.8pt,domain=0:1,samples=20,smooth,variable=\x] plot ({\x},{curvea(\x)});
+      \draw[ink,line width=1.8pt,domain=1:2,samples=20,smooth,variable=\x] plot ({\x},{curvea(\x)});
+      \draw[cred,line width=1.8pt,domain=2:3,samples=20,smooth,variable=\x] plot ({\x},{curvea(\x)});
+      \draw[ink,line width=1.8pt,domain=3:4,samples=20,smooth,variable=\x] plot ({\x},{curvea(\x)});
+      \draw[cred,line width=1.8pt,domain=4:5,samples=20,smooth,variable=\x] plot ({\x},{curvea(\x)});
+      \foreach \k in {0,...,5} {\node[anchor=north,inner sep=3pt,text=grey,font=\fontsize{13}{15}\selectfont] at (\k,0) {$\xi_{\k}$};}
+      \foreach \k in {1,...,5} {\node[inner sep=0pt,text=grey,font=\fontsize{11.5}{14}\selectfont] at (\k-.5,.97) {piece \k};}
+    \end{scope}
+  \end{page}
+  \lowcol{7.45}{2.75}{5.0}{Interval}{The stretch between two neighbouring knots. The curve has $G$ intervals.}
+  \lowcol{7.45}{3.85}{5.0}{Piece}{One polynomial per interval: $c_0+c_1x+c_2x^2+c_3x^3$ for $k=3$.}
+  \lowcol{7.45}{4.95}{5.0}{Join}{At a knot, neighbouring pieces match in value and in derivatives up to order $k-1$.}
+  \slidefoot{Definition: de Boor 1978; Hastie et al.\ 2009, ch.\ 5. Example with $k=3$ and $G=5$.}
+\end{frame}
+
+% ===================================================== DEGREE
+\pageset{Splines}{08}
+\begin{frame}
+  \ctitle{Polynomial degree: how far each piece can bend}
+  \begin{page}
+    \foreach \ox in {3.32,5.67,8.02,10.37} {\draw[lgrey,line width=0.9pt] (\ox,3.05) -- (\ox+2.05,3.05);}
+    \begin{scope}[shift={(3.32,3.05)},x=.41in,y=.85in]
+      \foreach \k in {0,1,2,3,4,5} {\draw[lgrey,line width=0.8pt] (\k,0) -- (\k,-.06);}
+      \draw[cred,line width=1.5pt] (2,0) -- (2,1) -- (3,1) -- (3,0);
+    \end{scope}
+    \begin{scope}[shift={(5.67,3.05)},x=.41in,y=.85in]
+      \foreach \k in {0,1,2,3,4,5} {\draw[lgrey,line width=0.8pt] (\k,0) -- (\k,-.06);}
+      \draw[cred,line width=1.5pt] (1.5,0) -- (2.5,1) -- (3.5,0);
+    \end{scope}
+    \begin{scope}[shift={(8.02,3.05)},x=.41in,y=1.13in]
+      \foreach \k in {0,1,2,3,4,5} {\draw[lgrey,line width=0.8pt] (\k,0) -- (\k,-.045);}
+      \draw[cred,line width=1.5pt,domain=0:3,samples=40,smooth,variable=\x] plot ({\x+1},{btwo(\x)});
+    \end{scope}
+    \begin{scope}[shift={(10.37,3.05)},x=.41in,y=1.27in]
+      \foreach \k in {0,1,2,3,4,5} {\draw[lgrey,line width=0.8pt] (\k,0) -- (\k,-.04);}
+      \draw[cred,line width=1.5pt,domain=0:4,samples=50,smooth,variable=\x] plot ({\x+.5},{bthree(\x)});
+    \end{scope}
+  \end{page}
+  \tb{2.3}{0.85}{2.4}{\color{grey}\fs{13}{16}One basic bump of each degree, between knots\par}
+  \tb{11.6}{0.85}{3.2}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.3}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{2.3in} >{\raggedright\arraybackslash}p{2.1in} >{\raggedright\arraybackslash}p{2.1in} >{\raggedright\arraybackslash}p{2.1in} >{\raggedright\arraybackslash}p{2.26in}@{}}
+      \toprule
+      Degree $k$ & 0 & 1 & 2 & \textcolor{cred}{\textbf{3 (cubic)}} \\
+      \midrule
+      Order, $k+1$ & 1 & 2 & 3 & 4 \\
+      Each piece & Constant & Line & Parabola & Cubic \\
+      Continuous at a knot & Nothing & Value & Value, slope & Value, slope, curvature \\
+      Intervals per bump & 1 & 2 & 3 & 4 \\
+      Active bumps per input & 1 & 2 & 3 & 4 \\
+      \bottomrule
+    \end{tabular}}
+  \choice{5.5}{Degree 3. Slope and curvature are continuous at every knot, and each input activates 4 bumps at most.}
+  \slidefoot{Terms differ: ``order'' is $k+1$ in de Boor 1978 and Hastie et al.\ 2009, but Liu et al.\ 2024 write ``order $k$'' for degree $k$. Both use cubic splines.}
+\end{frame}
+
+% ===================================================== KNOTS
+\pageset{Splines}{09}
+\begin{frame}
+  \ctitle{A knot is where the polynomial may change}
+  \begin{page}
+    \begin{scope}[shift={(2.15,0)},x=.95in,y=1in]
+      \foreach \k in {0,...,4} {\draw[lgrey,line width=0.8pt,dash pattern=on 3pt off 2.5pt] (\k,-2.0) -- (\k,-5.75);}
+      \begin{scope}[yshift=-2.75in,y=1.0in]
+        \draw[lgrey,line width=0.8pt] (0,0) -- (4,0);
+        \draw[ink,line width=1.6pt,domain=0:4,samples=50,smooth,variable=\x] plot ({\x},{bthree(\x)});
+      \end{scope}
+      \begin{scope}[yshift=-3.45in,y=.48in]
+        \draw[lgrey,line width=0.8pt] (0,0) -- (4,0);
+        \draw[ink,line width=1.6pt,domain=0:4,samples=60,smooth,variable=\x] plot ({\x},{bthreed(\x)});
+      \end{scope}
+      \begin{scope}[yshift=-4.3in,y=.2in]
+        \draw[lgrey,line width=0.8pt] (0,0) -- (4,0);
+        \draw[ink,line width=1.6pt] (0,0) -- (1,1) -- (2,-2) -- (3,1) -- (4,0);
+      \end{scope}
+      \begin{scope}[yshift=-5.25in,y=.12in]
+        \draw[lgrey,line width=0.8pt] (0,0) -- (4,0);
+        \draw[cred,line width=1.8pt] (0,1) -- (1,1) (1,-3) -- (2,-3) (2,3) -- (3,3) (3,-1) -- (4,-1);
+      \end{scope}
+    \end{scope}
+    \node[anchor=east,inner sep=0pt,text=body,font=\fontsize{13}{15}\selectfont] at (2.0,2.45) {Value};
+    \node[anchor=east,inner sep=0pt,text=body,font=\fontsize{13}{15}\selectfont] at (2.0,3.3) {Slope};
+    \node[anchor=east,inner sep=0pt,text=body,font=\fontsize{13}{15}\selectfont] at (2.0,4.2) {Curvature};
+    \node[anchor=east,inner sep=0pt,text=cred,font=\bfseries\fontsize{13}{15}\selectfont] at (2.0,5.25) {Third derivative};
+  \end{page}
+  \lowcol{6.5}{2.0}{5.95}{What it is}{A fixed point on the input axis, such as income = 1,500.}
+  \lowcol{6.5}{2.85}{5.95}{What it does}{The pieces on each side may differ. For $k=3$, only the third derivative jumps there.}
+  \lowcol{6.5}{3.95}{5.95}{What it is not}{Not a data point, and not learned here. A coefficient is not the curve's height at a knot.}
+  \lowcol{6.5}{5.05}{5.95}{Types}{2 boundary knots, $G-1$ interior knots, and $k$ extra knots past each end to complete the basis.}
+  \slidefoot{More knots in a region give the curve more freedom there. Plot: one cubic B-spline and its derivatives.}
+\end{frame}
+
+% ===================================================== HOW MANY KNOTS
+\pageset{Splines}{10}
+\begin{frame}
+  \ctitle{How many knots are needed?}
+  \lowcol{0.85}{1.95}{5.5}{Counting}{$G$ intervals have $G-1$ interior knots. Each piece has $k+1$ coefficients, and each interior knot removes $k$:}
+  \tb{5.5}{0.85}{3.05}{\color{ink}\fs{17}{21}$G(k+1)-(G-1)k=G+k$ coefficients\par}
+  \tb{5.5}{0.85}{3.5}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.25}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.3in} >{\raggedright\arraybackslash}p{1.7in} >{\raggedright\arraybackslash}p{2.1in}@{}}
+      \toprule
+      Intervals $G$ & Interior knots & Coefficients, $k=3$ \\
+      \midrule
+      5 & 4 & 8 \\
+      8 & 7 & 11 \\
+      10 & 9 & 13 \\
+      \bottomrule
+    \end{tabular}}
+  \lowcol{6.95}{1.95}{5.5}{No fixed number: a trade-off}{Too few: the curve misses the shape. For smooth functions the error falls like $G^{-(k+1)}$. Too many: fewer samples per coefficient, and a larger $A$.}
+  \tb{5.5}{6.95}{3.42}{{\bfseries\color{cred}\fs{16}{19}Reference points\par}\vspace{5pt}{\color{body}\fs{14.5}{19}Restricted cubic splines: 3 to 7 knots, usually 5\\ CAM: 10 basis functions per variable\\ KaCGM: grid sizes 1, 5 and 10\\ P-splines: many knots, plus a smoothness penalty\par}}
+  \choice{5.42}{$G$ between 5 and 10, a setting to tune. With 500 samples of memory and $G=8$, each interval keeps about 60 samples.}
+  \slidefoot{Error rate: Liu et al.\ 2024, Theorem 2.1. Harrell 2015; B\"uhlmann et al.\ 2014; Almod\'ovar et al.\ 2026; Eilers \& Marx 1996.}
+\end{frame}
+
+% ===================================================== B-SPLINE BASIS
+\pageset{Splines}{11}
+\begin{frame}
+  \ctitle{B-splines: a basis that is smooth by construction}
+  \tb{6.6}{0.85}{2.05}{\color{ink}\fs{16}{21}$B_{m,0}(x)=1$ if $\xi_m\leq x<\xi_{m+1}$, otherwise $0$\par\vspace{8pt}
+    $B_{m,k}(x)=\dfrac{x-\xi_m}{\xi_{m+k}-\xi_m}\,B_{m,k-1}(x)+\dfrac{\xi_{m+k+1}-x}{\xi_{m+k+1}-\xi_{m+1}}\,B_{m+1,k-1}(x)$\par}
+  \tb{6.6}{0.85}{3.75}{\color{grey}\fs{13.5}{17}Each degree is built from two bumps of the degree below. $\xi_m$ are the knots.\par}
+  \begin{page}
+    \begin{scope}[shift={(7.75,4.05)},x=.58in,y=2.7in]
+      \foreach \k in {0,...,8} {\draw[lgrey,line width=0.8pt] (\k,0) -- (\k,-.025);}
+      \draw[lgrey,line width=0.9pt] (0,0) -- (8,0);
+      \foreach \j in {-3,...,7} {\draw[ink,line width=1.1pt,domain=0:8,samples=81,variable=\x] plot ({\x},{bthree(\x-\j)});}
+      \draw[cred,line width=1.7pt,domain=2:6,samples=50,smooth,variable=\x] plot ({\x},{bthree(\x-2)});
+    \end{scope}
+  \end{page}
+  \lowcol{0.85}{4.55}{2.7}{No join conditions}{Any coefficients give a valid spline.}
+  \lowcol{3.85}{4.55}{2.7}{Local}{Each bump is zero outside $k+1$ intervals.}
+  \lowcol{6.85}{4.55}{2.7}{Sparse}{At most $k+1$ bumps are active at any input.}
+  \lowcol{9.85}{4.55}{2.6}{Sum to one}{Bumps are non-negative and add up to 1.}
+  \slidefoot{Cox-de Boor recursion: de Boor 1978. Plot: the 11 cubic B-splines for $G=8$ with uniform knots, with one in red.}
+\end{frame}
+
+% ===================================================== A CURVE IS A LIST OF COEFFICIENTS
+\pageset{Splines}{12}
+\begin{frame}
+  \ctitle{A curve is a list of coefficients}
+  \begin{page}
+    \begin{scope}[shift={(0.95,5.3)},x=.7375in,y=3.1in]
+      \fill[black!6] (2,0) rectangle (6,1);
+      \draw[lgrey,line width=0.9pt] (0,0) -- (8,0);
+      \foreach \k in {0,...,8} {\draw[lgrey,line width=0.8pt] (\k,0) -- (\k,-.02);}
+      \foreach \j in {-3,...,7} {\draw[lgrey,line width=0.8pt,domain=0:8,samples=81,variable=\x] plot ({\x},{.32*bthree(\x-\j)});}
+      \draw[grey,line width=1.3pt,dash pattern=on 4pt off 2.5pt,domain=0:8,samples=81,smooth,variable=\x] plot ({\x},{curveb(\x)});
+      \draw[cred,line width=1.7pt,domain=0:8,samples=81,smooth,variable=\x] plot ({\x},{curveb(\x)-.6*bthree(\x-2)});
+      \node[anchor=north,inner sep=3pt,text=grey,font=\fontsize{12}{14}\selectfont] at (4,-.03) {input $x$, with knots marked};
+      \node[inner sep=0pt,text=grey,font=\fontsize{12}{14}\selectfont] at (4,.96) {one coefficient moved: the curve changes only here};
+    \end{scope}
+  \end{page}
+  \npoint{2.1}{1}{A weighted sum of bumps}{$\phi(x)=\sum_m\theta_mB_m(x)$. The coefficients $\theta_m$ are what is learned.}
+  \npoint{3.3}{2}{One coefficient, one region}{Changing $\theta_m$ moves the curve only over $k+1$ intervals.}
+  \npoint{4.5}{3}{A weight, not a height}{The curve follows the $\theta_m$ but does not pass through them.}
+  \tb{11.6}{0.85}{5.82}{\color{ink}\bfseries\fs{16}{20}So each node is linear in its coefficients: $x_j=\Phi_j^{\top}\theta_j+u_j$, where $\Phi_j$ holds the bump values of all candidate parents.\par}
+\end{frame}
+
+% ===================================================== SETTINGS
+\pageset{Splines}{13}
+\begin{frame}
+  \ctitle{Spline settings in this design}
+  \tb{11.6}{0.85}{1.95}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.42}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{2.5in} >{\raggedright\arraybackslash}p{3.7in} >{\raggedright\arraybackslash}p{5.0in}@{}}
+      \toprule
+      Setting & Value & Reason \\
+      \midrule
+      Degree & $k=3$ & Continuous curvature, 4 active bumps per input \\
+      Intervals & $G=5$ to $10$ & Enough shape with a small, fixed $A$ \\
+      Interior knots & Warm-up quantiles & Equal data per interval at setup \\
+      After setup & Knots stay fixed & Old and new coefficients stay comparable \\
+      Outside the range & Straight line with the end slope & Polynomials diverge there, and a line stays linear in $\theta$ \\
+      Constant & One per node, one bump dropped per edge & A constant cannot move between edges \\
+      Coefficients & $G+2$ per edge, 1 per node & $G=8$ with 2 parents: 21 coefficients \\
+      \bottomrule
+    \end{tabular}}
+  \slidefoot{Quantile knots: Harrell 2015. Straight tails, as in natural splines: Hastie et al.\ 2009, ch.\ 5.}
+\end{frame}
+
+% ===================================================== CORE IDEA
+\pageset{Updates}{14}
+\begin{frame}
+  \ctitle{An update is a small edit to one curve}
+  \begin{page}
+    \tikzset{cn/.style={draw=ink,line width=1pt,fill=white,rounded corners=3pt,minimum height=0.48in,minimum width=1.0in,inner sep=2pt,text=ink,font=\bfseries\fontsize{12.5}{15}\selectfont}}
+    % edges
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (1.85,4.75) -- (3.05,4.75);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (4.05,4.75) -- (5.25,4.75);
+    \draw[-{Latex[length=2mm]},cred,line width=1.4pt] (6.25,4.75) -- (7.4,4.75);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt,rounded corners=5pt] (3.55,4.51) -- (3.55,3.3) -- (7.65,3.3) -- (7.65,4.51);
+    % nodes
+    \node[cn] at (1.35,4.75) {Education};
+    \node[cn] at (3.55,4.75) {Income};
+    \node[cn] at (5.75,4.75) {Savings};
+    \node[cn,minimum width=0.5in] at (7.65,4.75) {Y};
+    % curves on the edges
+    \minibox{2.42}{4.75}{0.78}{0.56}{ink}
+    \minicurve{2.42}{4.75}{0.78}{0.56}{ink,line width=1.3pt}{(1-exp(-3*\t))/0.95}
+    \minibox{4.62}{4.75}{0.78}{0.56}{ink}
+    \minicurve{4.62}{4.75}{0.78}{0.56}{ink,line width=1.3pt}{\t*\t}
+    \minibox{5.6}{3.3}{0.78}{0.56}{ink}
+    \minicurve{5.6}{3.3}{0.78}{0.56}{ink,line width=1.3pt}{0.5+0.45*sin(180*\t-90)}
+    \minibox{6.8}{4.75}{0.78}{0.56}{cred}
+    \minicurve{6.8}{4.75}{0.78}{0.56}{grey,line width=1pt,dash pattern=on 2pt off 1.5pt}{\t}
+    \minicurve{6.8}{4.75}{0.78}{0.56}{cred,line width=1.4pt}{\t-0.22*(sin(180*\t))^2}
+    \node[text=cred,font=\bfseries\fontsize{12}{14}\selectfont] at (6.8,4.25) {drift};
+    \node[anchor=north west,text=grey,inner sep=0pt,align=left,font=\fontsize{12.5}{16}\selectfont] at (0.85,5.3) {Each small box is one learned curve on one causal edge.\\Red: the only edge that changed. Dashed: its old curve.};
+  \end{page}
+  \npoint{2.2}{1}{One curve per causal edge}{Each edge is a spline, so its effect can be plotted.}
+  \npoint{3.4}{2}{Small, sparse edits}{$\phi_e^{t}=\phi_e^{t-1}+\delta_e^{t}$, and $\delta_e$ stays exactly zero without strong evidence.}
+  \npoint{4.85}{3}{Recorded as a Change}{Each edit is saved with its edge, knot range and version.}
+  \slidefoot{Small edits assume that few mechanisms change at once. This is the sparse mechanism shift hypothesis, not a fact (Perry et al.\ 2022).}
+\end{frame}
+
+% ===================================================== STEP 1
+\pageset{Updates}{15}
+\begin{frame}
+  \steptitle{1}{every sample}{Collect the evidence}
+  \tb{11.6}{0.85}{2.05}{\centering\color{ink}\fs{23}{28}$A_j\leftarrow\gamma A_j+\Phi_j\Phi_j^{\top}\qquad\qquad b_j\leftarrow\gamma b_j+\Phi_j x_j$\par}
+  \lowcol{0.85}{2.95}{3.6}{$A$: what was seen}{One entry per pair of coefficients: how often recent samples activated both.}
+  \lowcol{4.85}{2.95}{3.6}{$b$: what was observed}{Each sample's bump values, weighted by the value observed.}
+  \lowcol{8.85}{2.95}{3.6}{$\gamma$: how long it lasts}{Memory is about $1/(1-\gamma)$ samples: $\gamma=0.998$ keeps about 500.}
+  \hrl{0.85}{4.3}{11.6}
+  \lowcol{0.85}{4.5}{5.5}{Why this is enough}{The least-squares fit is $\hat\theta_j=A_j^{-1}b_j$, so raw data is not stored.}
+  \lowcol{6.95}{4.5}{5.5}{Fixed cost}{Size depends on the number of coefficients, not on the length of the stream.}
+  \tb{11.6}{0.85}{5.7}{\color{ink}\bfseries\fs{16}{20}The curves do not move in this step.\par}
+  \slidefoot{Exact for feature nodes, which are linear in their coefficients.}
+\end{frame}
+
+% ===================================================== STEP 2
+\pageset{Updates}{16}
+\begin{frame}
+  \steptitle{2}{every sample}{Read the score}
+  \tb{11.6}{0.85}{1.98}{\color{ink}\fs{18}{22}$s_j=b_j-A_j\theta_j=\sum_r\gamma^{\,t-r}\,\Phi_r\,(x_{j,r}-\Phi_r^{\top}\theta_j)$\quad{\color{body}\fs{14.5}{18}$r$ is a past sample. One block $s_e$ per edge.}\par}
+  \scorepanel{0.85}{{.25,-.3,.2,.3,-.25,.3,-.2,.25,-.3,.15}}{Curve still right}{Errors have no pattern and cancel.}{grey}
+  \scorepanel{6.95}{{.2,-.15,.3,2.2,2.6,2.3,.3,-.2,.2,-.15}}{Curve wrong in one range}{Errors share a sign there and add up.}{cred}
+  \tb{11.6}{0.85}{5.75}{\color{ink}\bfseries\fs{16}{20}Small $\|s_e\|$: the sample ends here. Most samples do.\par}
+  \slidefoot{Schematic: the score of each coefficient on one edge.}
+\end{frame}
+
+% ===================================================== STEP 3
+\pageset{Updates}{17}
+\begin{frame}
+  \steptitle{3}{when a score passes the threshold}{Decide: one rule detects and updates}
+  \tb{11.6}{0.85}{2.05}{\centering\color{ink}\fs{23}{28}$\min_{\delta}\ \ \tfrac12\delta^{\top}A\delta-\delta^{\top}s\ +\ \lambda\sum_e\|\delta_e\|\ +\ \lambda_2\|\delta\|_1$\par}
+  \lowcol{0.85}{2.95}{3.6}{Fit: $\tfrac12\delta^{\top}A\delta-\delta^{\top}s$}{Fall in squared error, from $A$ and $s$ alone.}
+  \lowcol{4.85}{2.95}{3.6}{Edge penalty: $\lambda\sum_e\|\delta_e\|$}{Paid per edge, so most edges stay at zero.}
+  \lowcol{8.85}{2.95}{3.6}{Local penalty: $\lambda_2\|\delta\|_1$}{Paid per coefficient, so the edit stays local.}
+  \hrl{0.85}{4.1}{11.6}
+  \tb{11.6}{0.85}{4.3}{\color{ink}\bfseries\fs{21}{26}$\delta=0$ is optimal exactly while every edge has $\|s_e\|\leq\lambda$.\par}
+  \tb{11.6}{0.85}{4.85}{\color{body}\fs{15}{19}The change test is the fit's optimality condition, so no separate drift detector is needed. Below $\lambda$, neither noise nor a small real change moves a curve.\par}
+  \slidefoot{Strictly, $\|s_e\|$ with the mean error removed and each coefficient score shrunk by $\lambda_2$.\\ Group lasso (Yuan \& Lin 2006), sparse-group lasso (Simon et al.\ 2013), online sparse estimation (Angelosante et al.\ 2010).\\ Per-edge use in an online causal model: possibly novel.}
+\end{frame}
+
+% ===================================================== STEP 4
+\pageset{Updates}{18}
+\begin{frame}
+  \steptitle{4}{only after a decision}{Commit}
+  \chain{0.85}{1}{Keep the chosen}{The set $S$ of coefficients the fit left non-zero.}
+  \chain{3.85}{2}{Refit them}{$\delta_S=A_{SS}^{-1}s_S$, with no penalty, because penalties shrink the edit.}
+  \chain{6.85}{3}{Save a version}{$\phi_e^{t}=\phi_e^{t-1}+\delta_e^{t}$, so any past curve can be rebuilt.}
+  \chain{9.85}{4}{Record a Change}{Edge, knot range, $\delta$, version and time.}
+  \hrl{0.85}{4.2}{11.6}
+  \tb{11.6}{0.85}{4.42}{\color{body}\fs{15}{19}On $S$ the score falls to zero, because the new curve fits the statistics. $A$ and $b$ are unchanged.\par}
+  \tb{11.6}{0.85}{4.95}{\color{body}\fs{15}{19}At the first commit the statistics still hold old data, so one real change can take several commits on the same edge.\par}
+  \slidefoot{Refitting after selection: Belloni \& Chernozhukov 2013. Sparse versions of spline coefficients: adapted.}
+\end{frame}
+
+% ===================================================== FORGETTING
+\pageset{Updates}{19}
+\begin{frame}
+  \ctitle{Forgetting fades the evidence, not the curves}
+  \tb{11.6}{0.85}{2.0}{\fs{15}{19}\renewcommand{\arraystretch}{1.6}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{2.6in} >{\raggedright\arraybackslash}p{4.2in} >{\raggedright\arraybackslash}p{4.4in}@{}}
+      \toprule
+      & Curves & Statistics $A$, $b$ \\
+      \midrule
+      Hold & Everything committed so far & Recent evidence \\
+      Fade? & Never & By $\gamma$ on every sample \\
+      Change & Only at a commit & On every sample \\
+      \bottomrule
+    \end{tabular}}
+  \lowcol{0.85}{4.4}{5.5}{One factor}{The same $\gamma$ scales $A$ and $b$, so forgetting alone leaves $A^{-1}b$ unchanged.}
+  \lowcol{6.95}{4.4}{5.5}{A region with no new data}{Its evidence fades and its score stays near zero, so $\delta$ stays zero and the curve stays.}
+\end{frame}
+
+% ===================================================== Y NODE
+\pageset{Updates}{20}
+\begin{frame}
+  \ctitle{The Y node: same steps, different statistics}
+  \tb{11.6}{0.85}{1.98}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.4}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{2.1in} >{\raggedright\arraybackslash}p{4.3in} >{\raggedright\arraybackslash}p{4.8in}@{}}
+      \toprule
+      & Feature node & Y node \\
+      \midrule
+      Equation & $x_j=\Phi^{\top}\theta+u_j$ & $p=P(Y{=}1)=\sigma(\Phi^{\top}\theta)$ \\
+      Error on one sample & $x_j-\Phi^{\top}\theta$ & $y-p$ \\
+      Score & $s\leftarrow\gamma s+\Phi\,(x_j-\Phi^{\top}\theta)$ & $s\leftarrow\gamma s+\Phi\,(y-p)$ \\
+      $A$ & $A\leftarrow\gamma A+\Phi\Phi^{\top}$ & $A\leftarrow\gamma A+p(1-p)\,\Phi\Phi^{\top}$ \\
+      Exact? & Yes & No: $p$ comes from the curves at that moment \\
+      When & As the sample arrives & When the outcome arrives, often much later \\
+      \bottomrule
+    \end{tabular}}
+  \tb{11.6}{0.85}{5.0}{\color{ink}\bfseries\fs{16}{20}Open: outcomes are seen only for accepted people, and the approximation has no proof yet.\par}
+\end{frame}
+
+% ===================================================== KINDS OF DRIFT
+\pageset{Reading an update}{21}
+\begin{frame}
+  \qtitle{updates}{Can the graph tell which kind of drift happened?}
+  \tb{11.6}{0.85}{2.0}{\fs{15}{19}\renewcommand{\arraystretch}{1.5}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{2.1in} >{\raggedright\arraybackslash}p{4.3in} >{\raggedright\arraybackslash}p{4.8in}@{}}
+      \toprule
+      Drift & Example & What the graph shows \\
+      \midrule
+      Exogenous & Incomes rise for everyone & No curve moves, so no Change \\
+      Endogenous & Income adds less to savings & A Change on income $\rightarrow$ savings \\
+      Target & Savings matter less for Y & A Change on savings $\rightarrow$ Y \\
+      Structural & A new direct cause appears & A zero curve leaves zero \\
+      Confounder & A hidden cause shifts & Can look like a change on an edge \\
+      \bottomrule
+    \end{tabular}}
+  \choice{5.3}{Read it from where the curve moved, on every edge.}
+  \slidefoot{Drift types: Barboza et al.\ 2026. The mapping onto this design is new and untested.\\ A reversed edge cannot be shown, because the variable order is fixed.}
+\end{frame}
+
+% ===================================================== READING AN UPDATE
+\pageset{Reading an update}{22}
+\begin{frame}
+  \qtitle{updates}{Does explaining drift need a second model?}
+  \begin{page}
+    \begin{scope}[shift={(0.95,5.0)},x=4.6in,y=2.85in]
+      \fill[black!6] (.3,0) rectangle (.6,1);
+      \draw[lgrey,line width=0.9pt] (0,0) -- (1,0);
+      \draw[lgrey,line width=0.9pt] (0,0) -- (0,1);
+      \draw[grey,line width=1.2pt,dash pattern=on 4pt off 2.5pt,domain=0:1,samples=61,smooth,variable=\x] plot ({\x},{curvec(\x)});
+      \draw[cred,line width=1.6pt,domain=0:1,samples=121,smooth,variable=\x] plot ({\x},{curvec(\x)-.25*bumpc(\x)});
+      \node[anchor=north,inner sep=3pt,text=grey,font=\fontsize{12}{14}\selectfont] at (.5,0) {income};
+      \node[rotate=90,anchor=south,inner sep=2pt,text=grey,font=\fontsize{12}{14}\selectfont] at (0,.5) {effect on savings};
+      \node[inner sep=0pt,text=grey,font=\fontsize{12}{14}\selectfont] at (.45,.95) {changed range};
+    \end{scope}
+  \end{page}
+  \tb{6.3}{6.15}{2.0}{{\bfseries\color{ink}\fs{16}{19}Which edge and where\par}\vspace{3pt}{\color{body}\fs{14.5}{18}Each Change names them: only that edge got a $\delta$.\par}}
+  \tb{6.3}{6.15}{2.95}{{\bfseries\color{ink}\fs{16}{19}How much\par}\vspace{3pt}{\color{body}\fs{14.5}{18}$\delta$ is the gap between the old and new curve.\par}}
+  \tb{6.3}{6.15}{3.9}{{\bfseries\color{ink}\fs{16}{19}One episode\par}\vspace{3pt}{\color{body}\fs{14.5}{18}Commits in a row on one edge are read as one change.\par}}
+  \tb{11.6}{0.85}{5.42}{\color{ink}\bfseries\fs{17}{22}``Between 0.3 and 0.6 of income, the effect on savings is now lower.''\par}
+  \choice{5.88}{No. The update is the explanation: you read the curves the model uses.}
+  \slidefoot{Schematic. This is the model's view, so an interaction it cannot represent can give a clean but wrong sentence.}
+\end{frame}
+
+% ===================================================== OVERVIEW
+\pageset{In progress}{23}
+\begin{frame}
+  \toptag{Work in progress}
+  \ctitle{The overall architecture}
+  \archfulltrue
+  \archdiagram{1.1}{1.98}{1}{4}
+  \begin{page}
+    \draw[amber,line width=1.6pt] (2.6,6.97) -- (3.0,6.97);
+    \node[anchor=west,inner sep=0pt,text=body,font=\fontsize{12.5}{15}\selectfont] at (3.08,6.97) {Covered today: the causal graph and its updates};
+    \draw[lgrey,line width=1.6pt] (7.6,6.97) -- (8.0,6.97);
+    \node[anchor=west,inner sep=0pt,text=body,font=\fontsize{12.5}{15}\selectfont] at (8.08,6.97) {Still being designed, so it may change};
+  \end{page}
+\end{frame}
+
+% ===================================================== SOURCES
+\pageset{Sources}{24}
+\begin{frame}
+  \ctitle{Sources}
+  \tb{5.65}{0.85}{1.9}{\color{body}\fs{11.5}{14.2}\setlength{\parskip}{3.5pt}%
+    Almod\'ovar et al.\ (2026). Kolmogorov-Arnold causal generative models. arXiv:2603.20184.\par
+    Angelosante, Bazerque, Giannakis (2010). Online adaptive estimation of sparse signals. IEEE TSP 58(7).$^\dagger$\par
+    Barboza et al.\ (2026). Concept drift from a causal perspective. arXiv:2609.25340.\par
+    Belloni, Chernozhukov (2013). Least squares after model selection in high-dimensional sparse models. Bernoulli 19(2).$^\dagger$\par
+    B\"uhlmann, Peters, Ernest (2014). CAM: causal additive models. Annals of Statistics 42(6).\par
+    de Boor (1978). A Practical Guide to Splines. Springer.$^\dagger$\par
+    Eilers, Marx (1996). Flexible smoothing with B-splines and penalties. Statistical Science 11(2).$^\dagger$\par
+    Harrell (2015). Regression Modeling Strategies, 2nd ed. Springer.$^\dagger$\par}
+  \tb{5.65}{6.8}{1.9}{\color{body}\fs{11.5}{14.2}\setlength{\parskip}{3.5pt}%
+    Hastie, Tibshirani, Friedman (2009). The Elements of Statistical Learning, 2nd ed., ch.\ 5. Springer.$^\dagger$\par
+    Liu et al.\ (2024). KAN: Kolmogorov-Arnold networks. arXiv:2404.19756.\par
+    Perry, von K\"ugelgen, Sch\"olkopf (2022). Causal discovery in heterogeneous environments under the sparse mechanism shift hypothesis. NeurIPS.\par
+    Simon, Friedman, Hastie, Tibshirani (2013). A sparse-group lasso. JCGS 22(2).$^\dagger$\par
+    Yuan, Lin (2006). Model selection and estimation in regression with grouped variables. JRSS B 68.$^\dagger$\par
+    \vspace{5pt}{\color{grey}$^\dagger$ Not read directly: seen as an abstract, a record or through secondary sources. Check before citing in the thesis.\par}\par}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,25 @@
+# virtual environments
+venv/
+.venv/  
+
+#python cache
+__pycache__/
+
+# macOS
+.DS_Store
+
+# windows
+Thumbs.db
+
+# JetBrains IDEs
+.idea/
+
+# VS Code
+.vscode/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# claude
+.claude/
+

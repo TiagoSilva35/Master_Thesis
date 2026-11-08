@@ -1,0 +1,824 @@
+% Living Causal KAN --- architecture overview. CISUC template, Beamer version (same preamble as ../lit_review_plan/presentation.tex).
+% Compiles with pdfLaTeX, XeLaTeX, or LuaLaTeX (run twice for the TikZ overlays).
+\documentclass[aspectratio=169]{beamer}
+\usepackage{geometry}
+\geometry{paperwidth=13.333in,paperheight=7.5in}
+\usepackage{iftex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{array}
+
+% ---- fonts (engine-agnostic; TeXLive-bundled Helvetica/Courier clones, no fontspec) ----
+\ifPDFTeX\usepackage[utf8]{inputenc}\fi
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{tgheros}   % Helvetica clone (Arial-like) sans
+\usepackage{tgcursor}  % Courier clone mono
+\renewcommand{\familydefault}{\sfdefault}
+\newcommand{\monofont}{\ttfamily}
+
+% ---- colours ----
+\definecolor{cred}{HTML}{DA0725}
+\definecolor{ink}{HTML}{141414}
+\definecolor{body}{HTML}{262626}
+\definecolor{grey}{HTML}{8A8A8A}
+\definecolor{lgrey}{HTML}{C4C4C4}
+\definecolor{rulec}{HTML}{2A2A2A}
+\definecolor{amber}{HTML}{C77A18}
+
+\setbeamercolor{normal text}{fg=body}
+\setbeamercolor{itemize item}{fg=cred}
+\setbeamercolor{itemize subitem}{fg=cred}
+\setbeamercolor{enumerate item}{fg=cred}
+\setbeamercolor{item projected}{fg=cred}
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=0.85in,text margin right=0.85in}
+
+% ---- running header (shown on non-plain frames) ----
+\newcommand{\hdrtotal}{23}
+\newcommand{\hdrsec}{}
+\newcommand{\hdrpg}{}
+\newcommand{\pageset}[2]{\renewcommand{\hdrsec}{#1}\renewcommand{\hdrpg}{#2}}
+\setbeamertemplate{headline}{%
+  \vskip3mm%
+  \makebox[\paperwidth][c]{%
+    \hspace{9mm}%
+    \parbox[t]{4.2in}{\monofont\color{grey}\fontsize{9}{11}\selectfont
+      Towards Fair Algorithmic Recourse with\\ Kolmogorov-Arnold Networks}%
+    \hfill
+    \parbox[t]{4.2in}{\centering\monofont\color{grey}\fontsize{10}{12}\selectfont \hdrsec}%
+    \hfill
+    \parbox[t]{2.6in}{\raggedleft\monofont\fontsize{13}{15}\selectfont
+      \textbf{\color{ink}\hdrpg}{\color{grey}/\hdrtotal}}%
+    \hspace{9mm}%
+  }%
+}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{}
+
+% ---- helpers (absolute placement via TikZ overlay) ----
+% \tb{width-in}{x-in}{y-in}{content}  --- anchored top-left at (x,y) from page NW
+% optional #1 = extra node options (use font=... for large text so spacing scales)
+\newcommand{\tb}[5][]{\begin{tikzpicture}[remember picture,overlay]%
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=#2in,align=left,#1]
+    at ([xshift=#3in,yshift=-#4in]current page.north west){\raggedright #5\par};\end{tikzpicture}}
+\newcommand{\fs}[2]{\fontsize{#1}{#2}\selectfont}
+\newcommand{\hrl}[3]{\tb{#3}{#1}{#2}{{\color{lgrey}\rule{#3in}{0.9pt}}}}
+\newcommand{\ctitle}[1]{\tb[font=\fontsize{28}{32}\selectfont\bfseries]{11.6}{0.85}{1.3}{\color{ink}#1}}
+% design-question slide: \qtitle{the part it leads to}{the question}
+\newcommand{\qtitle}[2]{%
+  \tb{11.6}{0.85}{0.98}{\monofont\bfseries\color{cred}\fs{12.5}{15}Design question \textperiodcentered{} #1}%
+  \ctitle{#2}}
+% the line that closes a design-question slide: \choice{y}{text}
+\newcommand{\choice}[2]{\tb{11.6}{0.85}{#1}{\color{ink}\bfseries\fs{16}{20}{\color{cred}Choice:} #2\par}}
+\newcommand{\slidefoot}[1]{%
+  \tb{11.6}{0.85}{6.5}{\centering\color{grey}\fs{13}{16}#1}}
+\newcommand{\titleSlide}[2]{%
+  \tb[font=\fontsize{46}{50}\selectfont\bfseries]{11.4}{0.9}{2.4}{\color{ink}#1}%
+  \tb[font=\fontsize{30}{36}\selectfont\bfseries]{11.4}{0.9}{3.4}{\color{ink}#2}%
+  \tb{2.5}{0.9}{6.75}{\includegraphics[width=2.5in]{assets/cisuc_logo.png}}}
+% everything drawn in inches from the page's top-left corner, y pointing down
+\newenvironment{page}{\begin{tikzpicture}[remember picture,overlay]
+  \begin{scope}[shift={(current page.north west)},x=1in,y=-1in]}{\end{scope}\end{tikzpicture}}
+% titled text block: \lowcol{x}{y}{width}{title}{text}
+\newcommand{\lowcol}[5]{\tb{#3}{#1}{#2}{{\bfseries\color{cred}\fs{16}{19}#4\par}\vspace{5pt}{\color{body}\fs{15}{19}#5\par}}}
+% requirement column: \reqcol{x}{title}{text}
+\newcommand{\reqcol}[3]{%
+  \tb{2.6}{#1}{2.2}{\bfseries\color{cred}\fs{18}{22}#2}%
+  \hrl{#1}{2.66}{2.6}%
+  \tb{2.6}{#1}{2.85}{\color{body}\fs{15}{19.5}#3}}
+% numbered step next to a small diagram: \pstep{colour}{y}{n}{text}
+\newcommand{\pstep}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=#1,text=white,inner sep=0pt,minimum size=0.3in,font=\bfseries\fontsize{13}{13}\selectfont]
+      at ([xshift=9.05in,yshift=-#2in-0.13in]current page.north west) {#3};
+  \end{tikzpicture}%
+  \tb{3.1}{9.35}{#2}{\color{body}\fs{14.5}{18}#4}}
+% numbered point: \npoint{y}{n}{title}{text}
+\newcommand{\npoint}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=cred,text=white,inner sep=0pt,minimum size=0.32in,font=\bfseries\fontsize{13}{13}\selectfont]
+      at ([xshift=8.56in,yshift=-#1in-0.14in]current page.north west) {#2};
+  \end{tikzpicture}%
+  \tb{3.65}{8.85}{#1}{{\bfseries\color{ink}\fs{16}{19}#3\par}\vspace{3pt}{\color{body}\fs{14}{18}#4\par}}}
+% numbered column: \chain{x}{n}{title}{text}
+\newcommand{\chain}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=cred,text=white,inner sep=0pt,minimum size=0.34in,font=\bfseries\fontsize{13}{13}\selectfont]
+      at ([xshift=#1in+0.17in,yshift=-2.2in]current page.north west) {#2};
+  \end{tikzpicture}%
+  \tb{2.7}{#1}{2.5}{{\bfseries\color{ink}\fs{16}{19}#3\par}\vspace{4pt}{\color{body}\fs{14}{18}#4\par}}}
+% small curve inside a box, for a function of \t on [0,1]
+\newcommand{\minibox}[5]{\draw[#5,line width=0.8pt,fill=white,rounded corners=2pt] (#1-#3/2,#2-#4/2) rectangle (#1+#3/2,#2+#4/2);}
+\newcommand{\minicurve}[6]{\draw[#5,domain=0:1,samples=25,smooth,variable=\t]
+    plot ({#1-#3/2+0.08+(#3-0.16)*\t},{#2+#4/2-0.07-(#4-0.14)*(#6)});}
+
+% ---- the architecture diagram -----------------------------------------------
+% \archdiagram{x}{y}{scale}{mode}  mode: 0 all, 1 decision path, 2 learning path, 3 change path
+% with \archfulltrue it shows box details and arrow labels; with \archfullfalse only names and step numbers
+\newif\ifarchfull
+\newcommand{\archset}[1]{%
+  \def\archmode{#1}%
+  \def\cD{ink}\def\cL{amber}\def\cC{cred}%
+  \def\wD{1.2pt}\def\wL{1.6pt}\def\wC{1.6pt}%
+  \def\onP{1}\def\onK{1}\def\onG{1}\def\onS{1}\def\onM{1}\def\onE{1}\def\onR{1}%
+  \ifnum#1=1 \def\cL{lgrey}\def\cC{lgrey}\def\wL{0.8pt}\def\wC{0.8pt}\def\wD{1.6pt}\def\onE{0}\def\onR{0}\fi
+  \ifnum#1=2 \def\cD{lgrey}\def\cC{lgrey}\def\wD{0.8pt}\def\wC{0.8pt}\def\onK{0}\def\onG{0}\def\onS{0}\def\onR{0}\fi
+  \ifnum#1=3 \def\cD{lgrey}\def\cL{lgrey}\def\wD{0.8pt}\def\wL{0.8pt}\def\onP{0}\def\onK{0}\def\onM{0}\fi
+  \ifarchfull\def\bsize{0.27in}\def\bfont{11}\else\def\bsize{0.4in}\def\bfont{16}\fi}
+\newcommand{\boxcols}[1]{\ifnum#1=1 \def\bdraw{ink}\def\btext{ink}\def\bline{body}\else\def\bdraw{lgrey}\def\btext{grey}\def\bline{grey}\fi}
+\newcommand{\abox}[9]{\boxcols{#1}%
+  \draw[\bdraw,line width=1pt,fill=white,rounded corners=3pt] (#2,#3) rectangle ++(#4,#5);
+  \ifarchfull
+    \node[anchor=north west,inner sep=0pt,text=\btext,font=\bfseries\fontsize{14.5}{17}\selectfont] at (#2+0.13,#3+0.1) {#6};
+    \node[anchor=north west,inner sep=0pt,text=\bline,align=left,font=\fontsize{11.5}{14.5}\selectfont] at (#2+0.13,#3+0.38) {#7\\#8};
+  \else
+    \node[text=\btext,align=center,font=\bfseries\fontsize{20}{23}\selectfont] at (#2+#4/2,#3+#5/2) {#9};
+  \fi}
+\newcommand{\ainner}[6]{\boxcols{#1}%
+  \draw[\bdraw,line width=0.8pt,fill=black!3,rounded corners=2pt] (#2,#3) rectangle ++(2.85,0.75);
+  \ifarchfull
+    \node[text=\btext,font=\bfseries\fontsize{13}{15}\selectfont] at (#2+1.425,#3+0.25) {#4};
+    \node[text=\bline,font=\fontsize{11.5}{14}\selectfont] at (#2+1.425,#3+0.52) {#5};
+  \else
+    \node[text=\btext,font=\bfseries\fontsize{17}{20}\selectfont] at (#2+1.425,#3+0.375) {#6};
+  \fi}
+\newcommand{\aarr}[3]{\draw[-{Latex[length=2mm]},#1,line width=#2,rounded corners=4pt] #3;}
+\newcommand{\alab}[4][center]{\ifarchfull\node[anchor=#1,inner sep=1.5pt,text=body,font=\fontsize{10.5}{12}\selectfont,fill=white,align=left] at (#2,#3) {#4};\fi}
+\newcommand{\abadgeraw}[4]{\ifcase#1\or\def\bcol{ink}\or\def\bcol{amber}\or\def\bcol{cred}\fi
+  \node[circle,fill=\bcol,text=white,inner sep=0pt,minimum size=\bsize,font=\bfseries\fontsize{\bfont}{\bfont}\selectfont] at (#3,#4) {#2};}
+\newcommand{\abadge}[4]{\ifnum\archmode=0 \abadgeraw{#1}{#2}{#3}{#4}\else\ifnum\archmode=#1 \abadgeraw{#1}{#2}{#3}{#4}\fi\fi}
+\newcommand{\archdiagram}[4]{\archset{#4}%
+\begin{page}
+\begin{scope}[shift={(#1,#2)},scale=#3,transform shape]
+  % boxes
+  \boxcols{\onP}
+  \draw[\bdraw,line width=1pt,fill=white,rounded corners=11pt] (0,0.55) rectangle ++(1.0,0.5);
+  \ifarchfull
+    \node[text=\btext,font=\bfseries\fontsize{13.5}{15}\selectfont] at (0.5,0.8) {People};
+  \else
+    \node[text=\btext,font=\bfseries\fontsize{16}{18}\selectfont] at (0.5,0.8) {People};
+  \fi
+  \abox{\onK}{1.75}{0.35}{2.25}{0.9}{Classifier}{In: Y's parents}{Out: accept or reject}{Classifier}
+  \abox{\onG}{5.15}{0.35}{2.85}{0.9}{Counterfactual generator}{In: one rejected person}{Out: cheapest good action}{Counterfactual\\generator}
+  \abox{\onS}{9.15}{0.35}{1.95}{0.9}{Action store}{Rechecks what a}{Change affects}{Action store}
+  \abox{\onE}{1.75}{3.8}{3.0}{0.9}{Learner}{Every sample: update statistics}{Strong evidence: update the model}{Learner}
+  \abox{\onR}{5.4}{3.8}{2.6}{0.9}{Monitor}{Curves, group gaps,}{the edge behind a gap}{Monitor}
+  \boxcols{\onM}
+  \draw[\bdraw,line width=1pt,fill=white,rounded corners=3pt] (1.75,1.85) rectangle ++(6.25,1.2);
+  \ifarchfull
+    \node[text=\btext,font=\bfseries\fontsize{14.5}{17}\selectfont] at (4.875,2.03) {Causal model};
+  \else
+    \node[text=\btext,font=\bfseries\fontsize{17}{20}\selectfont] at (4.875,2.03) {Causal model};
+  \fi
+  \ainner{\onM}{1.9}{2.2}{Y equation}{the classifier's curves}{Y equation}
+  \ainner{\onM}{5.0}{2.2}{Feature equations}{how variables move each other}{Feature equations}
+  % decision path
+  \aarr{\cD}{\wD}{(1.0,0.8) -- (1.75,0.8)}
+  \aarr{\cD}{\wD}{(4.0,0.6) -- (5.15,0.6)}
+  \aarr{\cD}{\wD}{(5.15,1.0) -- (4.0,1.0)}
+  \aarr{\cD}{\wD}{(8.0,0.6) -- (9.15,0.6)}
+  \aarr{\cD}{\wD}{(10.1,0.35) -- (10.1,0.1) -- (0.5,0.1) -- (0.5,0.55)}
+  \aarr{\cD}{\wD}{(2.875,0.35) -- (2.875,0.12)}
+  \aarr{\cD}{\wD}{(2.875,2.2) -- (2.875,1.25)}
+  \aarr{\cD}{\wD}{(6.575,2.2) -- (6.575,1.25)}
+  % learning path
+  \aarr{\cL}{\wL}{(0.5,1.05) -- (0.5,4.25) -- (1.75,4.25)}
+  \aarr{\cL}{\wL}{(3.25,3.8) -- (3.25,3.05)}
+  % change path
+  \aarr{\cC}{\wC}{(4.4,3.8) -- (4.4,3.32) -- (10.1,3.32) -- (10.1,1.25)}
+  \aarr{\cC}{\wC}{(6.7,3.32) -- (6.7,3.8)}
+  \aarr{\cC}{\wC}{(9.15,1.0) -- (8.0,1.0)}
+  \aarr{\cC}{\wC}{(10.9,1.25) -- (10.9,4.25) -- (8.0,4.25)}
+  \fill[\cC] (6.7,3.32) circle (0.05);
+  % arrow labels (detailed version only)
+  \alab{1.375}{0.5}{applies}
+  \alab{4.575}{0.33}{rejected}
+  \alab{4.575}{1.2}{checks}
+  \alab{8.575}{0.33}{action}
+  \alab{8.575}{1.2}{repair}
+  \alab{6.3}{0.1}{decisions and actions go back to people}
+  \alab[west]{2.95}{0.23}{accepted}
+  \alab[east]{2.8}{1.55}{reads the curves}
+  \alab[east]{6.33}{1.55}{simulates actions}
+  \alab[west]{0.6}{3.15}{data, late\\outcomes}
+  \alab[west]{3.45}{3.42}{commit}
+  \alab{8.95}{3.5}{Change: edge, knot range, $\delta$}
+  \alab{9.45}{4.09}{validity results}
+  % step numbers
+  \abadge{1}{1}{1.375}{0.8}
+  \abadge{1}{2}{4.575}{0.6}
+  \abadge{1}{3}{6.575}{1.55}
+  \abadge{1}{4}{8.575}{0.6}
+  \abadge{2}{5}{0.5}{2.6}
+  \abadge{2}{6}{3.25}{3.42}
+  \abadge{3}{7}{10.1}{2.3}
+  \abadge{3}{8}{6.98}{3.56}
+\end{scope}
+\end{page}}
+
+\newcommand{\pa}{\mathsf{pa}}
+
+\begin{document}
+
+% ===================================================== LOGO
+\begin{frame}[plain]
+  \tb{4.6}{4.37}{3.35}{\includegraphics[width=4.6in]{assets/cisuc_logo.png}}
+\end{frame}
+
+% ===================================================== TITLE
+\begin{frame}[plain]
+  \titleSlide{Living Causal KAN}{An online architecture for fair causal recourse}
+  \tb{11}{0.92}{4.3}{\color{ink}\fs{19}{22}Tiago Silva}
+  \tb{11}{0.92}{4.7}{\color{grey}\fs{13}{16}Supervisors: Prof.\ Pedro Henriques Abreu \textperiodcentered{} Prof.\ Bruno Veloso}
+  \tb{11}{0.92}{5.2}{\color{ink}\fs{14}{18}\textbf{CISUC \textperiodcentered{} Data-Centric AI Lab}\\
+    {\color{body}\fs{14}{18}Department of Informatics Engineering, University of Coimbra}}
+  \tb{11}{0.92}{5.95}{\color{grey}\fs{13}{16}Design proposal \textperiodcentered{} November 2026 \textperiodcentered{} not yet implemented or tested}
+\end{frame}
+
+% ===================================================== OUTLINE
+\pageset{Outline}{01}
+\begin{frame}
+  \ctitle{Outline}
+  \tb{10.2}{0.85}{2.25}{\color{body}\fs{19}{25}\setlength{\parskip}{8pt}%
+    \begin{enumerate}
+      \item \textbf{The problem}: recourse under drift;
+      \item \textbf{The core idea};
+      \item \textbf{The architecture}: causal model, classifier, generator, each after its questions;
+      \item \textbf{The flow}: decide, learn, react to a change;
+      \item \textbf{Explaining drift}: two questions, then the monitor.
+    \end{enumerate}}
+\end{frame}
+
+% ===================================================== PROBLEM
+\pageset{The problem}{02}
+\begin{frame}
+  \ctitle{Recourse is a promise, and drift can break it}
+  \begin{page}
+    \draw[-{Latex[length=3mm]},lgrey,line width=1.6pt] (0.85,2.45) -- (12.45,2.45);
+    \fill[ink] (2.55,2.45) circle (0.09);
+    \fill[cred] (6.65,2.45) circle (0.09);
+    \fill[ink] (10.75,2.45) circle (0.09);
+  \end{page}
+  \tb{3.4}{0.85}{2.72}{\centering{\bfseries\color{ink}\fs{17}{21}Today\par}\vspace{3pt}{\color{body}\fs{15}{19}Rejected, and told what to change\par}}
+  \tb{3.4}{4.95}{2.72}{\centering{\bfseries\color{cred}\fs{17}{21}Drift\par}\vspace{3pt}{\color{body}\fs{15}{19}The world changes, and the model is updated\par}}
+  \tb{3.4}{9.05}{2.72}{\centering{\bfseries\color{ink}\fs{17}{21}Later\par}\vspace{3pt}{\color{body}\fs{15}{19}The person did what was asked, and is rejected again\par}}
+  \hrl{0.85}{4.2}{11.6}
+  \lowcol{0.85}{4.45}{3.6}{Still valid?}{Is an action already issued still likely to work?}
+  \lowcol{4.85}{4.45}{3.6}{Still fair?}{Does the burden of drift fall on some groups more than others?}
+  \lowcol{8.85}{4.45}{3.6}{Why?}{Which causal mechanism changed, and what did that cause?}
+  \slidefoot{Recourse can stop working after model updates (Rawal et al.\ 2020; Upadhyay et al.\ 2021)\\ and with the passage of time alone (De Toni et al.\ 2025).}
+\end{frame}
+
+% ===================================================== REQUIREMENTS
+\pageset{The problem}{03}
+\begin{frame}
+  \ctitle{What the system must do}
+  \reqcol{0.85}{Causal}{An action is an intervention, so its knock-on effects count.}
+  \reqcol{3.85}{Fair}{Cost and validity gaps between groups are tracked as the model changes.}
+  \reqcol{6.85}{Online}{One pass over the stream, fixed memory and time per sample, and outcomes that arrive late.}
+  \reqcol{9.85}{Explainable}{Every change can be read as a curve on one causal edge.}
+  \hrl{0.85}{4.85}{11.6}
+  \tb{11.6}{0.85}{5.1}{\color{ink}\bfseries\fs{21}{26}Goal: keep recourse valid and fair as the world changes, and show why it changed.}
+\end{frame}
+
+% ===================================================== CORE IDEA
+\pageset{The core idea}{04}
+\begin{frame}
+  \ctitle{One causal model, changed by small edits you can read}
+  \begin{page}
+    \tikzset{cn/.style={draw=ink,line width=1pt,fill=white,rounded corners=3pt,minimum height=0.48in,minimum width=1.0in,inner sep=2pt,text=ink,font=\bfseries\fontsize{12.5}{15}\selectfont}}
+    % edges
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (1.85,4.75) -- (3.05,4.75);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (4.05,4.75) -- (5.25,4.75);
+    \draw[-{Latex[length=2mm]},cred,line width=1.4pt] (6.25,4.75) -- (7.4,4.75);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt,rounded corners=5pt] (3.55,4.51) -- (3.55,3.3) -- (7.65,3.3) -- (7.65,4.51);
+    % nodes
+    \node[cn] at (1.35,4.75) {Education};
+    \node[cn] at (3.55,4.75) {Income};
+    \node[cn] at (5.75,4.75) {Savings};
+    \node[cn,minimum width=0.5in] at (7.65,4.75) {Y};
+    % curves on the edges
+    \minibox{2.42}{4.75}{0.78}{0.56}{ink}
+    \minicurve{2.42}{4.75}{0.78}{0.56}{ink,line width=1.3pt}{(1-exp(-3*\t))/0.95}
+    \minibox{4.62}{4.75}{0.78}{0.56}{ink}
+    \minicurve{4.62}{4.75}{0.78}{0.56}{ink,line width=1.3pt}{\t*\t}
+    \minibox{5.6}{3.3}{0.78}{0.56}{ink}
+    \minicurve{5.6}{3.3}{0.78}{0.56}{ink,line width=1.3pt}{0.5+0.45*sin(180*\t-90)}
+    \minibox{6.8}{4.75}{0.78}{0.56}{cred}
+    \minicurve{6.8}{4.75}{0.78}{0.56}{grey,line width=1pt,dash pattern=on 2pt off 1.5pt}{\t}
+    \minicurve{6.8}{4.75}{0.78}{0.56}{cred,line width=1.4pt}{\t-0.22*(sin(180*\t))^2}
+    \node[text=cred,font=\bfseries\fontsize{12}{14}\selectfont] at (6.8,4.25) {drift};
+    \node[anchor=north west,text=grey,inner sep=0pt,align=left,font=\fontsize{12.5}{16}\selectfont] at (0.85,5.3) {Each small box is one learned curve on one causal edge.\\Red: the only edge that changed. Dashed: its old curve.};
+  \end{page}
+  \npoint{2.2}{1}{One curve per causal edge}{Each edge is a learned spline, so its effect can be plotted.}
+  \npoint{3.4}{2}{Small, sparse edits}{$\phi_e^{t}=\phi_e^{t-1}+\delta_e^{t}$, and $\delta_e$ stays exactly zero without strong evidence.}
+  \npoint{4.85}{3}{One message}{Each edit is published as a Change, and the other parts react to it.}
+  \slidefoot{One curve per edge: a node adds the curves of its parents. Depth comes from the causal paths.}
+\end{frame}
+
+% ===================================================== AT A GLANCE
+\pageset{The architecture}{05}
+\begin{frame}
+  \ctitle{The architecture at a glance}
+  \archfulltrue
+  \archdiagram{1.1}{1.98}{1}{0}
+  \begin{page}
+    \draw[ink,line width=1.6pt] (2.6,6.97) -- (3.0,6.97);
+    \node[anchor=west,inner sep=0pt,text=body,font=\fontsize{12.5}{15}\selectfont] at (3.08,6.97) {Decision path, steps 1--4};
+    \draw[amber,line width=1.6pt] (5.6,6.97) -- (6.0,6.97);
+    \node[anchor=west,inner sep=0pt,text=body,font=\fontsize{12.5}{15}\selectfont] at (6.08,6.97) {Learning path, steps 5--6};
+    \draw[cred,line width=1.6pt] (8.6,6.97) -- (9.0,6.97);
+    \node[anchor=west,inner sep=0pt,text=body,font=\fontsize{12.5}{15}\selectfont] at (9.08,6.97) {Change path, steps 7--8};
+  \end{page}
+\end{frame}
+
+% ===================================================== WHO DOES WHAT
+\pageset{The architecture}{06}
+\begin{frame}
+  \ctitle{Who does what}
+  \tb{11.6}{0.85}{2.05}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.95}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{2.5in} >{\raggedright\arraybackslash}p{2.65in} >{\raggedright\arraybackslash}p{3.4in} >{\raggedright\arraybackslash}p{2.5in}@{}}
+      \toprule
+      Part & Takes in & Gives back & Trained? \\
+      \midrule
+      \textcolor{cred}{Classifier} & A person's features & Accept or reject & No: reuses the Y equation \\
+      \textcolor{cred}{Causal model} & A variable and a change to it & What happens to the others & Yes, by the Learner \\
+      \textcolor{cred}{Counterfactual generator} & One rejected person & The cheapest action likely to work & No: it is a search \\
+      \midrule
+      Action store & A Change & The issued actions it can affect & No \\
+      Learner & Data and late outcomes & A Change, when evidence is strong & The only part that learns \\
+      Monitor & Each Change, validity results & Curves, gaps, the edge behind a gap & No: it only reads \\
+      \bottomrule
+    \end{tabular}}
+  \slidefoot{Three rules: only the Learner writes to the causal model \textperiodcentered{} everything else reacts to a Change \textperiodcentered{} the Monitor only reads.\\
+    Setup runs once before the stream and produces version 0 of the causal model.}
+\end{frame}
+
+% ===================================================== GRAPH AS A KAN
+\pageset{The architecture}{07}
+\begin{frame}
+  \qtitle{causal model}{Can the causal graph be a KAN?}
+  \tb{4.5}{0.85}{1.95}{\bfseries\color{grey}\fs{15}{18}A standard KAN}
+  \tb{6.3}{6.1}{1.95}{\bfseries\color{cred}\fs{15}{18}The causal graph as a KAN}
+  \begin{page}
+    % --- standard KAN: unnamed hidden nodes, every node to the next layer
+    \foreach \a in {2.6,3.15,3.7} {\foreach \b in {2.45,2.9,3.35,3.8} {\draw[lgrey,line width=0.7pt] (1.45,\a) -- (3.1,\b);}}
+    \foreach \b in {2.45,2.9,3.35,3.8} {\draw[lgrey,line width=0.7pt] (3.1,\b) -- (4.75,3.15);}
+    \foreach \a/\l in {2.6/$x_1$,3.15/$x_2$,3.7/$x_3$} {\node[circle,draw=ink,line width=0.9pt,fill=white,minimum size=0.36in,inner sep=0pt,text=ink,font=\fontsize{12}{14}\selectfont] at (1.45,\a) {\l};}
+    \foreach \b in {2.45,2.9,3.35,3.8} {\node[circle,draw=grey,line width=0.9pt,fill=white,minimum size=0.3in,inner sep=0pt,text=grey,font=\fontsize{12}{14}\selectfont] at (3.1,\b) {?};}
+    \node[circle,draw=ink,line width=0.9pt,fill=white,minimum size=0.36in,inner sep=0pt,text=ink,font=\bfseries\fontsize{12}{14}\selectfont] at (4.75,3.15) {Y};
+    % --- the causal graph with the same form
+    \tikzset{cn/.style={draw=ink,line width=1pt,fill=white,rounded corners=3pt,minimum height=0.44in,inner sep=2pt,text=ink,font=\bfseries\fontsize{12}{14}\selectfont}}
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (7.0,3.3) -- (8.05,3.3);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (8.85,3.3) -- (9.9,3.3);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (10.75,3.3) -- (11.85,3.3);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt,rounded corners=5pt] (8.45,3.08) -- (8.45,2.55) -- (12.07,2.55) -- (12.07,3.08);
+    \draw[-{Latex[length=1.6mm]},grey,line width=0.9pt] (8.45,3.84) -- (8.45,3.53);
+    \draw[-{Latex[length=1.6mm]},grey,line width=0.9pt] (10.33,3.84) -- (10.33,3.53);
+    \node[text=grey,inner sep=1pt,font=\fontsize{12}{14}\selectfont] at (8.45,3.95) {$u$};
+    \node[text=grey,inner sep=1pt,font=\fontsize{12}{14}\selectfont] at (10.33,3.95) {$u$};
+    \node[cn,minimum width=0.9in] at (6.55,3.3) {Education};
+    \node[cn,minimum width=0.8in] at (8.45,3.3) {Income};
+    \node[cn,minimum width=0.85in] at (10.33,3.3) {Savings};
+    \node[cn,minimum width=0.45in] at (12.07,3.3) {Y};
+    \minibox{7.5}{3.3}{0.66}{0.48}{ink}
+    \minicurve{7.5}{3.3}{0.66}{0.48}{ink,line width=1.2pt}{(1-exp(-3*\t))/0.95}
+    \minibox{9.37}{3.3}{0.66}{0.48}{ink}
+    \minicurve{9.37}{3.3}{0.66}{0.48}{ink,line width=1.2pt}{\t*\t}
+    \minibox{11.3}{3.3}{0.66}{0.48}{ink}
+    \minicurve{11.3}{3.3}{0.66}{0.48}{ink,line width=1.2pt}{\t}
+    \minibox{10.25}{2.55}{0.66}{0.48}{ink}
+    \minicurve{10.25}{2.55}{0.66}{0.48}{ink,line width=1.2pt}{0.5+0.45*sin(180*\t-90)}
+  \end{page}
+  \tb{11.6}{0.85}{4.2}{\fs{13.5}{16.5}\renewcommand{\arraystretch}{1.22}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{2.1in} >{\raggedright\arraybackslash}p{4.1in} >{\raggedright\arraybackslash}p{4.9in}@{}}
+      \toprule
+      & Standard KAN & Causal graph as a KAN \\
+      \midrule
+      Hidden nodes & Unnamed and unmeasured & Real variables you measure \\
+      Wiring & Every node to the next layer & Causal edges only, and they can skip a layer \\
+      Training & All at once, to predict Y & Each node on its own measured column \\
+      Action $\mathsf{do}(a)$ & Not defined & Set a node, then recompute what follows it \\
+      \bottomrule
+    \end{tabular}}
+  \choice{5.92}{Yes. Make the graph the KAN, with measured variables as its nodes, so an action has a meaning.}
+  \slidefoot{A KAN has learned curves on edges and sums at nodes (Liu et al.\ 2024), which is also the form of an additive causal model.}
+\end{frame}
+
+% ===================================================== INSIDE A NODE
+\pageset{The architecture}{08}
+\begin{frame}
+  \qtitle{causal model}{Why one curve per parent, and no hidden layers?}
+  \tb{11.6}{0.85}{1.98}{\color{body}\fs{16}{20}One curve per edge: a node adds the curves of its parents, so Y, with two parents, has two curves.\par}
+  \tb{11.6}{0.85}{2.5}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.32}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.4in} >{\raggedright\arraybackslash}p{1.65in} >{\raggedright\arraybackslash}p{2.15in} >{\raggedright\arraybackslash}p{2.75in}@{}}
+      \toprule
+      Inside a node & Interactions & Drift on one edge & Online update \\
+      \midrule
+      \textcolor{cred}{\textbf{One curve per parent}} (this design) & None & Yes & Exact, from running statistics \\
+      \textbf{Plus a curve for a chosen pair}, $\phi(x_i,x_k)$ & Chosen pairs & Yes, as a surface & Exact, with more coefficients \\
+      \textbf{Hidden layers}, as in a standard KAN & All & No & Needs gradient training \\
+      \bottomrule
+    \end{tabular}}
+  \lowcol{0.85}{4.25}{3.6}{Readable}{Each causal edge has its own curve, so a drift lands on one edge.}
+  \lowcol{4.85}{4.25}{3.6}{Online}{Each feature equation stays linear in its coefficients, so fixed-size statistics are enough.}
+  \lowcol{8.85}{4.25}{3.6}{Still deep}{Curves compose along causal paths: education reaches Y through income.}
+  \hrl{0.85}{5.42}{11.6}
+  \choice{5.56}{One curve per parent, added at the node. A pair curve only if a test shows it is needed.}
+  \slidefoot{The price: it cannot say ``savings help more when income is low''. Noise is added in all three, so it can still be recovered.\\
+    KaCGM gives each node its own network and prefers no hidden layers when that is no worse (Almod\'ovar et al.\ 2026).}
+\end{frame}
+
+% ===================================================== CAUSAL MODEL
+\pageset{The architecture}{09}
+\begin{frame}
+  \ctitle{Causal model: how the world works}
+  \tb{11.6}{0.85}{1.98}{\color{grey}\fs{16}{20}Answers: if this changes, what else changes?}
+  \tb{11.6}{0.85}{2.5}{\fs{15.5}{20}\renewcommand{\arraystretch}{1.6}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{2.2in} >{\raggedright\arraybackslash}p{4.3in} >{\raggedright\arraybackslash}p{4.7in}@{}}
+      \toprule
+      Feature equations & $x_j=\sum_{i<j}\phi_{ij}^{t}(x_i)+u_j$ & How variables move each other, such as income on savings \\
+      Y equation & $P(Y{=}1\mid\pa_Y)=\sigma\big(\sum_{i\in\pa_Y}\phi_{iY}^{t}(x_i)\big)$ & How Y's parents drive the outcome. The classifier uses this equation. \\
+      Versioned curves & $\phi_e^{t}=\phi_e^{t-1}+\delta_e^{t}$ & Every committed change is kept, so any past version can be rebuilt \\
+      \bottomrule
+    \end{tabular}}
+  \tb{11.6}{0.85}{5.2}{{\bfseries\color{cred}\fs{16}{19}Setup, once before the stream\par}\vspace{5pt}{\color{body}\fs{15}{19}Fix the variable order from domain knowledge, place spline knots at warm-up quantiles, and fit the first curves. The order is fixed, but the graph is not: a missing edge is a curve at zero.\par}}
+  \slidefoot{Built on CAM (B\"uhlmann et al.\ 2014) and KaCGM (Almod\'ovar et al.\ 2026). Not novel, except sparse versions of spline coefficients (adapted).}
+\end{frame}
+
+% ===================================================== Y EQUATION
+\pageset{The architecture}{10}
+\begin{frame}
+  \qtitle{classifier}{What is Y, and what makes a variable its parent?}
+  \begin{page}
+    \tikzset{vn/.style={rounded corners=3pt,fill=white,minimum height=0.44in,inner sep=2pt,font=\bfseries\fontsize{12.5}{15}\selectfont},
+      vl/.style={inner sep=0pt,font=\fontsize{12}{14}\selectfont}}
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (1.85,2.75) -- (2.42,2.75);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (3.28,2.75) -- (3.75,2.75);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (4.65,2.75) -- (5.07,2.75);
+    \draw[-{Latex[length=2mm]},grey,line width=1.1pt] (5.53,2.75) -- (5.98,2.75);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt,rounded corners=5pt] (2.85,2.53) -- (2.85,2.12) -- (5.3,2.12) -- (5.3,2.53);
+    \node[vn,draw=ink,line width=1pt,text=ink,minimum width=1.0in] at (1.35,2.75) {Education};
+    \node[vn,draw=cred,line width=1.5pt,text=ink,minimum width=0.85in] at (2.85,2.75) {Income};
+    \node[vn,draw=cred,line width=1.5pt,text=ink,minimum width=0.9in] at (4.2,2.75) {Savings};
+    \node[vn,fill=ink,draw=ink,line width=1pt,text=white,minimum width=0.46in] at (5.3,2.75) {Y};
+    \node[vn,draw=grey,line width=1pt,text=grey,minimum width=1.05in] at (6.52,2.75) {Card limit};
+    \node[vl,text=grey] at (1.35,3.12) {indirect cause};
+    \node[vl,text=cred] at (2.85,3.12) {parent};
+    \node[vl,text=cred] at (4.2,3.12) {parent};
+    \node[vl,text=ink] at (5.3,3.12) {outcome};
+    \node[vl,text=grey] at (6.52,3.12) {effect of Y};
+  \end{page}
+  \tb{6.4}{0.85}{3.42}{\color{ink}\fs{15}{19}$P(Y{=}1\mid\pa_Y)=\sigma\big(\phi_{\text{income}}(\text{income})+\phi_{\text{savings}}(\text{savings})\big)$}
+  \tb{6.4}{0.85}{3.76}{\color{grey}\fs{13}{16}The Y equation: the chance of the favourable value, given Y's parents.}
+  \tb{4.75}{7.7}{1.92}{\color{body}\fs{14.5}{18}\setlength{\parskip}{6pt}{\bfseries\color{ink}Y} is what really happens: the person repays ($Y{=}1$, the favourable value) or does not ($Y{=}0$). The bank's decision only predicts it.\par
+    {\bfseries\color{ink}A parent} is a direct cause: change it with everything else held fixed, and Y's chance still moves.\par
+    In the model, a parent is an edge whose curve is not zero.\par}
+  \tb{11.6}{0.85}{4.15}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.3}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.8in} >{\raggedright\arraybackslash}p{2.5in} >{\raggedright\arraybackslash}p{2.3in} >{\raggedright\arraybackslash}p{1.75in} >{\raggedright\arraybackslash}p{2.35in}@{}}
+      \toprule
+      & Example & Changing it changes Y? & Classifier reads it? & Generator can use it? \\
+      \midrule
+      \textcolor{cred}{\textbf{Parent}} & Income, savings & Yes, directly & Yes & Yes \\
+      \textbf{Indirect cause} & Education & Yes, through income & No & Yes, through income \\
+      \textbf{Effect of Y} & Card limit at other banks & No & No & No: that is gaming \\
+      \bottomrule
+    \end{tabular}}
+  \choice{5.8}{The classifier reads only Y's parents. The generator can act through any cause of Y, never on an effect.}
+  \slidefoot{Illustrative example. Gaming and improvement: K\"onig et al.\ 2025, where a master's degree is a parent\\ of qualification and GitHub activity is an effect of it.}
+\end{frame}
+
+% ===================================================== CLASSIFIER
+\pageset{The architecture}{11}
+\begin{frame}
+  \ctitle{Classifier: the Y equation plus a threshold}
+  \begin{page}
+    \begin{scope}[yshift=-0.2in]
+    \tikzset{lab/.style={anchor=east,inner sep=0pt,font=\fontsize{14.5}{17}\selectfont,text=ink},
+      val/.style={inner sep=1.5pt,fill=white,text=ink,font=\bfseries\fontsize{12.5}{15}\selectfont}}
+    \node[lab] at (2.15,2.4) {Income 1,500};
+    \node[lab] at (2.15,3.05) {Savings 2,000};
+    \node[lab,text=grey] at (2.15,3.7) {Education};
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (2.25,2.4) -- (2.8,2.4);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (2.25,3.05) -- (2.8,3.05);
+    \draw[grey,line width=0.9pt,dash pattern=on 3pt off 2.5pt] (2.25,3.7) -- (2.8,3.7);
+    \node[anchor=west,inner sep=0pt,text=grey,font=\fontsize{12.5}{15}\selectfont] at (2.92,3.7) {not a parent of Y, so not read};
+    \minibox{3.3}{2.4}{0.95}{0.52}{ink}
+    \minicurve{3.3}{2.4}{0.95}{0.52}{ink,line width=1.3pt}{0.5+0.45*sin(180*\t-90)}
+    \minibox{3.3}{3.05}{0.95}{0.52}{ink}
+    \minicurve{3.3}{3.05}{0.95}{0.52}{ink,line width=1.3pt}{\t}
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (3.8,2.4) -- (5.0,2.68);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (3.8,3.05) -- (5.0,2.8);
+    \node[val] at (4.3,2.51) {$-0.40$};
+    \node[val] at (4.3,2.93) {$+0.08$};
+    \node[circle,draw=ink,line width=1pt,minimum size=0.5in,inner sep=0pt,text=ink,font=\fontsize{18}{20}\selectfont] at (5.27,2.73) {$\Sigma$};
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (5.54,2.73) -- (6.1,2.73);
+    \node[val,fill=none] at (5.82,2.55) {$-0.32$};
+    \minibox{6.6}{2.73}{0.95}{0.62}{ink}
+    \minicurve{6.6}{2.73}{0.95}{0.62}{ink,line width=1.3pt}{1/(1+exp(-9*(\t-0.5)))}
+    \node[text=grey,font=\fontsize{12.5}{15}\selectfont] at (6.6,3.25) {sigmoid};
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (7.1,2.73) -- (7.7,2.73);
+    \node[val,fill=none] at (7.47,2.55) {0.42};
+    \node[draw=ink,line width=1pt,rounded corners=3pt,minimum width=1.9in,minimum height=0.56in,inner sep=2pt,text=ink,font=\bfseries\fontsize{13.5}{16}\selectfont] at (8.65,2.73) {$\geq$ threshold 0.50?};
+    \draw[-{Latex[length=2mm]},lgrey,line width=1.1pt] (9.62,2.58) -- (10.35,2.35);
+    \draw[-{Latex[length=2mm]},ink,line width=1.1pt] (9.62,2.88) -- (10.35,3.1);
+    \node[anchor=west,inner sep=0pt,text=grey,font=\bfseries\fontsize{15}{18}\selectfont] at (10.45,2.33) {Accept};
+    \node[anchor=west,inner sep=0pt,text=cred,font=\bfseries\fontsize{15}{18}\selectfont] at (10.45,3.12) {Reject};
+    \node[anchor=west,inner sep=0pt,text=grey,font=\fontsize{12.5}{15}\selectfont] at (10.45,3.42) {to the generator};
+    \draw[lgrey,line width=0.9pt,dash pattern=on 4pt off 3pt,rounded corners=3pt] (2.72,2.02) rectangle (7.22,3.46);
+    \node[anchor=south west,inner sep=2pt,text=grey,font=\fontsize{12.5}{15}\selectfont] at (2.72,2.02) {the Y equation, read from the causal model};
+    \end{scope}
+  \end{page}
+  \lowcol{0.85}{4.55}{3.6}{What it is}{No separately trained model. It takes a person's features and uses only Y's parents.}
+  \lowcol{4.85}{4.55}{3.6}{Why causes only}{Upstream drift cannot move the decision rule, and the rule changes only at a commit.}
+  \lowcol{8.85}{4.55}{3.6}{The price}{It may lose accuracy, and that loss must be measured.}
+  \slidefoot{Illustrative numbers. Built on the Logistic-KAN of KaCGM (Almod\'ovar et al.\ 2026) and invariant prediction (Peters et al.\ 2016). Adapted.}
+\end{frame}
+
+% ===================================================== OTHER GENERATORS
+\pageset{The architecture}{12}
+\begin{frame}
+  \qtitle{counterfactual generator}{What kind of system should the generator be?}
+  \tb{11.6}{0.85}{1.98}{\fs{13.5}{16.5}\renewcommand{\arraystretch}{1.3}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.1in} >{\raggedright\arraybackslash}p{3.65in} >{\raggedright\arraybackslash}p{4.4in}@{}}
+      \toprule
+      Kind & What you gain & Trouble in this system \\
+      \midrule
+      \textcolor{cred}{\textbf{Gradient search}} (this design): DiCE, Karimi et al.\ 2020 & No training, and always uses the current curves & Can stop at a local optimum, and takes time per person \\
+      \textbf{Exact solver}: MACE, Russell & A provably optimal action & Every spline must be encoded, again at each commit, and run time depends on the solver \\
+      \textbf{Evolutionary search}: MOC, CERTIFAI & No gradients needed, and several options per person & Many model calls per person, and random results \\
+      \textbf{Learned generator}: Mahajan et al., CRUDS, or a KAN & One fast pass per person & A second model that drifts. Each Change can invalidate it, and its outputs must still be simulated and checked \\
+      \textbf{Data-based search}: FACE, Prototypes & Actions land near real people & Raw data must be kept, which breaks fixed memory and goes stale, and it has no causal effects on its own \\
+      \bottomrule
+    \end{tabular}}
+  \choice{5.82}{A gradient search. If speed becomes a problem, use a learned generator only as a starting point: a stale start slows the search, but the action is still simulated and checked.}
+\end{frame}
+
+% ===================================================== SEARCH LOOP
+\pageset{The architecture}{13}
+\begin{frame}
+  \qtitle{counterfactual generator}{How does a search find an action within a time limit?}
+  \begin{page}
+    \tikzset{sb/.style={draw=ink,line width=1pt,fill=white,rounded corners=3pt,minimum width=1.6in,minimum height=0.86in,inner sep=3pt,align=center,text=ink,font=\fontsize{11.5}{14}\selectfont}}
+    \foreach \a/\b in {2.51/2.85,4.45/4.79,6.39/6.73,8.33/8.67,10.27/10.61} {\draw[-{Latex[length=2mm]},ink,line width=1.1pt] (\a,3.0) -- (\b,3.0);}
+    \draw[-{Latex[length=2mm]},cred,line width=1.3pt,rounded corners=5pt] (9.47,2.57) -- (9.47,2.27) -- (5.59,2.27) -- (5.59,2.57);
+    \draw[-{Latex[length=2mm]},grey,line width=1.1pt,rounded corners=5pt] (11.41,3.43) -- (11.41,3.74) -- (3.65,3.74) -- (3.65,3.43);
+    \node[sb] at (1.71,3.0) {{\bfseries\fontsize{13.5}{16}\selectfont Recover noise}\\this person's $u_j$};
+    \node[sb] at (3.65,3.0) {{\bfseries\fontsize{13.5}{16}\selectfont Pick targets}\\which variables};
+    \node[sb] at (5.59,3.0) {{\bfseries\fontsize{13.5}{16}\selectfont Simulate}\\through the curves};
+    \node[sb] at (7.53,3.0) {{\bfseries\fontsize{13.5}{16}\selectfont Score}\\$P(Y{=}1)$ and cost};
+    \node[sb] at (9.47,3.0) {{\bfseries\fontsize{13.5}{16}\selectfont Adjust amounts}\\one gradient step};
+    \node[sb] at (11.41,3.0) {{\bfseries\fontsize{13.5}{16}\selectfont Keep the best}\\cheapest passing};
+    \node[inner sep=2pt,fill=white,text=cred,font=\fontsize{12.5}{15}\selectfont] at (7.53,2.27) {repeat until it passes or time runs out};
+    \node[inner sep=2pt,fill=white,text=grey,font=\fontsize{12.5}{15}\selectfont] at (7.53,3.74) {next set of targets};
+  \end{page}
+  \lowcol{0.85}{4.2}{3.6}{Which variables?}{With $d$ variables there are $2^d$ possible sets, so several small sets are tried in parallel.}
+  \lowcol{4.85}{4.2}{3.6}{How much?}{Splines have gradients, so each step follows every path. For income: $\phi'_{\text{inc},Y}+\phi'_{\text{sav},Y}\,\phi'_{\text{inc},\text{sav}}$}
+  \lowcol{8.85}{4.2}{3.6}{When does it stop?}{At a time limit per person. It returns the cheapest action that passed, or no action, and it skips untrusted nodes.}
+  \hrl{0.85}{5.55}{11.6}
+  \choice{5.7}{Try several small sets of variables, adjust the amounts by gradient, and stop at a time limit per person.}
+  \slidefoot{Pattern from Karimi et al.\ 2020: gradient search on the amounts, for several sets of targets. The time limit comes from the online requirement.}
+\end{frame}
+
+% ===================================================== GENERATOR
+\pageset{The architecture}{14}
+\begin{frame}
+  \ctitle{Counterfactual generator: a search, not a model}
+  \begin{page}
+    \foreach \x/\n in {1.05/1,5.05/2,9.05/3} {
+      \node[circle,fill=cred,text=white,inner sep=0pt,minimum size=0.36in,font=\bfseries\fontsize{14}{14}\selectfont] at (\x,2.2) {\n};
+    }
+    \draw[-{Latex[length=2.5mm]},lgrey,line width=1.4pt] (4.15,2.2) -- (4.75,2.2);
+    \draw[-{Latex[length=2.5mm]},lgrey,line width=1.4pt] (8.15,2.2) -- (8.75,2.2);
+  \end{page}
+  \tb{2.9}{1.35}{2.05}{\bfseries\color{ink}\fs{19}{23}Recover noise}
+  \tb{2.9}{5.35}{2.05}{\bfseries\color{ink}\fs{19}{23}Simulate}
+  \tb{2.9}{9.35}{2.05}{\bfseries\color{ink}\fs{19}{23}Check}
+  \tb{3.6}{0.85}{2.65}{\color{ink}\fs{17}{22}$u_j=x_j-f_j(\pa_j)$}
+  \tb{3.6}{4.85}{2.65}{\color{ink}\fs{17}{22}$\mathsf{do}(a)$, keep the same $u_j$}
+  \tb{3.6}{8.85}{2.65}{\color{ink}\fs{17}{22}$P(Y{=}1\mid\mathbf{x}^{\mathsf{after}})\geq 1-\varepsilon$}
+  \tb{3.6}{0.85}{3.15}{\color{body}\fs{14.5}{18.5}How far this person sits from what the equations predict.}
+  \tb{3.6}{4.85}{3.15}{\color{body}\fs{14.5}{18.5}Apply the action and recompute everything downstream of it.}
+  \tb{3.6}{8.85}{3.15}{\color{body}\fs{14.5}{18.5}Score the simulated person with the classifier's curves.}
+  \hrl{0.85}{4.25}{11.6}
+  \tb{11.6}{0.85}{4.45}{\color{grey}\fs{15}{19}Repeat for each candidate action, and keep the cheapest that passes:}
+  \tb{11.6}{0.85}{4.85}{\color{ink}\fs{21}{26}$\min_a\ \mathsf{cost}(a;\mathbf{x})\quad\text{subject to}\quad P(Y{=}1\mid\mathbf{x}^{\mathsf{after}}(a))\geq 1-\varepsilon$}
+  \tb{11.6}{0.85}{5.48}{\color{body}\fs{15}{19}{\bfseries\color{ink}Kind of system:} an optimisation solver, run once per rejected person. It has no training and no curves of its own, so it cannot drift by itself.\par}
+  \slidefoot{Built on abduction, action, prediction (Karimi et al.\ 2021), lower-confidence recourse (Karimi et al.\ 2020)\\ and improvement (K\"onig et al.\ 2023). Not novel or adapted.}
+\end{frame}
+
+% ===================================================== DECISION PATH
+\pageset{The flow}{15}
+\begin{frame}
+  \ctitle{Decision path: a person applies}
+  \archfullfalse
+  \archdiagram{0.85}{2.15}{0.69}{1}
+  \pstep{ink}{2.3}{1}{The classifier reads the Y curves at the person's parent values.}
+  \pstep{ink}{3.1}{2}{An accepted person is done. A rejected person goes to the generator.}
+  \pstep{ink}{4.15}{3}{The generator simulates actions through the feature equations, then checks each with the classifier.}
+  \pstep{ink}{5.2}{4}{The cheapest action that passes is stored and sent to the person.}
+  \tb{7.65}{0.85}{5.75}{\color{ink}\bfseries\fs{16}{20}This path reads the causal model and never writes to it.}
+\end{frame}
+
+% ===================================================== WORKED EXAMPLE
+\pageset{The flow}{16}
+\begin{frame}
+  \ctitle{Worked example: why the causal model matters}
+  \tb{11.6}{0.85}{2.0}{\color{grey}\fs{15}{19}Graph: education $\rightarrow$ income $\rightarrow$ savings $\rightarrow$ Y, and income $\rightarrow$ Y. Threshold 0.50.}
+  \tb{11.6}{0.85}{2.55}{\fs{15.5}{19}\renewcommand{\arraystretch}{1.55}%
+    \begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.4in} >{\raggedright\arraybackslash}p{0.95in} >{\raggedright\arraybackslash}p{2.4in} >{\raggedright\arraybackslash}p{0.95in} >{\raggedright\arraybackslash}p{2.9in}@{}}
+      \toprule
+      & Income & Savings & $P(Y{=}1)$ & Result \\
+      \midrule
+      Today & 1,500 & 2,000 & 0.42 & Rejected \\
+      \textbf{Action A:} raise income to 1,800 & 1,800 & 2,300 + 200 = \textbf{2,500} & 0.56 & \textcolor{cred}{\textbf{Chosen: passes, cheaper}} \\
+      \textbf{Action B:} raise savings to 2,900 & 1,500 & 2,900 & 0.53 & Passes, costs more \\
+      \bottomrule
+    \end{tabular}}
+  \lowcol{0.85}{4.7}{5.5}{The person's noise}{The savings equation predicts 1,800 at this income, but the person has 2,000, so $u_{\text{savings}}=+200$. That difference is kept under action A.}
+  \lowcol{6.95}{4.7}{5.5}{What a non-causal search misses}{It treats income and savings as independent, so it does not see that raising income also raises savings.}
+  \slidefoot{Illustrative numbers, not results.}
+\end{frame}
+
+% ===================================================== LEARNING PATH
+\pageset{The flow}{17}
+\begin{frame}
+  \ctitle{Learning path: data arrives}
+  \archfullfalse
+  \archdiagram{0.85}{2.15}{0.69}{2}
+  \pstep{amber}{2.3}{5}{New data and late outcomes reach the Learner, which updates its statistics and edge scores.}
+  \pstep{amber}{3.55}{6}{If an edge's score passes the threshold, the Learner fits a sparse change and commits it to the causal model.}
+  \tb{7.65}{0.85}{5.75}{\color{ink}\bfseries\fs{16}{20}Most samples stop at step 5. The model only moves on strong evidence.}
+\end{frame}
+
+% ===================================================== TWO SPEEDS
+\pageset{The flow}{18}
+\begin{frame}
+  \ctitle{Learner: detecting and updating are one decision}
+  \tb{5.4}{0.85}{2.0}{\bfseries\color{cred}\fs{16}{19}Edge scores along the stream}
+  \begin{page}
+    \begin{scope}[shift={(1.0,5.85)},x=5.05in,y=3.2in]
+      \draw[lgrey,line width=0.9pt] (0,0) -- (1,0);
+      \draw[lgrey,line width=0.9pt] (0,0) -- (0,1);
+      \draw[grey,line width=1pt] plot[smooth] coordinates {(0,.18)(.1,.24)(.2,.16)(.3,.22)(.4,.2)(.5,.27)(.6,.19)(.7,.24)(.8,.2)(.9,.25)(1,.21)};
+      \draw[grey,line width=1pt] plot[smooth] coordinates {(0,.30)(.1,.27)(.2,.35)(.3,.31)(.4,.38)(.5,.33)(.6,.36)(.7,.3)(.8,.34)(.9,.31)(1,.35)};
+      \draw[cred,line width=1.6pt] plot[smooth] coordinates {(0,.1)(.1,.13)(.2,.12)(.3,.17)(.4,.27)(.5,.43)(.6,.58)(.7,.74)};
+      \draw[cred,line width=1.6pt,dash pattern=on 2pt off 2pt] (.7,.74) -- (.71,.1);
+      \draw[cred,line width=1.6pt] plot[smooth] coordinates {(.71,.1)(.8,.13)(.9,.11)(1,.14)};
+      \draw[ink,line width=1pt,dash pattern=on 5pt off 3pt] (0,.68) -- (1,.68);
+      \node[anchor=south west,inner sep=2pt,text=ink,font=\fontsize{13}{15}\selectfont] at (0.01,.68) {threshold $\lambda$};
+      \fill[cred] (.7,.74) circle[radius=3.2pt];
+      \node[anchor=south,inner sep=4pt,text=cred,font=\bfseries\fontsize{13}{15}\selectfont] at (.7,.76) {commit};
+      \node[anchor=north,inner sep=3pt,text=grey,font=\fontsize{12}{14}\selectfont] at (.5,0) {time};
+      \node[anchor=west,inner sep=2pt,text=grey,font=\fontsize{12}{14}\selectfont] at (.73,.47) {other edges: $\delta=0$};
+    \end{scope}
+  \end{page}
+  \tb{5.45}{7.0}{2.0}{\bfseries\color{cred}\fs{16}{19}Every sample}
+  \tb{5.45}{7.0}{2.42}{\color{ink}\fs{15}{20}$A_j\leftarrow F(A_j)+\Phi_j\Phi_j^{\top}$\quad $b_j\leftarrow F(b_j)+\Phi_j x_j$\\ $s_j=b_j-A_j\theta_j$, with one block $s_e$ per edge}
+  \tb{5.45}{7.0}{3.2}{\color{body}\fs{14}{18}Fixed time and memory. Raw data is not stored.}
+  \hrl{7.0}{3.72}{5.45}
+  \tb{5.45}{7.0}{3.9}{\bfseries\color{cred}\fs{16}{19}Only when $\|s_e\|>\lambda$}
+  \tb{5.45}{7.0}{4.32}{\color{ink}\fs{16.5}{21}$\min_{\delta}\ \tfrac12\delta^{\top}A\delta-\delta^{\top}s+\lambda\sum_e\|\delta_e\|+\lambda_2\|\delta\|_1$}
+  \tb{5.45}{7.0}{4.82}{\color{body}\fs{14}{18}Below $\lambda$, $\delta_e$ is exactly zero. Above it, refit the chosen edges, commit, and publish a Change.}
+  \slidefoot{Illustrative plot. Exact for feature equations; for the logistic Y equation the statistics are an approximation, not yet proved. Group lasso condition\\ (Yuan \& Lin 2006) and online sparse estimation (Angelosante et al.\ 2010). Per-edge use in an online causal model: possibly novel.}
+\end{frame}
+
+% ===================================================== CHANGE PATH
+\pageset{The flow}{19}
+\begin{frame}
+  \ctitle{Change path: the model changed}
+  \archfullfalse
+  \archdiagram{0.85}{2.15}{0.69}{3}
+  \pstep{cred}{2.3}{7}{The Learner publishes a Change. The action store finds the actions it can affect, and the generator repairs or retires them.}
+  \pstep{cred}{3.7}{8}{The Monitor shows the change, tracks group gaps and finds the edge behind a gap.}
+  \tb{3.4}{9.05}{4.9}{\color{body}\fs{13.5}{17}{\bfseries\color{ink}Example (invented):} a Change on savings $\rightarrow$ Y, knots 2k--5k. 40 of 10,000 actions pass through that range, so only those are rechecked.}
+  \tb{7.65}{0.85}{5.75}{\color{ink}\bfseries\fs{16}{20}Change = (edge, knot range, $\delta$, version, time)}
+  \slidefoot{Repair and retirement states from Kostrzewa et al.\ 2026. Selective recheck: possibly novel, rule unproved.}
+\end{frame}
+
+% ===================================================== HOW THE EXPLANATION ARISES
+\pageset{Explaining drift}{20}
+\begin{frame}
+  \qtitle{monitor}{Does explaining drift need a second model?}
+  \chain{0.85}{1}{Errors line up}{The model's errors follow one edge's spline, in one knot range, so that edge's score rises.}
+  \chain{3.85}{2}{Only that edge moves}{Its score passes $\lambda$ and it gets a $\delta$. Every other $\delta$ stays exactly zero.}
+  \chain{6.85}{3}{A Change is recorded}{Edge, knot range, $\delta$, version and time. Both versions of the curve are kept.}
+  \chain{9.85}{4}{The curve is read}{$\delta$ is the gap between old and new, so it can be plotted and put into words.}
+  \hrl{0.85}{4.5}{11.6}
+  \tb{11.6}{0.85}{4.68}{\color{grey}\fs{15}{19}What comes out, for the invented example:}
+  \tb{11.6}{0.85}{5.05}{\color{ink}\bfseries\fs{19}{24}``Version 13: between 2k and 5k, extra savings now raise Y's score less than before.''}
+  \hrl{0.85}{5.6}{11.6}
+  \choice{5.76}{No. The update is the explanation, not post hoc: you read the curves that make the decisions.}
+\end{frame}
+
+% ===================================================== KINDS OF DRIFT
+\pageset{Explaining drift}{21}
+\begin{frame}
+  \qtitle{monitor}{Can the system tell which kind of drift happened?}
+  \tb{11.6}{0.85}{2.0}{\fs{14}{17.5}\renewcommand{\arraystretch}{1.62}%
+    \begin{tabular}{@{}>{\bfseries\raggedright\arraybackslash}p{1.45in} >{\raggedright\arraybackslash}p{2.6in} >{\raggedright\arraybackslash}p{3.05in} >{\raggedright\arraybackslash}p{1.65in} >{\raggedright\arraybackslash}p{2.15in}@{}}
+      \toprule
+      Drift & Example & What the system shows & Decision rule & Issued actions \\
+      \midrule
+      Exogenous & Incomes rise for everyone & No curve moves, so no Change & Same & Still valid \\
+      \textcolor{cred}{Endogenous} & Income adds less to savings & A Change on income $\rightarrow$ savings & Same & \textcolor{cred}{Can break: repaired} \\
+      Target & Savings matter less for Y & A Change on savings $\rightarrow$ Y & New at the commit & Can break: repaired \\
+      Structural & A new direct cause appears & A zero curve leaves zero & New if a Y edge & Can break: repaired \\
+      Confounder & A hidden cause shifts & Trust flag, if errors stop looking like noise & Can be misled & That node is avoided \\
+      \bottomrule
+    \end{tabular}}
+  \choice{5.25}{Read it from where the curve moved, on every edge. Endogenous drift leaves the decision rule, so the classifier's errors miss it, yet it can break recourse already issued.}
+  \slidefoot{Drift types from Barboza et al.\ 2026. Mapping them onto this design is new here and untested.}
+\end{frame}
+
+% ===================================================== MONITOR
+\pageset{Explaining drift}{22}
+\begin{frame}
+  \ctitle{Explaining drift: what, who and which edge}
+  \tb{3.6}{0.85}{2.0}{\bfseries\color{cred}\fs{16}{19}What changed}
+  \tb{3.6}{4.85}{2.0}{\bfseries\color{cred}\fs{16}{19}Who is affected}
+  \tb{3.6}{8.85}{2.0}{\bfseries\color{cred}\fs{16}{19}Which edge caused it}
+  \begin{page}
+    % --- curves
+    \begin{scope}[shift={(0.95,4.85)},x=3.3in,y=2.3in]
+      \fill[black!6] (.2,0) rectangle (.7,1);
+      \draw[lgrey,line width=0.9pt] (0,0) -- (1,0);
+      \draw[lgrey,line width=0.9pt] (0,0) -- (0,1);
+      \foreach \k in {0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1} {\draw[lgrey,line width=0.8pt] (\k,0) -- (\k,-.025);}
+      \draw[grey,line width=1.2pt,dash pattern=on 4pt off 2.5pt,domain=0:1,samples=40,smooth,variable=\t] plot ({\t},{.08+.84*\t});
+      \draw[cred,line width=1.6pt,domain=0:1,samples=60,smooth,variable=\t] plot ({\t},{.08+.84*\t-.2*(\t>.2)*(\t<.7)*(sin(360*(\t-.2)))^2});
+      \node[anchor=north,inner sep=3pt,text=grey,font=\fontsize{12}{14}\selectfont] at (.5,-.03) {savings};
+      \node[rotate=90,anchor=south,inner sep=2pt,text=grey,font=\fontsize{12}{14}\selectfont] at (0,.5) {effect on Y};
+      \node[inner sep=0pt,text=grey,font=\fontsize{12}{14}\selectfont] at (.45,.93) {changed knot range};
+    \end{scope}
+    % --- gap
+    \begin{scope}[shift={(4.95,4.85)},x=3.3in,y=2.3in]
+      \draw[lgrey,line width=0.9pt] (0,0) -- (1,0);
+      \draw[lgrey,line width=0.9pt] (0,0) -- (0,1);
+      \draw[ink,line width=1pt,dash pattern=on 4pt off 3pt] (.6,0) -- (.6,.92);
+      \draw[cred,line width=1.6pt] plot[smooth] coordinates {(0,.2)(.15,.18)(.3,.21)(.45,.19)(.6,.2)};
+      \draw[cred,line width=1.6pt] plot[smooth] coordinates {(.6,.2)(.68,.46)(.8,.6)(1,.64)};
+      \node[anchor=north,inner sep=3pt,text=grey,font=\fontsize{12}{14}\selectfont] at (.5,-.03) {time};
+      \node[anchor=south,inner sep=2pt,text=ink,font=\fontsize{12}{14}\selectfont] at (.6,.92) {commit};
+      \node[anchor=east,inner sep=4pt,text=grey,font=\fontsize{12}{14}\selectfont] at (.6,.72) {validity gap};
+    \end{scope}
+    % --- swap
+    \begin{scope}[shift={(8.95,0)},x=1in,y=-1in]
+      \node[anchor=west,inner sep=0pt,text=body,font=\fontsize{13}{16}\selectfont] at (0,2.75) {Gap now};
+      \fill[cred] (0,2.92) rectangle (3.2,3.27);
+      \node[anchor=west,inner sep=0pt,text=body,font=\fontsize{13}{16}\selectfont] at (0,3.62) {Gap with the old curve put back};
+      \fill[grey] (0,3.79) rectangle (1.15,4.14);
+      \draw[ink,line width=1pt] (1.15,4.3) -- (1.15,4.42) -- (3.2,4.42) -- (3.2,4.3);
+      \node[anchor=north,inner sep=3pt,text=ink,font=\bfseries\fontsize{13}{16}\selectfont] at (2.17,4.42) {this edge's part};
+    \end{scope}
+  \end{page}
+  \tb{3.45}{0.85}{5.28}{\color{body}\fs{14}{18}Old and new curves overlaid. The change stays inside one knot range.}
+  \tb{3.45}{4.85}{5.28}{\color{body}\fs{14}{18}Cost gap: who pays more for recourse. Validity gap: whose actions fail more. Finished cases only.}
+  \tb{3.45}{8.85}{5.28}{\color{body}\fs{14}{18}Put one edge's old curve back, recompute the gap, and report the difference.}
+  \slidefoot{Illustrative plots. Gaps: Gupta et al.\ 2019; von K\"ugelgen et al.\ 2022; Fonseca et al.\ 2023; Guldogan et al.\ 2023. If several edges changed,\\ average over their order with Shapley values (Budhathoki et al.\ 2021; Zhou et al.\ 2026). Used on recourse: possibly novel.}
+\end{frame}
+
+% ===================================================== SOURCES
+\pageset{Sources}{23}
+\begin{frame}
+  \ctitle{Sources}
+  \tb{5.65}{0.85}{1.9}{\color{body}\fs{10.4}{12.8}\setlength{\parskip}{3pt}%
+    Almod\'ovar et al.\ (2026). Kolmogorov-Arnold causal generative models. arXiv:2603.20184.\par
+    Angelosante, Bazerque, Giannakis (2010). Online adaptive estimation of sparse signals. IEEE TSP 58(7).$^\dagger$\par
+    Barboza et al.\ (2026). Concept drift from a causal perspective. arXiv:2609.25340.\par
+    Budhathoki et al.\ (2021). Why did the distribution change? AISTATS.$^\dagger$\par
+    B\"uhlmann, Peters, Ernest (2014). CAM: causal additive models. Annals of Statistics 42(6).\par
+    Dandl, Molnar, Binder, Bischl (2020). Multi-objective counterfactual explanations (MOC). PPSN XVI.\par
+    De Toni et al.\ (2025). Time can invalidate algorithmic recourse. FAccT.\par
+    Downs et al.\ (2020). CRUDS: counterfactual recourse using disentangled subspaces. ICML WHI.\par
+    Fonseca et al.\ (2023). Setting the right expectations: algorithmic recourse over time. EAAMO.\par
+    Guldogan et al.\ (2023). Equal improvability. ICLR.$^\dagger$\par
+    Gupta et al.\ (2019). Equalizing recourse across groups. arXiv:1909.03166.$^\dagger$\par
+    Karimi, Barthe, Balle, Valera (2020). Model-agnostic counterfactual explanations (MACE). AISTATS.\par
+    Karimi et al.\ (2020). Algorithmic recourse under imperfect causal knowledge. NeurIPS.\par
+    Karimi, Sch\"olkopf, Valera (2021). Algorithmic recourse: from counterfactual explanations to interventions. FAccT.\par
+    K\"onig, Freiesleben, Grosse-Wentrup (2023). Improvement-focused causal recourse. AAAI 37(10).$^\dagger$\par
+    K\"onig et al.\ (2025). Performative validity of recourse explanations. NeurIPS.\par}
+  \tb{5.65}{6.8}{1.9}{\color{body}\fs{10.4}{12.8}\setlength{\parskip}{3pt}%
+    Kostrzewa, Stefanowski, Zi\k{e}ba (2026). Counterfactual explanations under concept drift. arXiv:2605.17651.\par
+    Liu et al.\ (2024). KAN: Kolmogorov-Arnold networks. arXiv:2404.19756.$^\dagger$\par
+    Mahajan, Tan, Sharma (2019). Preserving causal constraints in counterfactual explanations. arXiv.\par
+    Mothilal, Sharma, Tan (2020). Explaining ML classifiers through diverse counterfactual explanations (DiCE). FAT*.\par
+    Peters, B\"uhlmann, Meinshausen (2016). Causal inference by using invariant prediction. JRSS B 78(5).$^\dagger$\par
+    Poyiadzi et al.\ (2020). FACE: feasible and actionable counterfactual explanations. AIES.\par
+    Rawal, Kamar, Lakkaraju (2020). Algorithmic recourse in the wild. arXiv:2012.11788.\par
+    Russell (2019). Efficient search for diverse coherent explanations. FAT*.\par
+    Sharma, Henderson, Ghosh (2020). CERTIFAI. AIES.\par
+    Upadhyay, Joshi, Lakkaraju (2021). Towards robust and reliable algorithmic recourse. NeurIPS.\par
+    Van Looveren, Klaise (2020). Interpretable counterfactual explanations guided by prototypes. arXiv.\par
+    von K\"ugelgen et al.\ (2022). On the fairness of causal algorithmic recourse. AAAI.\par
+    Yuan, Lin (2006). Model selection and estimation in regression with grouped variables. JRSS B 68.$^\dagger$\par
+    Zhou et al.\ (2026). A unified approach to interpretable causal root cause attribution. arXiv:2608.29735.\par
+    \vspace{5pt}{\color{grey}$^\dagger$ Seen only as an abstract or publication record. Check before citing in the thesis.\par}\par}
+\end{frame}
+
+\end{document}

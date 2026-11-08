@@ -1,0 +1,12 @@
+World: 1_savings_habits
+Drift: people save less: savings = 0.3·income² instead of 0.5·income²
+
+edge                    truly changed  gap (spreads)  flagged (gap > 3.0)
+income → savings                  yes          135.5                  yes
+income → Y                         no            1.8                   no
+savings → Y                        no            1.5                   no
+
+Error in P(Y=1) against the true chance, averaged over people:
+  old model, people from before the drift  0.005
+  old model, people from after the drift   0.031
+  new model, people from after the drift   0.004

@@ -1,0 +1,11 @@
+World: 4_rising_savings_interaction
+Drift: savings rise (4–12 instead of 0–8); no equation changes, but Y has a 0.15·income·savings term the KAN cannot represent
+
+edge                    truly changed  gap (spreads)  flagged (gap > 3.0)
+income → Y                         no            7.5                  yes
+savings → Y                        no            2.5                   no
+
+Error in P(Y=1) against the true chance, averaged over people:
+  old model, people from before the drift  0.032
+  old model, people from after the drift   0.045
+  new model, people from after the drift   0.019
