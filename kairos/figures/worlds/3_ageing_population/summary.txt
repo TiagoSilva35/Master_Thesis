@@ -1,12 +1,15 @@
 World: 3_ageing_population
 Drift: the population gets older: ages 35–75 instead of 20–60; no equation changes
+Surfaces chosen: none
+Gain = how much more probable the data is with that term's change on (log units).
+Change in level, gain per node: {'income': -7.2, 'Y': -6.7}
 
-edge                    truly changed  gap (spreads)  flagged (gap > 3.0)
-age → income                       no            1.0                   no
-age → Y                            no            2.0                   no
-income → Y                         no            0.9                   no
+term                        truly changed       gain   flagged (gain > 3.0)
+age → income                           no       -0.1                     no
+age → Y                                no        0.0                     no
+income → Y                             no       -0.0                     no
 
 Error in P(Y=1) against the true chance, averaged over people:
-  old model, people from before the drift  0.006
-  old model, people from after the drift   0.028
-  new model, people from after the drift   0.006
+  old model, people from before the drift      0.006
+  old model, people from after the drift       0.028
+  updated model, people from after the drift   0.003

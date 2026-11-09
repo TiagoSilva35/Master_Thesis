@@ -1,0 +1,50 @@
+Each cell: flagged in k of 5 runs (median score). A surface counts as not flagged in runs where it was not chosen.
+Score: gap in combined spreads (flag above 3) for two-fit methods; gain in log units (flag above 3) for joint methods.
+
+world                          term                      truly  3_screened_surfaces       5_joint_change
+1_savings_habits               income → savings            yes          5/5 (131.5)        5/5 (12581.6)
+1_savings_habits               income → Y                   no            0/5 (0.9)           0/5 (-0.0)
+1_savings_habits               savings → Y                  no            0/5 (1.0)           0/5 (-0.0)
+2_bank_rule                    income → savings             no            0/5 (1.8)           0/5 (-0.3)
+2_bank_rule                    income → Y                  yes           5/5 (12.7)         5/5 (1809.3)
+2_bank_rule                    savings → Y                  no            0/5 (0.9)           0/5 (-0.0)
+3_ageing_population            age → income                 no            0/5 (1.8)           0/5 (-0.1)
+3_ageing_population            age → Y                      no            0/5 (1.4)           0/5 (-0.0)
+3_ageing_population            income → Y                   no            0/5 (1.4)            0/5 (0.0)
+4_rising_savings_interaction   income → Y                   no            0/5 (1.8)            0/5 (0.1)
+4_rising_savings_interaction   savings → Y                  no            0/5 (0.7)           0/5 (-0.0)
+4_rising_savings_interaction   income×savings → Y           no            0/5 (0.7)           0/5 (-0.0)
+5_interaction_flips            income → Y                   no            0/5 (1.6)           0/5 (-0.0)
+5_interaction_flips            savings → Y                  no            0/5 (1.4)           0/5 (-0.0)
+5_interaction_flips            income×savings → Y          yes           5/5 (20.3)          5/5 (245.5)
+6_large_world                  age → income                 no            2/5 (1.9)           0/5 (-0.0)
+6_large_world                  education → income           no            0/5 (1.5)           0/5 (-0.1)
+6_large_world                  income → savings             no            0/5 (1.7)            0/5 (0.2)
+6_large_world                  age → savings                no            0/5 (1.3)           0/5 (-0.1)
+6_large_world                  age → Y                      no            0/5 (1.6)           0/5 (-0.0)
+6_large_world                  education → Y                no            0/5 (1.2)           0/5 (-0.0)
+6_large_world                  income → Y                   no            1/5 (1.5)           0/5 (-0.0)
+6_large_world                  savings → Y                  no            1/5 (2.2)           0/5 (-0.0)
+6_large_world                  debt → Y                    yes            4/5 (7.7)           5/5 (70.4)
+6_large_world                  age×education → income       no            0/5 (1.4)           0/5 (-0.0)
+6_large_world                  income×debt → Y              no            0/5 (0.9)           0/5 (-0.0)
+6_large_world                  savings×debt → Y             no            0/5 (1.4)           0/5 (-0.0)
+
+How often each surface was chosen (screening methods):
+  4_rising_savings_interaction income×savings → Y: 3_screened_surfaces 5/5, 5_joint_change 5/5
+  5_interaction_flips income×savings → Y: 3_screened_surfaces 5/5, 5_joint_change 5/5
+  6_large_world age×education → income: 3_screened_surfaces 5/5, 5_joint_change 5/5
+  6_large_world income×debt → Y: 3_screened_surfaces 5/5, 5_joint_change 5/5
+  6_large_world savings×debt → Y: 3_screened_surfaces 2/5, 5_joint_change 2/5
+
+New model's error in P(Y=1) on new people (median over seeds):
+  1_savings_habits: 3_screened_surfaces 0.005, 5_joint_change 0.003
+  2_bank_rule: 3_screened_surfaces 0.003, 5_joint_change 0.006
+  3_ageing_population: 3_screened_surfaces 0.009, 5_joint_change 0.006
+  4_rising_savings_interaction: 3_screened_surfaces 0.007, 5_joint_change 0.005
+  5_interaction_flips: 3_screened_surfaces 0.008, 5_joint_change 0.015
+  6_large_world: 3_screened_surfaces 0.012, 5_joint_change 0.011
+
+Totals over all runs:
+  3_screened_surfaces: real changes caught 19/20; false alarms 4/115 term-runs
+  5_joint_change: real changes caught 20/20; false alarms 0/115 term-runs

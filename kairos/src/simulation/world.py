@@ -18,6 +18,16 @@ class Uniform:
 
 
 @dataclass
+class Binary:
+    """A yes/no variable with no parents: 1 with chance `chance`, else 0."""
+
+    chance: float
+
+    def draw(self, values: dict, size: int, random: np.random.Generator) -> np.ndarray:
+        return (random.uniform(size=size) < self.chance).astype(float)
+
+
+@dataclass
 class Equation:
     """A variable with parents: constant + Σ edge(parent) + interaction + bell-shaped noise.
 
@@ -32,7 +42,7 @@ class Equation:
     interaction: Callable[[dict], np.ndarray] | None = None
 
     def mean(self, values: dict) -> np.ndarray:
-        total = self.constant + sum(edge(values[parent]) for parent, edge in self.edges.items())
+        total = np.asarray(self.constant + sum(edge(values[parent]) for parent, edge in self.edges.items()), dtype=float)
         if self.interaction is not None:
             total = total + self.interaction(values)
         return total
@@ -57,7 +67,7 @@ class World:
     """A true causal world: one mechanism per variable, written in causal order."""
 
     name: str
-    mechanisms: dict[str, Uniform | Equation]
+    mechanisms: dict[str, Uniform | Binary | Equation]
     outcome: str = "Y"
 
     def sample(self, size: int, seed: int) -> dict[str, np.ndarray]:
@@ -68,12 +78,13 @@ class World:
             values[name] = mechanism.draw(values, size, random)
         return values
 
-    def changed(self, **mechanisms: Uniform | Equation) -> "World":
+    def changed(self, **mechanisms: Uniform | Binary | Equation) -> "World":
         """A copy of this world with some mechanisms replaced (the drift)."""
         return World(self.name, {**self.mechanisms, **mechanisms}, self.outcome)
 
     def parents(self) -> dict[str, list[str]]:
-        return {name: list(getattr(mechanism, "edges", {})) for name, mechanism in self.mechanisms.items()}
+        return {name: list(mechanism.edges) if isinstance(mechanism, Equation) else []
+                for name, mechanism in self.mechanisms.items()}
 
     def edges(self) -> list[tuple[str, str]]:
         """Every (parent, child) pair."""
@@ -81,12 +92,17 @@ class World:
 
     def chance(self, values: dict) -> np.ndarray:
         """The true P(Y = 1) for these people."""
-        return self.mechanisms[self.outcome].chance(values)
+        outcome = self.mechanisms[self.outcome]
+        if not isinstance(outcome, Outcome):
+            raise TypeError(f"'{self.outcome}' must be an Outcome, not {type(outcome).__name__}")
+        return outcome.chance(values)
 
     def true_curve(self, child: str, parent: str) -> Callable | None:
         """The true edge function, or None when the child has an interaction
         (then no single curve per edge is the truth)."""
         mechanism = self.mechanisms[child]
+        if not isinstance(mechanism, Equation):
+            raise ValueError(f"'{child}' has no parents, so it has no edge curves")
         if mechanism.interaction is not None:
             return None
         return mechanism.edges[parent]

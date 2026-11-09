@@ -17,10 +17,21 @@ GRID = tuple(10.0 ** np.arange(-1.0, 4.5, 0.5))
 
 @dataclass
 class Fit:
-    coefficients: np.ndarray  # the constant, then each parent's heights
+    coefficients: np.ndarray  # the constant, then each term's numbers (curves, then surfaces)
     covariance: np.ndarray    # how unsure each coefficient is, and which ones move together
     evidence: float           # how probable the data was under this penalty (higher is better)
-    smoothness: list[float] = field(default_factory=list)  # λ per parent, empty for a plain fit
+    smoothness: list[float] = field(default_factory=list)  # λ per smoothness block, empty for a plain fit
+
+
+@dataclass
+class SmoothnessBlock:
+    """One smoothness belief with its own λ: which coefficients it covers and
+    how bending is measured there (a curve has one block, a surface two)."""
+
+    label: str
+    columns: slice
+    bending: np.ndarray
+    start: float | None = None  # λ the search starts from (None: the middle of the grid)
 
 
 Solve = Callable[[np.ndarray], Fit]
@@ -29,8 +40,8 @@ Solve = Callable[[np.ndarray], Fit]
 class Fitting(Protocol):
     """What every fitting must offer."""
 
-    def fit(self, solve: Solve, size: int, edges: list[slice]) -> Fit:
-        """size: how many coefficients. edges: which coefficients are each parent's heights."""
+    def fit(self, solve: Solve, size: int, blocks: list[SmoothnessBlock]) -> Fit:
+        """size: how many coefficients. blocks: one smoothness belief per λ."""
         ...
 
 
@@ -45,20 +56,23 @@ class PlainFitting:
     def __init__(self, ridge: float = 1e-3):
         self.ridge = ridge
 
-    def fit(self, solve: Solve, size: int, edges: list[slice]) -> Fit:
+    def fit(self, solve: Solve, size: int, blocks: list[SmoothnessBlock]) -> Fit:
         return solve(self.ridge * np.eye(size))
 
 
-class BayesianFitting:
-    """Bayesian splines: a belief that curves bend little, with its own strength λ per edge.
 
-    The belief costs each curve its second differences, h[k-1] - 2 h[k] + h[k+1],
-    so straight lines cost nothing and sharp bends cost a lot. λ near 0 trusts
+
+class BayesianFitting:
+    """Bayesian splines: a belief that curves and surfaces bend little, with its
+    own strength λ per smoothness block (one per curve, two per surface).
+
+    The belief costs bending (second differences, see Spline.bending), so
+    straight lines cost nothing and sharp bends cost a lot. λ near 0 trusts
     only the data; a huge λ allows only straight lines.
 
     Each λ is picked from `grid` as the value under which the data was most
-    probable (the evidence). Edges are tuned one at a time with the others held
-    fixed, for up to `rounds` passes or until no change helps.
+    probable (the evidence). Blocks are tuned one at a time with the others
+    held fixed, for up to `rounds` passes or until no change helps.
     """
 
     def __init__(self, grid=GRID, rounds: int = 3, ridge: float = 1e-3):
@@ -66,28 +80,28 @@ class BayesianFitting:
         self.rounds = rounds
         self.ridge = ridge
 
-    def fit(self, solve: Solve, size: int, edges: list[slice]) -> Fit:
-        smoothness = [self.grid[len(self.grid) // 2]] * len(edges)
-        best = solve(self._penalty(smoothness, size, edges))
+    def fit(self, solve: Solve, size: int, blocks: list[SmoothnessBlock]) -> Fit:
+        middle = self.grid[len(self.grid) // 2]
+        smoothness = [block.start if block.start is not None else middle for block in blocks]
+        best = solve(self.penalty(smoothness, size, blocks))
         for _ in range(self.rounds):
             improved = False
-            for edge in range(len(edges)):
+            for block in range(len(blocks)):
                 for strength in self.grid:
-                    if strength == smoothness[edge]:
+                    if strength == smoothness[block]:
                         continue
                     trial = smoothness.copy()
-                    trial[edge] = strength
-                    candidate = solve(self._penalty(trial, size, edges))
+                    trial[block] = strength
+                    candidate = solve(self.penalty(trial, size, blocks))
                     if candidate.evidence > best.evidence:
                         best, smoothness, improved = candidate, trial, True
             if not improved:
                 break
         return replace(best, smoothness=smoothness)
 
-    def _penalty(self, smoothness: list[float], size: int, edges: list[slice]) -> np.ndarray:
+    def penalty(self, smoothness: list[float], size: int, blocks: list[SmoothnessBlock]) -> np.ndarray:
+        """The full penalty matrix for these λ values: the tiny ridge plus every block."""
         penalty = self.ridge * np.eye(size)
-        for strength, columns in zip(smoothness, edges):
-            count = columns.stop - columns.start
-            bends = np.diff(np.eye(count), 2, axis=0)  # one row per second difference
-            penalty[columns, columns] += strength * bends.T @ bends
+        for strength, block in zip(smoothness, blocks):
+            penalty[block.columns, block.columns] += strength * block.bending
         return penalty

@@ -35,9 +35,9 @@ class Simulator:
 def build_model(fitting: Fitting, intervals: int) -> CausalKAN:
     """The simulator's graph, with every node fitted the same way."""
     return CausalKAN([
-        Node("income", [], intervals, fitting),
-        Node("savings", ["income"], intervals, fitting),
-        OutcomeNode("Y", ["income", "savings"], intervals, fitting=fitting),
+        Node("income", [], pairs=[], intervals=intervals, fitting=fitting),
+        Node("savings", ["income"], pairs=[], intervals=intervals, fitting=fitting),
+        OutcomeNode("Y", ["income", "savings"], pairs=[], intervals=intervals, fitting=fitting),
     ])
 
 

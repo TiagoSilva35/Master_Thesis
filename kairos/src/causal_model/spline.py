@@ -24,6 +24,29 @@ class Spline:
     def __call__(self, x):
         return self.weights(x) @ self.heights
 
+    def bending(self) -> np.ndarray:
+        """How much the curve bends, as a matrix: heights @ bending @ heights
+        = Σ (h[k-1] - 2 h[k] + h[k+1])². Straight lines cost nothing."""
+        second_differences = np.diff(np.eye(len(self.heights)), 2, axis=0)
+        return second_differences.T @ second_differences
+
+    def flattening(self) -> np.ndarray:
+        """How far the curve is from flat, as a matrix: heights @ flattening @ heights
+        = Σ (h[k+1] - h[k])². Only a flat curve, which changes no prediction, costs nothing."""
+        first_differences = np.diff(np.eye(len(self.heights)), 1, axis=0)
+        return first_differences.T @ first_differences
+
+    def zero_average_basis(self, x) -> np.ndarray:
+        """Columns spanning every set of heights whose curve averages zero over x.
+
+        A curve's average over x is `average @ heights`, so these are the
+        directions at right angles to `average` (the rows after the first in its
+        singular value decomposition).
+        """
+        average = self.weights(x).mean(axis=0)
+        _, _, directions = np.linalg.svd(average[None, :])
+        return directions[1:].T
+
     def band(self, x, width: float = 1.96):
         """The curve ± width × its spread at x. 1.96 spreads hold about 95% of a bell."""
         if self.covariance is None:

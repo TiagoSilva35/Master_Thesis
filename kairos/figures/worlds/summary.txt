@@ -1,0 +1,23 @@
+world                          term                      truly                   1_curves_only             2_curves_reweighted             3_screened_surfaces  4_screened_surfaces_reweighted
+1_savings_habits               income → savings            yes                          133.8!                          134.3!                          133.8!                          134.3!
+1_savings_habits               income → Y                   no                            1.8                             1.4                             1.8                             1.4 
+1_savings_habits               savings → Y                  no                            1.5                             1.2                             1.5                             1.2 
+2_bank_rule                    income → savings             no                            1.3                             1.3                             1.3                             1.3 
+2_bank_rule                    income → Y                  yes                           13.3!                           13.3!                           13.3!                           13.3!
+2_bank_rule                    savings → Y                  no                            0.3                             0.3                             0.3                             0.3 
+3_ageing_population            age → income                 no                            1.0                             1.1                             1.0                             1.1 
+3_ageing_population            age → Y                      no                            2.0                             1.9                             2.0                             1.9 
+3_ageing_population            income → Y                   no                            0.9                             0.4                             0.9                             0.4 
+4_rising_savings_interaction   income → Y                   no                            7.5!                            2.7                             0.9                             1.2 
+4_rising_savings_interaction   savings → Y                  no                            2.5                             2.1                             1.6                             1.8 
+4_rising_savings_interaction   income×savings → Y           no                               –                               –                            0.7                             0.7 
+5_interaction_flips            income → Y                   no                            4.7!                            4.4!                            0.7                             0.7 
+5_interaction_flips            savings → Y                  no                            5.5!                            5.5!                            0.5                             0.5 
+5_interaction_flips            income×savings → Y          yes                               –                               –                           21.3!                           21.4!
+
+gap in combined spreads; ! = flagged as changed; – = term not in that method's KAN
+
+1_curves_only: real changes caught 2, missed 1; false alarms 3
+2_curves_reweighted: real changes caught 2, missed 1; false alarms 2
+3_screened_surfaces: real changes caught 3, missed 0; false alarms 0
+4_screened_surfaces_reweighted: real changes caught 3, missed 0; false alarms 0

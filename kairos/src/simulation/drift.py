@@ -1,14 +1,18 @@
-"""Fit a causal KAN before and after a drift, in several worlds, and see how it reacts.
+"""Simulate a drift in several worlds and see which terms the causal KAN says changed.
 
-For every scenario in scenarios.py this saves, in figures/worlds/<world name>/:
-  before.png      the KAN fitted on people from before the drift
-  after.png       the KAN fitted on people from after the drift
-  comparison.png  each edge's curve before and after, with bands and the true curves
-  summary.txt     which edges look changed, and how wrong the old model's chances become
-
-The KAN is refitted from scratch after the drift (no online updates yet).
+For every scenario in scenarios.py: draw people from before and after the drift,
+fit every variable once on both windows with ChangeFit (shared parts plus change
+parts, see change.py), and check the terms it says changed against what truly
+changed. Saves, in figures/worlds/<world name>/:
+  before.png      the old model, fitted on people from before the drift only
+  after.png       the updated model (shared plus change parts of the joint fit)
+  comparison.png  each curve before and after the drift, from the joint fit, with
+                  95% bands and the true curves; for each surface, how it changed
+  summary.txt     each term's gain and whether it counts as changed, and how
+                  wrong the old model's chances become
 
 Run from kairos/:  PYTHONPATH=. venv/bin/python src/simulation/drift.py
+For many seeds at once, see repeat.py.
 """
 
 import math
@@ -18,71 +22,57 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src.causal_model.fitting import BayesianFitting, Fitting
+from src.causal_model.change import ChangeFit
+from src.causal_model.fitting import BayesianFitting
 from src.causal_model.kan import CausalKAN
 from src.causal_model.node import Node
 from src.causal_model.outcome import OutcomeNode
 from src.causal_model.plot import KANPlot
-from src.causal_model.spline import Spline
+from src.causal_model.screening import PairScreening
 from src.simulation.scenarios import SCENARIOS, DriftScenario
 from src.simulation.world import World
 
 FIGURES = Path(__file__).resolve().parents[2] / "figures" / "worlds"
 
 
-class EdgeComparison:
-    """Compares two fits of the same edge on the range both have data for.
-
-    A curve's level is not pinned down (the node's constant takes the rest), so
-    both curves are shifted to average zero over the shared range first. The
-    gap is the largest distance between them, counted in combined spreads.
-    """
-
-    def __init__(self, points: int = 200):
-        self.points = points
-
-    def shared_range(self, before: Spline, after: Spline) -> np.ndarray | None:
-        low = max(before.knots[0], after.knots[0])
-        high = min(before.knots[-1], after.knots[-1])
-        return np.linspace(low, high, self.points) if low < high else None
-
-    @staticmethod
-    def levelled(curve: Spline, x: np.ndarray, reference: np.ndarray):
-        """The curve and its spread at x, shifted to average zero over `reference`."""
-        rows = curve.weights(x) - curve.weights(reference).mean(axis=0)
-        values = rows @ curve.heights
-        spreads = np.sqrt(np.maximum(np.sum((rows @ curve.covariance) * rows, axis=1), 0.0))
-        return values, spreads
-
-    def gap(self, before: Spline, after: Spline) -> float:
-        x = self.shared_range(before, after)
-        if x is None:
-            return float("nan")
-        old, old_spread = self.levelled(before, x, x)
-        new, new_spread = self.levelled(after, x, x)
-        return float(np.max(np.abs(new - old) / np.sqrt(old_spread**2 + new_spread**2 + 1e-12)))
+@dataclass
+class TermResult:
+    term: str             # a parent, or a pair like "income×savings"
+    child: str
+    truly_changed: bool
+    gain: float           # how much more probable the data is with this term's change on (log units)
+    flagged: bool         # gain above the margin: the KAN says this term changed
 
 
 class DriftPlot:
-    """One panel per edge: the curve before (blue) and after (orange) the drift,
-    each with its 95% band, and the true curves dashed when the world has them."""
+    """One panel per curve: the joint fit's curve before (blue) and after
+    (orange) the drift, each with its 95% band, and the true curves dashed when
+    the world has them. One heat map per surface: how much it changed. Each
+    title gives the term's gain."""
 
     def __init__(self, scenario: DriftScenario, before: CausalKAN, after: CausalKAN,
-                 comparison: EdgeComparison, columns: int = 3):
+                 gains: dict[tuple[str, str], float], pooled: dict[str, np.ndarray],
+                 points: int = 200, columns: int = 3):
         self.scenario = scenario
         self.before = before
         self.after = after
-        self.comparison = comparison
+        self.gains = gains    # (term, child) -> gain
+        self.pooled = pooled  # everyone's values: the joint fit centred its curves on them
+        self.points = points
         self.columns = columns
 
     def figure(self):
-        edges = self.scenario.world.edges()
-        columns = min(self.columns, len(edges))
-        rows = math.ceil(len(edges) / columns)
+        panels = list(self.scenario.world.edges())
+        panels += [(pair, node.name) for node in self.after.nodes for pair in node.pairs]
+        columns = min(self.columns, len(panels))
+        rows = math.ceil(len(panels) / columns)
         fig, axes = plt.subplots(rows, columns, figsize=(4.5 * columns, 3.4 * rows), squeeze=False)
-        for ax, (parent, child) in zip(axes.flat, edges):
-            self._draw_edge(ax, parent, child)
-        for ax in axes.flat[len(edges):]:
+        for ax, (term, child) in zip(axes.flat, panels):
+            if isinstance(term, tuple):
+                self._draw_surface(fig, ax, term, child)
+            else:
+                self._draw_edge(ax, term, child)
+        for ax in axes.flat[len(panels):]:
             ax.set_visible(False)
         axes.flat[0].legend(fontsize=8)
         fig.suptitle(self.scenario.description, fontsize=10)
@@ -90,102 +80,128 @@ class DriftPlot:
         return fig
 
     def _draw_edge(self, ax, parent: str, child: str) -> None:
-        old = self.before.node(child).curves[parent]
-        new = self.after.node(child).curves[parent]
-        reference = self.comparison.shared_range(old, new)
-        if reference is None:
-            reference = np.linspace(old.knots[0], old.knots[-1], self.comparison.points)
-        for curve, world, colour, label in ((old, self.scenario.world, "C0", "before"),
-                                            (new, self.scenario.drifted, "C1", "after")):
-            self._draw_curve(ax, curve, world, child, parent, reference, colour, label)
-        changed = "truly changed" if (parent, child) in self.scenario.changed_edges else "not changed"
-        ax.set_title(f"{parent} → {child}  ({changed}, gap {self.comparison.gap(old, new):.1f})", fontsize=9)
+        for model, world, colour, label in ((self.before, self.scenario.world, "C0", "before"),
+                                            (self.after, self.scenario.drifted, "C1", "after")):
+            curve = model.node(child).curves[parent]
+            x = np.linspace(curve.knots[0], curve.knots[-1], self.points)
+            low, high = curve.band(x)
+            ax.fill_between(x, low, high, color=colour, alpha=0.2, linewidth=0)
+            ax.plot(x, curve(x), color=colour, label=label)
+            truth = world.true_curve(child, parent)
+            if truth is not None:
+                ax.plot(x, truth(x) - truth(self.pooled[parent]).mean(), color=colour, linestyle="--",
+                        linewidth=1, label=f"truth {label}")
+        ax.set_title(self._title(f"{parent} → {child}", parent, child), fontsize=9)
         ax.set_xlabel(parent)
         ax.axhline(0.0, color="grey", linewidth=0.5)
 
-    def _draw_curve(self, ax, curve: Spline, world: World, child: str, parent: str,
-                    reference: np.ndarray, colour: str, label: str) -> None:
-        x = np.linspace(curve.knots[0], curve.knots[-1], self.comparison.points)
-        values, spreads = self.comparison.levelled(curve, x, reference)
-        ax.fill_between(x, values - 1.96 * spreads, values + 1.96 * spreads,
-                        color=colour, alpha=0.2, linewidth=0)
-        ax.plot(x, values, color=colour, label=label)
-        truth = world.true_curve(child, parent)
-        if truth is not None:
-            ax.plot(x, truth(x) - truth(reference).mean(), color=colour, linestyle="--",
-                    linewidth=1, label=f"truth {label}")
+    def _draw_surface(self, fig, ax, pair: tuple[str, str], child: str) -> None:
+        old, new = self.before.node(child).surfaces[pair], self.after.node(child).surfaces[pair]
+        grid1, grid2 = np.meshgrid(np.linspace(old.first.knots[0], old.first.knots[-1], 60),
+                                   np.linspace(old.second.knots[0], old.second.knots[-1], 60))
+        change = (new(grid1.ravel(), grid2.ravel()) - old(grid1.ravel(), grid2.ravel())).reshape(grid1.shape)
+        limit = max(float(np.max(np.abs(change))), 1e-3)
+        mesh = ax.pcolormesh(grid1, grid2, change, cmap="RdBu_r", vmin=-limit, vmax=limit, shading="auto")
+        fig.colorbar(mesh, ax=ax, label="after − before (push)")
+        label = Node.surface_label(pair)
+        ax.set_title(self._title(f"{pair[0]} × {pair[1]} → {child}", label, child), fontsize=9)
+        ax.set_xlabel(pair[0])
+        ax.set_ylabel(pair[1])
 
-
-@dataclass
-class EdgeResult:
-    parent: str
-    child: str
-    truly_changed: bool
-    gap: float
-    flagged: bool
+    def _title(self, name: str, term: str, child: str) -> str:
+        truly = "truly changed" if (term, child) in self.scenario.changed_edges else "not changed"
+        return f"{name}  ({truly}, gain {self.gains[(term, child)]:.1f})"
 
 
 class DriftExperiment:
-    """Fits one KAN on people from before the drift and one on people from after,
-    then compares them edge by edge and saves the figures."""
+    """Draws people from before and after a drift, fits the old model and the
+    joint fit, and reports which terms changed.
 
-    def __init__(self, scenario: DriftScenario, fitting: Fitting, intervals: int = 16,
-                 size: int = 10_000, threshold: float = 3.0, seed: int = 0):
+    Every node with at least two parents chooses its surfaces with a
+    PairScreening. A term counts as changed when its change part makes the data
+    more than e^margin times more probable (margin 3 ≈ 20 times).
+    """
+
+    def __init__(self, scenario: DriftScenario, fitting: BayesianFitting, intervals: int = 16,
+                 size: int = 10_000, margin: float = 3.0, seed: int = 0):
         self.scenario = scenario
         self.fitting = fitting
         self.intervals = intervals
         self.size = size
-        self.threshold = threshold  # a gap above this many combined spreads counts as "changed"
+        self.margin = margin
         self.seed = seed
-        self.comparison = EdgeComparison()
+        self.screening = PairScreening()
+        self.levels: dict[str, float] = {}         # each node's gain for a change in level
+        self.chance_errors: dict[str, float] = {}  # error in P(Y=1) against the true chance
 
-    def run(self, directory: Path) -> str:
-        directory.mkdir(parents=True, exist_ok=True)
+    def run(self, directory: Path | None = None) -> list[TermResult]:
+        """Fit and compare; save figures and summary when `directory` is given."""
         old_people = self.scenario.world.sample(self.size, self.seed)
         new_people = self.scenario.drifted.sample(self.size, self.seed + 1)
-        before = self._fitted_model(self.scenario.world, old_people)
-        after = self._fitted_model(self.scenario.drifted, new_people)
-        self._save(KANPlot(before).figure(), directory / "before.png")
-        self._save(KANPlot(after).figure(), directory / "after.png")
-        self._save(DriftPlot(self.scenario, before, after, self.comparison).figure(), directory / "comparison.png")
-        summary = self._summary(self._compare(before, after), before, after, old_people, new_people)
-        (directory / "summary.txt").write_text(summary)
-        return summary
+        old_model = self._fitted_model(self.scenario.world, old_people)
+        before, after, results = self._joint(old_people, new_people)
+        self.chance_errors = {
+            "old model, people from before the drift": self._chance_error(old_model, self.scenario.world, old_people),
+            "old model, people from after the drift": self._chance_error(old_model, self.scenario.drifted, new_people),
+            "updated model, people from after the drift": self._chance_error(after, self.scenario.drifted, new_people),
+        }
+        if directory is not None:
+            directory.mkdir(parents=True, exist_ok=True)
+            pooled = {name: np.concatenate([old_people[name], new_people[name]]) for name in old_people}
+            gains = {(r.term, r.child): r.gain for r in results}
+            self._save(KANPlot(old_model).figure(), directory / "before.png")
+            self._save(KANPlot(after).figure(), directory / "after.png")
+            self._save(DriftPlot(self.scenario, before, after, gains, pooled).figure(), directory / "comparison.png")
+            (directory / "summary.txt").write_text(self._summary(results, after))
+        return results
+
+    def _node(self, world: World, name: str, parents: list[str]) -> Node:
+        kind = OutcomeNode if name == world.outcome else Node
+        screening = self.screening if len(parents) >= 2 else None
+        return kind(name, parents, pairs=[], intervals=self.intervals, fitting=self.fitting, screening=screening)
 
     def _fitted_model(self, world: World, people: dict) -> CausalKAN:
-        nodes = []
-        for name, parents in world.parents().items():
-            kind = OutcomeNode if name == world.outcome else Node
-            nodes.append(kind(name, parents, self.intervals, fitting=self.fitting))
-        model = CausalKAN(nodes)
+        model = CausalKAN([self._node(world, name, parents) for name, parents in world.parents().items()])
         model.fit(people)
         return model
 
-    def _compare(self, before: CausalKAN, after: CausalKAN) -> list[EdgeResult]:
-        results = []
-        for parent, child in self.scenario.world.edges():
-            gap = self.comparison.gap(before.node(child).curves[parent], after.node(child).curves[parent])
-            results.append(EdgeResult(parent, child, (parent, child) in self.scenario.changed_edges,
-                                      gap, gap > self.threshold))
-        return results
+    def _joint(self, old_people: dict, new_people: dict) -> tuple[CausalKAN, CausalKAN, list[TermResult]]:
+        """One joint fit per node with parents; a root is fitted on each window alone."""
+        change = ChangeFit(margin=self.margin)
+        before_nodes, after_nodes, results = [], [], []
+        for name, parents in self.scenario.world.parents().items():
+            if not parents:
+                for nodes, world, people in ((before_nodes, self.scenario.world, old_people),
+                                             (after_nodes, self.scenario.drifted, new_people)):
+                    node = self._node(world, name, parents)
+                    node.fit(people)
+                    nodes.append(node)
+                continue
+            outcome = change.fit(self._node(self.scenario.world, name, parents), old_people, new_people)
+            before_nodes.append(outcome.before)
+            after_nodes.append(outcome.after)
+            self.levels[name] = outcome.gains["level"]
+            for term, gain in outcome.gains.items():
+                if term != "level":
+                    truly = (term, name) in self.scenario.changed_edges
+                    results.append(TermResult(term, name, truly, gain, gain > self.margin))
+        return CausalKAN(before_nodes), CausalKAN(after_nodes), results
 
-    def _summary(self, results: list[EdgeResult], before: CausalKAN, after: CausalKAN,
-                 old_people: dict, new_people: dict) -> str:
-        outcome = self.scenario.world.outcome
+    def _summary(self, results: list[TermResult], after: CausalKAN) -> str:
+        surfaces = {node.name: node.pairs for node in after.nodes if node.pairs}
         lines = [f"World: {self.scenario.world.name}",
                  f"Drift: {self.scenario.description}",
+                 f"Surfaces chosen: {surfaces or 'none'}",
+                 "Gain = how much more probable the data is with that term's change on (log units).",
+                 f"Change in level, gain per node: { {k: round(v, 1) for k, v in self.levels.items()} }",
                  "",
-                 f"{'edge':22} {'truly changed':>14} {'gap (spreads)':>14} {'flagged (gap > ' + str(self.threshold) + ')':>20}"]
+                 f"{'term':26} {'truly changed':>14} {'gain':>10} {'flagged (gain > ' + str(self.margin) + ')':>22}"]
         for r in results:
-            lines.append(f"{r.parent + ' → ' + r.child:22} {'yes' if r.truly_changed else 'no':>14} "
-                         f"{r.gap:14.1f} {'yes' if r.flagged else 'no':>20}")
-        lines += ["",
-                  "Error in P(Y=1) against the true chance, averaged over people:",
-                  f"  old model, people from before the drift  {self._chance_error(before, self.scenario.world, old_people):.3f}",
-                  f"  old model, people from after the drift   {self._chance_error(before, self.scenario.drifted, new_people):.3f}",
-                  f"  new model, people from after the drift   {self._chance_error(after, self.scenario.drifted, new_people):.3f}",
-                  ""]
-        return "\n".join(lines)
+            lines.append(f"{r.term + ' → ' + r.child:26} {'yes' if r.truly_changed else 'no':>14} "
+                         f"{r.gain:10.1f} {'yes' if r.flagged else 'no':>22}")
+        lines += ["", "Error in P(Y=1) against the true chance, averaged over people:"]
+        lines += [f"  {who:44} {error:.3f}" for who, error in self.chance_errors.items()]
+        return "\n".join(lines + [""])
 
     @staticmethod
     def _chance_error(model: CausalKAN, world: World, people: dict) -> float:
@@ -201,8 +217,9 @@ class DriftExperiment:
 def main() -> None:
     for make_scenario in SCENARIOS:
         scenario = make_scenario()
-        experiment = DriftExperiment(scenario, BayesianFitting(), intervals=16)
-        print(experiment.run(FIGURES / scenario.world.name))
+        experiment = DriftExperiment(scenario, BayesianFitting())
+        experiment.run(FIGURES / scenario.world.name)
+        print((FIGURES / scenario.world.name / "summary.txt").read_text())
     print(f"figures saved in {FIGURES}")
 
 

@@ -1,0 +1,20 @@
+Flagged = in how many of 3 runs the term's gain was above 3 (its change made the data more than ≈ 20 times more probable).
+A surface counts as not flagged in runs where it was not chosen.
+
+world                          term                      truly changed   flagged  median gain
+4_rising_savings_interaction   income → Y                           no       0/3          0.1
+4_rising_savings_interaction   savings → Y                          no       0/3         -0.0
+4_rising_savings_interaction   income×savings → Y                   no       0/3         -0.0
+5_interaction_flips            income → Y                           no       0/3          0.0
+5_interaction_flips            savings → Y                          no       0/3         -0.0
+5_interaction_flips            income×savings → Y                  yes       3/3        243.8
+
+How often each surface was chosen:
+  4_rising_savings_interaction income×savings → Y: 3/3
+  5_interaction_flips income×savings → Y: 3/3
+
+Error in P(Y=1) on people from after the drift (median over seeds):
+  4_rising_savings_interaction: old model 0.036, updated model 0.005
+  5_interaction_flips: old model 0.105, updated model 0.015
+
+Totals: real changes caught 3/3; false alarms 0/15 term-runs

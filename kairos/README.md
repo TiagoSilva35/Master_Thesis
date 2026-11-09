@@ -1,36 +1,49 @@
-# Causal KAN: foundations
+# Kairos: a causal KAN that notices drift and can shape fairness
 
-A causal graph whose equations are KAN curves: one curve per edge, summed at the node.
+A causal graph whose equations are KAN curves: one curve per edge, summed at the
+node, plus a surface for a pair of parents that interact.
 
-    x_j = c_j + Σ φ_ij(x_i) + u_j          (every variable)
-    P(Y = 1) = σ(c_Y + Σ φ_iY(x_i))        (the outcome)
+    x_j = c_j + Σ φ_ij(x_i) + Σ ψ_abj(x_a, x_b) + u_j          (every variable)
+    P(Y = 1) = σ(c_Y + Σ φ_iY(x_i) + Σ ψ_abY(x_a, x_b))         (the outcome)
 
-The foundations are done when the model can say how a person's chance of a good
-outcome changes if their income changes. Read the files in this order:
+## Files, in reading order
 
-| Step | File | Class | What it adds |
-|---|---|---|---|
-| 1 | `src/causal_model/spline.py` | `Spline` | one curve: cubic B-spline weights @ heights |
-| 2 | `src/causal_model/node.py` | `Node` | one variable: constant + one curve per parent, fitted by least squares |
-| 3 | `src/causal_model/kan.py` | `CausalKAN` | the graph: nodes in causal order, each fitted on its own |
-| 4 | `src/counterfactual.py` | `Counterfactual` | abduction, action, prediction |
-| 5 | `src/outcome.py` | `OutcomeNode` | `Y` with a logistic equation |
+| File | Class | What it does |
+|---|---|---|
+| `src/causal_model/spline.py` | `Spline` | one curve: cubic B-spline bump weights @ heights, with a band |
+| `src/causal_model/surface.py` | `Surface` | one interaction between two parents: a grid of heights holding only what depends on both |
+| `src/causal_model/fitting.py` | `PlainFitting`, `BayesianFitting` | how heights are chosen: data only, or with a smoothness belief whose strength λ (one per curve, two per surface) is picked by the evidence |
+| `src/causal_model/node.py` | `Node` | one variable: constant + curves + surfaces, fitted as least squares |
+| `src/causal_model/outcome.py` | `OutcomeNode` | `Y`: the same, but a chance, fitted with damped Newton |
+| `src/causal_model/screening.py` | `PairScreening` | which pairs of parents get a surface, decided from the data |
+| `src/causal_model/kan.py` | `CausalKAN` | the graph: nodes in causal order |
+| `src/causal_model/change.py` | `ChangeFit` | drift: one fit on people from before and after, with a change part per term that is kept only if the data needs it |
+| `src/causal_model/fairness.py` | `FairnessPolicy`, `FairScore` | fairness: the decision with a protected attribute's influence removed (or reduced) along chosen edges |
+| `src/causal_model/plot.py` | `KANPlot` | one panel per curve, one heat map per surface |
+| `src/cf_generation/counterfactual.py` | `Counterfactual` | abduction, action, prediction |
 
-`src/toy_world.py` is a small world with known equations (income → savings, both → Y)
-that the tests and the demo check the model against.
+Simulations, with worlds whose true equations are known:
 
-Run from the repo root:
+| File | What it does |
+|---|---|
+| `src/simulation/world.py` | `World` and its mechanisms (`Uniform`, `Binary`, `Equation`, `Outcome`) |
+| `src/simulation/scenarios.py` | six worlds, each with one drift |
+| `src/simulation/drift.py` | runs each world once and saves figures and a summary in `figures/worlds/<world>/` |
+| `src/simulation/repeat.py` | runs worlds over many seeds and counts how often each term is flagged |
+| `src/simulation/fairness_demo.py` | a world with a protected group; fair scores checked against the truth, in `figures/fairness/` |
+| `src/simulator.py` | the first small world, fitted plain and Bayesian side by side |
 
-    python3 -B -m unittest discover -s kairos/tests -t .
-    python3 -B -m kairos.demo
+## Run (from `kairos/`)
+
+    PYTHONPATH=. venv/bin/python src/simulation/drift.py
+    PYTHONPATH=. venv/bin/python src/simulation/repeat.py --worlds 6 --seeds 5 --figures
+    PYTHONPATH=. venv/bin/python src/simulation/fairness_demo.py
 
 ## Left out on purpose
 
-- Knots are evenly spaced over the training range; curves are flat outside it,
-  so the slope jumps to zero at the first and last knot.
-- A parent with a single value (for example a binary protected attribute) raises
-  `ValueError`, because its knots would all sit at one point.
-- No online updates, drift detection, recourse search, or fairness yet.
-- For `Y`, a counterfactual reports the chance `P(Y = 1)`, not a 0/1 value:
-  `Y` is not known for the person being asked about, so its noise is not recovered.
-- Newton runs a fixed number of steps with no convergence check.
+- Batch only: no running statistics, forgetting or change windows over time yet.
+- Knots are evenly spaced over the data's range; curves are flat outside it.
+- Yes/no variables are fitted as curves between 0 and 1; only the two ends mean anything.
+- Fairness can only shape edges out of the protected attribute, and it shapes the
+  decision score, not recourse (there is no recourse search yet).
+- For `Y`, a counterfactual reports the chance `P(Y = 1)`, not a 0/1 value.
