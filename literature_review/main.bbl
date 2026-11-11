@@ -1,4 +1,4 @@
-\begin{thebibliography}{28}
+\begin{thebibliography}{31}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -157,6 +157,19 @@ Matthew~L. Olson, Roli Khanna, Lawrence Neal, Fuxin Li, and Weng-Keen Wong.
 \newblock \doi{10.1016/j.artint.2021.103455}.
 \newblock URL \url{http://dx.doi.org/10.1016/j.artint.2021.103455}.
 
+\bibitem[Pearl(2009{\natexlab{a}})]{pearl2009causality}
+Judea Pearl.
+\newblock \emph{Causality: Models, Reasoning, and Inference}.
+\newblock Cambridge University Press, Cambridge, second edition,
+  2009{\natexlab{a}}.
+\newblock \doi{10.1017/CBO9780511803161}.
+
+\bibitem[Pearl(2009{\natexlab{b}})]{pearl2009overview}
+Judea Pearl.
+\newblock Causal inference in statistics: An overview.
+\newblock \emph{Statistics Surveys}, 3:\penalty0 96--146, 2009{\natexlab{b}}.
+\newblock \doi{10.1214/09-SS057}.
+
 \bibitem[Perry et~al.(2022)Perry, Von~K{\"u}gelgen, and
   Sch{\"o}lkopf]{perry2022causal}
 Ronan Perry, Julius Von~K{\"u}gelgen, and Bernhard Sch{\"o}lkopf.
@@ -164,6 +177,13 @@ Ronan Perry, Julius Von~K{\"u}gelgen, and Bernhard Sch{\"o}lkopf.
   mechanism shift hypothesis.
 \newblock \emph{Advances in Neural Information Processing Systems},
   35:\penalty0 10904--10917, 2022.
+
+\bibitem[Peters et~al.(2017)Peters, Janzing, and
+  Sch{\"o}lkopf]{peters2017elements}
+Jonas Peters, Dominik Janzing, and Bernhard Sch{\"o}lkopf.
+\newblock \emph{Elements of Causal Inference: Foundations and Learning
+  Algorithms}.
+\newblock MIT Press, Cambridge, MA, 2017.
 
 \bibitem[Poyiadzi et~al.(2020)Poyiadzi, Sokol, Santos-Rodriguez, De~Bie, and
   Flach]{poyiadzi2020face}

@@ -1,50 +1,52 @@
-This is BibTeX, Version 0.99e (TeX Live 2026/Homebrew)
+This is BibTeX, Version 0.99e
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
 The style file: plainnat.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
 Database file #1: references.bib
 Warning--string name "june" is undefined
---line 213 of file references.bib
+--line 425 of file references.bib
 Warning--can't use both volume and number fields in liu2025understanding
-You've used 28 entries,
+You've used 31 entries,
             2773 wiz_defined-function locations,
-            753 strings with 11338 characters,
-and the built_in function-call counts, 16762 in all, are:
-= -- 1487
-> -- 1099
-< -- 21
-+ -- 368
-- -- 339
-* -- 1389
-:= -- 2448
-add.period$ -- 93
-call.type$ -- 28
-change.case$ -- 197
-chr.to.int$ -- 27
-cite$ -- 57
-duplicate$ -- 724
-empty$ -- 1278
-format.name$ -- 371
-if$ -- 3604
-int.to.chr$ -- 2
+            772 strings with 11752 characters,
+and the built_in function-call counts, 17886 in all, are:
+= -- 1586
+> -- 1149
+< -- 23
++ -- 387
+- -- 354
+* -- 1475
+:= -- 2629
+add.period$ -- 104
+call.type$ -- 31
+change.case$ -- 210
+chr.to.int$ -- 29
+cite$ -- 63
+duplicate$ -- 785
+empty$ -- 1381
+format.name$ -- 389
+if$ -- 3837
+int.to.chr$ -- 3
 int.to.str$ -- 1
-missing$ -- 22
-newline$ -- 155
-num.names$ -- 112
-pop$ -- 434
+missing$ -- 27
+newline$ -- 172
+num.names$ -- 124
+pop$ -- 463
 preamble$ -- 1
-purify$ -- 169
+purify$ -- 180
 quote$ -- 0
-skip$ -- 630
+skip$ -- 666
 stack$ -- 0
-substring$ -- 684
-swap$ -- 175
+substring$ -- 712
+swap$ -- 180
 text.length$ -- 18
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 308
+type$ -- 331
 warning$ -- 1
-while$ -- 137
+while$ -- 148
 width$ -- 0
-write$ -- 383
+write$ -- 427
 (There were 2 warnings)

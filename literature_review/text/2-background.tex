@@ -17,14 +17,70 @@
 \subsection{Notation}
 \label{sec:bg-notation}
 
-% TO WRITE. Fix the symbols once and reuse them in Chapter~\ref{chap:proposed-approach}:
-% person x, features X_1..X_d, outcome Y, classifier h, protected attribute A, causal graph G,
-% structural equations f_j and noise U_j, intervention do(X_i = a), action cost c(x, a),
-% time or window t, curve phi_ij on edge i -> j, surface psi_abj for a pair of parents.
-% Suggested reading:
-% - Karimi et al. (2022), A Survey of Algorithmic Recourse (karimi2022survey, already in
-%   references.bib): its notation is the one most recourse papers follow, so reusing it keeps the
-%   review and Chapter 4 consistent with the field.
+% KEEP UP TO DATE. The table lists every symbol used in two or more sections, including
+% Chapter~\ref{chap:proposed-approach}. Rows marked "% planned" belong to sections that are not
+% written yet: check them when writing that section, then delete the mark. Add a row whenever a
+% new symbol is shared between sections; symbols used in one place only stay out of the table.
+% Naming follows Karimi et al. (2022, karimi2022survey) where possible. Differences from kairos and
+% the Friday slides: the constant c_j is alpha_j here (c is the cost), the surface psi_abj is
+% psi_klj (a is a value of A), and the spline heights h_k are beta_m (h is the classifier).
+This subsection fixes the notation used in the rest of the document. Uppercase italic letters
+denote random variables, such as a feature $X_j$, the outcome $Y$ or the protected attribute $A$,
+and the corresponding lowercase letters denote the values they take ($x_j$, $y$, $a$). Bold letters
+denote vectors or sets of variables: $\mathbf{X} = (X_1, \dots, X_d)$ collects the $d$ features and
+$\mathbf{x}$ holds the feature values of one person. Calligraphic letters denote graphs and sets
+of indices, such as the causal graph $\mathcal{G}$; $\mathcal{N}$ and $\mathrm{Unif}$ denote the
+normal and uniform distributions. The index $j$ refers to the variable being explained, $i$, $k$
+and $l$ to its parents or to intervened variables, $m$ to a basis function and $t$ to a time
+window. A hat marks a quantity estimated from data, as in $\hat{f}_j$ for the estimate of $f_j$.
+The letter $\sigma$ has two uses, kept apart by their form: $\sigma(z)$, always written with an
+argument, is the logistic function, and $\sigma_j^2$, always written with a subscript, is the
+noise variance of $X_j$.
+
+Table~\ref{tab:bg-notation} lists the symbols that are used in more than one section, together
+with the section that defines each of them. Symbols used in a single place are defined where they
+appear.
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabular}{@{}lp{9.6cm}c@{}}
+\toprule
+Symbol & Meaning & Section \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{People, decisions and recourse}} \\
+$\mathbf{x} = (x_1, \dots, x_d)$ & feature values of one person & \ref{sec:bg-recourse} \\ % planned
+$X_j$, $Y$ & $j$-th feature; outcome & \ref{sec:bg-recourse} \\ % planned
+$h$ & classifier (decision model) & \ref{sec:bg-recourse} \\ % planned
+$\mathbf{x}'$ & counterfactual explanation of $\mathbf{x}$ & \ref{sec:bg-recourse} \\ % planned
+$c(\mathbf{x}, \cdot)$ & cost of an action for the person $\mathbf{x}$ & \ref{sec:bg-recourse} \\ % planned
+$A$, $a$ & protected attribute and its value & \ref{sec:bg-fairness} \\ % planned
+\midrule
+\multicolumn{3}{@{}l}{\textit{Causal models}} \\
+$\mathcal{G}$ & causal graph & \ref{sec:bg-scm} \\
+$\mathbf{PA}_j$, $\mathbf{pa}_j$ & parents of $X_j$ and their values & \ref{sec:bg-scm} \\
+$f_j$, $\hat{f}_j$ & structural equation of $X_j$ and its estimate & \ref{sec:bg-scm} \\
+$U_j$, $u_j$ & noise of $X_j$ and its value & \ref{sec:bg-scm} \\
+$\mathrm{do}(X_i = \theta)$ & intervention that sets $X_i$ to $\theta$;
+  $\mathrm{do}(\mathbf{X}_{\mathcal{I}} = \boldsymbol{\theta})$ sets every $X_i$ with
+  $i \in \mathcal{I}$ & \ref{sec:bg-scm} \\
+$\sigma(z)$ & logistic function, $1 / (1 + e^{-z})$ & \ref{sec:bg-scm} \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{Change over time}} \\
+$t$, $P_t$ & time window; distribution of the data in window $t$ & \ref{sec:bg-drift} \\ % planned
+\midrule
+\multicolumn{3}{@{}l}{\textit{Curves and the causal KAN}} \\
+$B_m$, $\beta_m$ & $m$-th B-spline basis function and its height (coefficient) & \ref{sec:bg-splines} \\ % planned
+$\alpha_j$ & constant term in the equation of $X_j$ & \ref{sec:bg-splines} \\ % planned
+$\phi_{ij}$ & curve on the edge $X_i \to X_j$ & \ref{sec:bg-splines} \\ % planned
+$\psi_{klj}$ & surface for the pair of parents $X_k$ and $X_l$ of $X_j$ & \ref{sec:bg-splines} \\ % planned
+$\lambda$ & strength of the smoothness belief & \ref{sec:bg-bayesian-smoothing} \\ % planned
+$\sigma_j^2$ & noise variance of $X_j$ & \ref{sec:bg-bayesian-smoothing} \\ % planned
+\bottomrule
+\end{tabular}
+\caption[Notation]{Symbols used in more than one section, with the section that defines each.}
+\label{tab:bg-notation}
+\end{table}
 
 \subsection{Counterfactual Explanations and Algorithmic Recourse}
 \label{sec:bg-recourse}
@@ -45,19 +101,92 @@
 %   (venkatasubramanian2020philosophical, in references.bib): why recourse matters, a short
 %   normative grounding for the motivation.
 
-\subsection{Structural Causal Models, Interventions and Counterfactuals}
+\subsection{Structural Causal Models and Interventions}
 \label{sec:bg-scm}
 
-% TO WRITE: SCMs (graph, structural equations, noise), interventions and the do-operator, the
-% three steps of a counterfactual (abduction, action, prediction), additive noise models.
-% Suggested reading:
-% - Pearl (2009), Causality: Models, Reasoning, and Inference (2nd ed.), Cambridge University
-%   Press: the standard source for SCMs, do() and the three-step counterfactual.
-% - Peters, Janzing & Schölkopf (2017), Elements of Causal Inference, MIT Press: additive noise
-%   models and identifiability; the causal KAN's equations are additive noise models.
-% - Lewis (1973) (lewis1973counterfactuals) and Tian & Pearl (2000) (tian2000probabilities), both
-%   in references.bib: the semantics of counterfactuals and probabilities of causation; they fit
-%   here rather than in the literature review.
+Recourse asks what would happen to a person's decision if they acted, and counterfactual fairness
+asks what the decision would have been had a protected attribute been different. Both are, inevitably, causal
+questions, and this thesis answers them with structural causal models (SCMs)
+\cite{pearl2009causality, peters2017elements}. This subsection introduces SCMs and interventions.
+
+\paragraph{Structural causal models.}
+An SCM describes how each variable is produced from its direct causes. Following
+\citet{peters2017elements}, an SCM over $X_1, \dots, X_d$ consists of $d$ structural
+assignments
+\begin{equation}
+  X_j := f_j(\mathbf{PA}_j, U_j), \qquad j = 1, \dots, d,
+  \label{eq:bg-scm}
+\end{equation}
+where $\mathbf{PA}_j \subseteq \{X_1, \dots, X_d\} \setminus \{X_j\}$ are called the parents of
+$X_j$, together with a joint distribution $P_{\mathbf{U}}$ over the noise variables
+$U_1, \dots, U_d$, which are required to be jointly independent. \citet{peters2017elements} write
+the noise variables as $N_j$. This thesis writes $U_j$, the letter used by \citet{pearl2009overview}
+and the recourse literature \cite{karimi2021algorithmic}, where $U_j$ is called an exogenous
+variable and $X_j$ an endogenous one. There, independence is an extra assumption rather
+than part of the definition: \citet{pearl2009overview} calls a model whose graph is acyclic and
+whose exogenous variables are jointly independent \emph{Markovian}. Drawing an arrow from each parent to
+its child gives the causal graph $\mathcal{G}$, which is assumed to be a directed acyclic graph. 
+The parents of $X_j$ are its direct causes and $U_j$ gathers everything else that affects $X_j$ but is
+not modelled; requiring the noise variables to be independent and, therefore, rules out hidden
+variables that affect two observed ones (causal sufficiency). An acyclic SCM entails a single
+joint distribution over $X_1, \dots, X_d$ \cite{peters2017elements}, which factorises into one
+conditional distribution per variable \cite{pearl2009causality}:
+\begin{equation}
+  P(X_1, \dots, X_d) = \prod_{j=1}^{d} P(X_j \mid \mathbf{PA}_j).
+  \label{eq:bg-markov}
+\end{equation}
+Each factor is the \emph{causal mechanism} of one variable. The principle of independent
+mechanisms states that these factors do not inform or influence one another, so that one of them
+can change while the others stay the same \cite{peters2017elements}.
+Section~\ref{sec:bg-drift} uses this idea to describe drift as a change in some mechanisms but
+not in others.
+
+\paragraph{Running example.}
+Figure~\ref{fig:bg-running-example} shows the SCM used as a running example. A person's income
+$X_1$ affects their savings $X_2$, and both affect the bank's decision $Y$, where $Y = 1$ means
+that the loan is approved:
+\begin{equation}
+  \begin{array}{rcl}
+    X_1 & := & U_1, \\[2pt]
+    X_2 & := & 0.5\, X_1^2 + U_2, \\[2pt]
+    Y   & := & \mathbf{1}\!\left[\, U_Y < \sigma(-4 + X_1 + 0.5\, X_2) \,\right],
+  \end{array}
+  \label{eq:bg-example}
+\end{equation}
+with $U_1 \sim \mathrm{Unif}(0, 4)$, $U_2 \sim \mathcal{N}(0, 0.3^2)$ and
+$U_Y \sim \mathrm{Unif}(0, 1)$, where $\sigma(z) = 1 / (1 + e^{-z})$ is the logistic function and
+$\mathbf{1}[\cdot]$ equals 1 when its condition holds and 0 otherwise. The last equation means
+that a person is approved with probability $\sigma(-4 + X_1 + 0.5\, X_2)$. The noise $U_2$ can be
+read as a saving habit: a positive value means that the person saves more than others with the
+same income.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics{figures/scm-running-example.pdf}
+  \caption[Causal graph of the running example]{Causal graph of the running example
+  (Equation~\ref{eq:bg-example}). Solid arrows are causal effects, labelled with the term that
+  each parent adds to its child's equation; dashed arrows come from the noise variables.}
+  \label{fig:bg-running-example}
+\end{figure}
+
+\paragraph{Interventions.}
+An intervention sets a variable from outside the system. The intervention
+$\mathrm{do}(X_i = \theta)$ replaces the equation of $X_i$ with the constant $\theta$ and leaves
+every other equation unchanged \cite{pearl2009causality}:
+\begin{equation}
+  X_i := \theta, \qquad X_j := f_j(\mathbf{PA}_j, U_j) \quad \mbox{for all } j \neq i.
+  \label{eq:bg-do}
+\end{equation}
+The result is a new SCM, whose graph has no arrows into $X_i$ and whose distribution is the
+\emph{interventional} distribution $P(X_1, \dots, X_d \mid \mathrm{do}(X_i = \theta))$. Several
+variables can be set at once: $\mathrm{do}(\mathbf{X}_{\mathcal{I}} = \boldsymbol{\theta})$ replaces
+the equation of every $X_i$ with $i$ in the set of indices $\mathcal{I}$. Intervening is not the
+same as conditioning. In the running example, $P(Y \mid X_2 = x_2)$ describes the people who
+happen to have savings $x_2$, and those with high savings tend to also have a high income,
+whereas $P(Y \mid \mathrm{do}(X_2 = x_2))$ describes what happens when savings are set to $x_2$
+and income stays as it was. In algorithmic recourse, the action a person takes is modelled as an intervention
+on the features they can change \cite{karimi2021algorithmic}; Section~\ref{subsec:lr-causal-recourse}
+reviews this view.
 
 \subsection{Fairness: Statistical and Causal Notions}
 \label{sec:bg-fairness}
