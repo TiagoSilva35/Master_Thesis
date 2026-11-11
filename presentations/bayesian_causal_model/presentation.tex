@@ -1,0 +1,423 @@
+% Fair Causal KAN --- splines, Bayesian splines, surfaces, screening and the current architecture. Figures: make_figures.py. CISUC template, Beamer version (same preamble as ../lit_review_plan/presentation.tex).
+% Compiles with pdfLaTeX, XeLaTeX, or LuaLaTeX (run twice for the TikZ overlays).
+\documentclass[aspectratio=169]{beamer}
+\usepackage{geometry}
+\geometry{paperwidth=13.333in,paperheight=7.5in}
+\usepackage{iftex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{array}
+
+% ---- fonts (engine-agnostic; TeXLive-bundled Helvetica/Courier clones, no fontspec) ----
+\ifPDFTeX\usepackage[utf8]{inputenc}\fi
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{tgheros}   % Helvetica clone (Arial-like) sans
+\usepackage{tgcursor}  % Courier clone mono
+\renewcommand{\familydefault}{\sfdefault}
+\newcommand{\monofont}{\ttfamily}
+
+% ---- colours ----
+\definecolor{cred}{HTML}{DA0725}
+\definecolor{ink}{HTML}{141414}
+\definecolor{body}{HTML}{262626}
+\definecolor{grey}{HTML}{8A8A8A}
+\definecolor{lgrey}{HTML}{C4C4C4}
+\definecolor{rulec}{HTML}{2A2A2A}
+\definecolor{amber}{HTML}{C77A18}
+
+\setbeamercolor{normal text}{fg=body}
+\setbeamercolor{itemize item}{fg=cred}
+\setbeamercolor{itemize subitem}{fg=cred}
+\setbeamercolor{enumerate item}{fg=cred}
+\setbeamercolor{item projected}{fg=cred}
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=0.85in,text margin right=0.85in}
+
+% ---- running header (shown on non-plain frames) ----
+\newcommand{\hdrtotal}{8}
+\newcommand{\hdrsec}{}
+\newcommand{\hdrpg}{}
+\newcommand{\pageset}[2]{\renewcommand{\hdrsec}{#1}\renewcommand{\hdrpg}{#2}}
+\setbeamertemplate{headline}{%
+  \vskip3mm%
+  \makebox[\paperwidth][c]{%
+    \hspace{9mm}%
+    \parbox[t]{4.2in}{\monofont\color{grey}\fontsize{9}{11}\selectfont
+      Towards Fair Algorithmic Recourse with\\ Kolmogorov-Arnold Networks}%
+    \hfill
+    \parbox[t]{4.2in}{\centering\monofont\color{grey}\fontsize{10}{12}\selectfont \hdrsec}%
+    \hfill
+    \parbox[t]{2.6in}{\raggedleft\monofont\fontsize{13}{15}\selectfont
+      \textbf{\color{ink}\hdrpg}{\color{grey}/\hdrtotal}}%
+    \hspace{9mm}%
+  }%
+}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{}
+
+% ---- helpers (absolute placement via TikZ overlay) ----
+% \tb{width-in}{x-in}{y-in}{content}  --- anchored top-left at (x,y) from page NW
+% optional #1 = extra node options (use font=... for large text so spacing scales)
+\newcommand{\tb}[5][]{\begin{tikzpicture}[remember picture,overlay]%
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=#2in,align=left,#1]
+    at ([xshift=#3in,yshift=-#4in]current page.north west){\raggedright #5\par};\end{tikzpicture}}
+\newcommand{\fs}[2]{\fontsize{#1}{#2}\selectfont}
+\newcommand{\hrl}[3]{\tb{#3}{#1}{#2}{{\color{lgrey}\rule{#3in}{0.9pt}}}}
+\newcommand{\ctitle}[1]{\tb[font=\fontsize{28}{32}\selectfont\bfseries]{11.6}{0.85}{1.3}{\color{ink}#1}}
+% design-question slide: \qtitle{the part it leads to}{the question}
+\newcommand{\qtitle}[2]{%
+  \tb{11.6}{0.85}{0.98}{\monofont\bfseries\color{cred}\fs{12.5}{15}Design question \textperiodcentered{} #1}%
+  \ctitle{#2}}
+% the line that closes a design-question slide: \choice{y}{text}
+\newcommand{\choice}[2]{\tb{11.6}{0.85}{#1}{\color{ink}\bfseries\fs{16}{20}{\color{cred}Choice:} #2\par}}
+\newcommand{\slidefoot}[1]{%
+  \tb{11.6}{0.85}{6.5}{\centering\color{grey}\fs{13}{16}#1}}
+\newcommand{\titleSlide}[2]{%
+  \tb[font=\fontsize{46}{50}\selectfont\bfseries]{11.4}{0.9}{2.4}{\color{ink}#1}%
+  \tb[font=\fontsize{30}{36}\selectfont\bfseries]{11.4}{0.9}{3.4}{\color{ink}#2}%
+  \tb{2.5}{0.9}{6.75}{\includegraphics[width=2.5in]{assets/cisuc_logo.png}}}
+% everything drawn in inches from the page's top-left corner, y pointing down
+\newenvironment{page}{\begin{tikzpicture}[remember picture,overlay]
+  \begin{scope}[shift={(current page.north west)},x=1in,y=-1in]}{\end{scope}\end{tikzpicture}}
+% titled text block: \lowcol{x}{y}{width}{title}{text}
+\newcommand{\lowcol}[5]{\tb{#3}{#1}{#2}{{\bfseries\color{cred}\fs{16}{19}#4\par}\vspace{5pt}{\color{body}\fs{15}{19}#5\par}}}
+% requirement column: \reqcol{x}{title}{text}
+\newcommand{\reqcol}[3]{%
+  \tb{2.6}{#1}{2.2}{\bfseries\color{cred}\fs{18}{22}#2}%
+  \hrl{#1}{2.66}{2.6}%
+  \tb{2.6}{#1}{2.85}{\color{body}\fs{15}{19.5}#3}}
+% numbered step next to a small diagram: \pstep{colour}{y}{n}{text}
+\newcommand{\pstep}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=#1,text=white,inner sep=0pt,minimum size=0.3in,font=\bfseries\fontsize{13}{13}\selectfont]
+      at ([xshift=9.05in,yshift=-#2in-0.13in]current page.north west) {#3};
+  \end{tikzpicture}%
+  \tb{3.1}{9.35}{#2}{\color{body}\fs{14.5}{18}#4}}
+% numbered point: \npoint{y}{n}{title}{text}
+\newcommand{\npoint}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=cred,text=white,inner sep=0pt,minimum size=0.32in,font=\bfseries\fontsize{13}{13}\selectfont]
+      at ([xshift=8.56in,yshift=-#1in-0.14in]current page.north west) {#2};
+  \end{tikzpicture}%
+  \tb{3.65}{8.85}{#1}{{\bfseries\color{ink}\fs{16}{19}#3\par}\vspace{3pt}{\color{body}\fs{14}{18}#4\par}}}
+% numbered column: \chain{x}{n}{title}{text}
+\newcommand{\chain}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=cred,text=white,inner sep=0pt,minimum size=0.34in,font=\bfseries\fontsize{13}{13}\selectfont]
+      at ([xshift=#1in+0.17in,yshift=-2.2in]current page.north west) {#2};
+  \end{tikzpicture}%
+  \tb{2.7}{#1}{2.5}{{\bfseries\color{ink}\fs{16}{19}#3\par}\vspace{4pt}{\color{body}\fs{14}{18}#4\par}}}
+% small curve inside a box, for a function of \t on [0,1]
+\newcommand{\minibox}[5]{\draw[#5,line width=0.8pt,fill=white,rounded corners=2pt] (#1-#3/2,#2-#4/2) rectangle (#1+#3/2,#2+#4/2);}
+\newcommand{\minicurve}[6]{\draw[#5,domain=0:1,samples=25,smooth,variable=\t]
+    plot ({#1-#3/2+0.08+(#3-0.16)*\t},{#2+#4/2-0.07-(#4-0.14)*(#6)});}
+
+% ---- the architecture diagram -----------------------------------------------
+% \archdiagram{x}{y}{scale}{mode}  mode: 0 all, 1 decision path, 2 learning path, 3 change path
+% with \archfulltrue it shows box details and arrow labels; with \archfullfalse only names and step numbers
+\newif\ifarchfull
+\newcommand{\archset}[1]{%
+  \def\archmode{#1}%
+  \def\cD{ink}\def\cL{amber}\def\cC{cred}%
+  \def\wD{1.2pt}\def\wL{1.6pt}\def\wC{1.6pt}%
+  \def\onP{1}\def\onK{1}\def\onG{1}\def\onS{1}\def\onM{1}\def\onE{1}\def\onR{1}%
+  \ifnum#1=1 \def\cL{lgrey}\def\cC{lgrey}\def\wL{0.8pt}\def\wC{0.8pt}\def\wD{1.6pt}\def\onE{0}\def\onR{0}\fi
+  \ifnum#1=2 \def\cD{lgrey}\def\cC{lgrey}\def\wD{0.8pt}\def\wC{0.8pt}\def\onK{0}\def\onG{0}\def\onS{0}\def\onR{0}\fi
+  \ifnum#1=3 \def\cD{lgrey}\def\cL{lgrey}\def\wD{0.8pt}\def\wL{0.8pt}\def\onP{0}\def\onK{0}\def\onM{0}\fi
+  \ifarchfull\def\bsize{0.27in}\def\bfont{11}\else\def\bsize{0.4in}\def\bfont{16}\fi}
+\newcommand{\boxcols}[1]{\ifnum#1=1 \def\bdraw{ink}\def\btext{ink}\def\bline{body}\else\def\bdraw{lgrey}\def\btext{grey}\def\bline{grey}\fi}
+\newcommand{\abox}[9]{\boxcols{#1}%
+  \draw[\bdraw,line width=1pt,fill=white,rounded corners=3pt] (#2,#3) rectangle ++(#4,#5);
+  \ifarchfull
+    \node[anchor=north west,inner sep=0pt,text=\btext,font=\bfseries\fontsize{14.5}{17}\selectfont] at (#2+0.13,#3+0.1) {#6};
+    \node[anchor=north west,inner sep=0pt,text=\bline,align=left,font=\fontsize{11.5}{14.5}\selectfont] at (#2+0.13,#3+0.38) {#7\\#8};
+  \else
+    \node[text=\btext,align=center,font=\bfseries\fontsize{20}{23}\selectfont] at (#2+#4/2,#3+#5/2) {#9};
+  \fi}
+\newcommand{\ainner}[6]{\boxcols{#1}%
+  \draw[\bdraw,line width=0.8pt,fill=black!3,rounded corners=2pt] (#2,#3) rectangle ++(2.85,0.75);
+  \ifarchfull
+    \node[text=\btext,font=\bfseries\fontsize{13}{15}\selectfont] at (#2+1.425,#3+0.25) {#4};
+    \node[text=\bline,font=\fontsize{11.5}{14}\selectfont] at (#2+1.425,#3+0.52) {#5};
+  \else
+    \node[text=\btext,font=\bfseries\fontsize{17}{20}\selectfont] at (#2+1.425,#3+0.375) {#6};
+  \fi}
+\newcommand{\aarr}[3]{\draw[-{Latex[length=2mm]},#1,line width=#2,rounded corners=4pt] #3;}
+\newcommand{\alab}[4][center]{\ifarchfull\node[anchor=#1,inner sep=1.5pt,text=body,font=\fontsize{10.5}{12}\selectfont,fill=white,align=left] at (#2,#3) {#4};\fi}
+\newcommand{\abadgeraw}[4]{\ifcase#1\or\def\bcol{ink}\or\def\bcol{amber}\or\def\bcol{cred}\fi
+  \node[circle,fill=\bcol,text=white,inner sep=0pt,minimum size=\bsize,font=\bfseries\fontsize{\bfont}{\bfont}\selectfont] at (#3,#4) {#2};}
+\newcommand{\abadge}[4]{\ifnum\archmode=0 \abadgeraw{#1}{#2}{#3}{#4}\else\ifnum\archmode=#1 \abadgeraw{#1}{#2}{#3}{#4}\fi\fi}
+\newcommand{\archdiagram}[4]{\archset{#4}%
+\begin{page}
+\begin{scope}[shift={(#1,#2)},scale=#3,transform shape]
+  % boxes
+  \boxcols{\onP}
+  \draw[\bdraw,line width=1pt,fill=white,rounded corners=11pt] (0,0.55) rectangle ++(1.0,0.5);
+  \ifarchfull
+    \node[text=\btext,font=\bfseries\fontsize{13.5}{15}\selectfont] at (0.5,0.8) {People};
+  \else
+    \node[text=\btext,font=\bfseries\fontsize{16}{18}\selectfont] at (0.5,0.8) {People};
+  \fi
+  \abox{\onK}{1.75}{0.35}{2.25}{0.9}{Classifier}{In: Y's parents}{Out: accept or reject}{Classifier}
+  \abox{\onG}{5.15}{0.35}{2.85}{0.9}{Counterfactual generator}{In: one rejected person}{Out: cheapest good action}{Counterfactual\\generator}
+  \abox{\onS}{9.15}{0.35}{1.95}{0.9}{Action store}{Rechecks what a}{Change affects}{Action store}
+  \abox{\onE}{1.75}{3.8}{3.0}{0.9}{Learner}{Every sample: update statistics}{Strong evidence: update the model}{Learner}
+  \abox{\onR}{5.4}{3.8}{2.6}{0.9}{Monitor}{Curves, group gaps,}{the edge behind a gap}{Monitor}
+  \boxcols{\onM}
+  \draw[\bdraw,line width=1pt,fill=white,rounded corners=3pt] (1.75,1.85) rectangle ++(6.25,1.2);
+  \ifarchfull
+    \node[text=\btext,font=\bfseries\fontsize{14.5}{17}\selectfont] at (4.875,2.03) {Causal model};
+  \else
+    \node[text=\btext,font=\bfseries\fontsize{17}{20}\selectfont] at (4.875,2.03) {Causal model};
+  \fi
+  \ainner{\onM}{1.9}{2.2}{Y equation}{the classifier's curves}{Y equation}
+  \ainner{\onM}{5.0}{2.2}{Feature equations}{how variables move each other}{Feature equations}
+  % decision path
+  \aarr{\cD}{\wD}{(1.0,0.8) -- (1.75,0.8)}
+  \aarr{\cD}{\wD}{(4.0,0.6) -- (5.15,0.6)}
+  \aarr{\cD}{\wD}{(5.15,1.0) -- (4.0,1.0)}
+  \aarr{\cD}{\wD}{(8.0,0.6) -- (9.15,0.6)}
+  \aarr{\cD}{\wD}{(10.1,0.35) -- (10.1,0.1) -- (0.5,0.1) -- (0.5,0.55)}
+  \aarr{\cD}{\wD}{(2.875,0.35) -- (2.875,0.12)}
+  \aarr{\cD}{\wD}{(2.875,2.2) -- (2.875,1.25)}
+  \aarr{\cD}{\wD}{(6.575,2.2) -- (6.575,1.25)}
+  % learning path
+  \aarr{\cL}{\wL}{(0.5,1.05) -- (0.5,4.25) -- (1.75,4.25)}
+  \aarr{\cL}{\wL}{(3.25,3.8) -- (3.25,3.05)}
+  % change path
+  \aarr{\cC}{\wC}{(4.4,3.8) -- (4.4,3.32) -- (10.1,3.32) -- (10.1,1.25)}
+  \aarr{\cC}{\wC}{(6.7,3.32) -- (6.7,3.8)}
+  \aarr{\cC}{\wC}{(9.15,1.0) -- (8.0,1.0)}
+  \aarr{\cC}{\wC}{(10.9,1.25) -- (10.9,4.25) -- (8.0,4.25)}
+  \fill[\cC] (6.7,3.32) circle (0.05);
+  % arrow labels (detailed version only)
+  \alab{1.375}{0.5}{applies}
+  \alab{4.575}{0.33}{rejected}
+  \alab{4.575}{1.2}{checks}
+  \alab{8.575}{0.33}{action}
+  \alab{8.575}{1.2}{repair}
+  \alab{6.3}{0.1}{decisions and actions go back to people}
+  \alab[west]{2.95}{0.23}{accepted}
+  \alab[east]{2.8}{1.55}{reads the curves}
+  \alab[east]{6.33}{1.55}{simulates actions}
+  \alab[west]{0.6}{3.15}{data, late\\outcomes}
+  \alab[west]{3.45}{3.42}{commit}
+  \alab{8.95}{3.5}{Change: edge, knot range, $\delta$}
+  \alab{9.45}{4.09}{validity results}
+  % step numbers
+  \abadge{1}{1}{1.375}{0.8}
+  \abadge{1}{2}{4.575}{0.6}
+  \abadge{1}{3}{6.575}{1.55}
+  \abadge{1}{4}{8.575}{0.6}
+  \abadge{2}{5}{0.5}{2.6}
+  \abadge{2}{6}{3.25}{3.42}
+  \abadge{3}{7}{10.1}{2.3}
+  \abadge{3}{8}{6.98}{3.56}
+\end{scope}
+\end{page}}
+
+\newcommand{\pa}{\mathsf{pa}}
+
+\begin{document}
+
+% ===================================================== LOGO
+\begin{frame}[plain]
+  \tb{4.6}{4.37}{3.35}{\includegraphics[width=4.6in]{assets/cisuc_logo.png}}
+\end{frame}
+
+% ===================================================== TITLE
+\begin{frame}[plain]
+  \titleSlide{Fair Causal KAN}{Bayesian splines, surfaces and screening}
+  \tb{11}{0.92}{4.3}{\color{ink}\fs{19}{22}Tiago Silva}
+  \tb{11}{0.92}{4.7}{\color{grey}\fs{13}{16}Supervisors: Prof.\ Pedro Henriques Abreu \textperiodcentered{} Prof.\ Bruno Veloso}
+  \tb{11}{0.92}{5.2}{\color{ink}\fs{14}{18}\textbf{CISUC \textperiodcentered{} Data-Centric AI Lab}\\
+    {\color{body}\fs{14}{18}Department of Informatics Engineering, University of Coimbra}}
+  \tb{11}{0.92}{5.95}{\color{grey}\fs{13}{16}Current implementation \textperiodcentered{} November 2026}
+\end{frame}
+
+% ===================================================== HELPERS FOR THESE SLIDES
+% a figure from assets/, top-left at (x,y), given width: \fig{x}{y}{width}{file}
+\newcommand{\fig}[4]{\tb{#3}{#1}{#2}{\includegraphics[width=#3in]{assets/#4}}}
+% a numbered block in any column: \nblock{x}{y}{width}{n}{title}{text}
+\newcommand{\nblock}[6]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=cred,text=white,inner sep=0pt,minimum size=0.3in,font=\bfseries\fontsize{12.5}{12.5}\selectfont]
+      at ([xshift=#1in+0.15in,yshift=-#2in-0.14in]current page.north west) {#4};
+  \end{tikzpicture}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=#3in-0.45in,align=left]
+      at ([xshift=#1in+0.45in,yshift=-#2in]current page.north west)
+      {\raggedright{\bfseries\color{ink}\fs{15.5}{18.5}#5\par}\vspace{3pt}{\color{body}\fs{13.5}{17}#6\par}};
+  \end{tikzpicture}}
+% a box of the architecture diagram: \archbox{x}{y}{w}{h}{title}{class}{text}
+\newcommand{\archbox}[7]{%
+  \draw[ink,line width=1pt,fill=white,rounded corners=3pt] (#1,#2) rectangle ++(#3,#4);
+  \node[anchor=north west,inner sep=0pt,text=ink,font=\bfseries\fontsize{14.5}{17}\selectfont] at (#1+0.14,#2+0.13) {#5};
+  \node[anchor=north east,inner sep=0pt,text=grey,font=\ttfamily\fontsize{10}{12}\selectfont] at (#1+#3-0.12,#2+0.17) {#6};
+  \node[anchor=north west,inner sep=0pt,text=body,align=left,text width=#3in-0.28in,font=\fontsize{12}{15}\selectfont] at (#1+0.14,#2+0.47) {#7};}
+\newcommand{\arr}[1]{\draw[-{Latex[length=2mm]},ink,line width=1.2pt,rounded corners=4pt] #1;}
+
+% ===================================================== 1. BEZIER
+\pageset{Foundations}{1}
+\begin{frame}
+  \ctitle{B\'ezier curves: a curve drawn from four points}
+  \tb{5.7}{0.85}{1.98}{\color{body}\fs{15.5}{19.5}As $t$ goes from 0 to 1, the point $f(t)$ travels from $V_1$ to $V_4$, pulled towards $V_2$ and $V_3$ on the way.\par}
+  \tb{5.9}{0.85}{2.85}{\color{ink}\fs{17}{21}$f(t)=(1-t)^3\,V_1+3t(1-t)^2\,V_2+3t^2(1-t)\,V_3+t^3\,V_4$\par}
+  \tb{5.7}{0.85}{3.35}{\color{grey}\fs{12.5}{15}The four weights, as $t$ goes from 0 to 1:\par}
+  \fig{1.0}{3.6}{3.7}{bezier_weights.pdf}
+  \fig{7.0}{1.85}{5.3}{bezier.pdf}
+  \lowcol{0.85}{6.0}{3.6}{No unknown constants}{Weights depend only on $t$.}
+  \lowcol{4.85}{6.0}{3.7}{Inside the hull}{Weights $\geq 0$, adding up to 1.}
+  \lowcol{8.95}{6.0}{3.5}{Ends fixed}{Starts at $V_1$, ends at $V_4$.}
+\end{frame}
+
+% ===================================================== 2. B-SPLINES
+\pageset{Foundations}{2}
+\begin{frame}
+  \ctitle{B-splines: B\'ezier pieces joined without a kink}
+  \tb{5.4}{0.85}{1.98}{\color{body}\fs{15.5}{19.5}\textbf{\color{cred}B = basis.} Every curve is built from the same set of bumps (the basis), each scaled by its own height:\par}
+  \tb{5.4}{0.85}{2.95}{\color{ink}\fs{17}{21}$f(x)=\sum_k B_k(x)\,h_k$\par}
+  \tb{5.4}{0.85}{3.45}{\color{body}\fs{13.5}{17}Between two knots, four bumps are active, so each piece is a cubic B\'ezier curve. Neighbouring pieces share three of their four heights.\par}
+  \nblock{0.85}{4.3}{5.6}{1}{Smooth joins}{At a knot, value, slope and bending all match.}
+  \nblock{0.85}{4.95}{5.6}{2}{Local}{One height moves the curve over at most 4 intervals.}
+  \nblock{0.85}{5.6}{5.6}{3}{Inside the hull}{Weights never negative, adding up to 1 (at a knot: $\tfrac16,\tfrac46,\tfrac16$).}
+  \nblock{0.85}{6.25}{5.6}{4}{$n$ intervals (gaps between knots), $n+3$ heights}{In kairos: \texttt{Spline(low, high, intervals)}.}
+  \fig{6.55}{1.95}{5.95}{bspline.pdf}
+\end{frame}
+
+% ===================================================== 3. WHY BAYESIAN
+\pageset{Why Bayesian}{3}
+\begin{frame}
+  \ctitle{Plain B-splines in a drifting world}
+  \fig{1.45}{1.85}{10.4}{drift.pdf}
+  \tb{2.7}{0.85}{5.85}{{\bfseries\color{ink}\fs{15.5}{18.5}No band\par}\vspace{4pt}{\color{body}\fs{14}{17}Change or noise?\par}}
+  \tb{2.7}{3.75}{5.85}{{\bfseries\color{ink}\fs{15.5}{18.5}Wiggles\par}\vspace{4pt}{\color{body}\fs{14}{17}where few people are\par}}
+  \tb{2.7}{6.65}{5.85}{{\bfseries\color{ink}\fs{15.5}{18.5}No smoothness belief\par}\vspace{4pt}{\color{body}\fs{14}{17}$\lambda=0$\par}}
+  \begin{page}\draw[cred,line width=1.4pt] (9.6,5.85) -- (9.6,6.55);\end{page}
+  \tb{2.75}{9.75}{5.85}{{\bfseries\color{cred}\fs{15.5}{18.5}Bayesian splines\par}\vspace{4pt}{\color{body}\fs{14}{17}band $+$ $\lambda$ from the data\par}}
+\end{frame}
+
+% ===================================================== 4. BAYESIAN SPLINES 1/2
+\pageset{Bayesian splines}{4}
+\begin{frame}
+  \ctitle{Bayesian splines (1/2): believability before and after the data}
+  \nblock{0.85}{1.98}{5.55}{1}{Believability before the data}{%
+    $\text{believability}(h)\ \propto\ \exp\!\big(-\tfrac{\lambda}{2\sigma^2}\sum_k (h_{k-1}-2h_k+h_{k+1})^2\big)$\\[3pt]
+    Heights 1, 2, 3 do not bend (0): most believable. Heights 1, 3, 1 bend by $-4$: cost $16\cdot\tfrac{\lambda}{2\sigma^2}$. $\lambda$ is how strongly we believe the curve is smooth.}
+  \nblock{0.85}{3.75}{5.55}{2}{After the observations}{%
+    believability after $\propto$ fit to the data $\times$ believability before.\\[3pt]
+    Most believable heights: $\;(W^\top W+\lambda S)\,h=W^\top y$\\[2pt]
+    {\color{grey}$W$: each person's bump weights (one row each) \textperiodcentered{} $S$: the bending cost}}
+  \nblock{0.85}{5.45}{5.55}{3}{How unsure the curve is}{%
+    $\Sigma=\sigma^2\,(W^\top W+\lambda S)^{-1}$ gives each height's spread.\\[2pt]
+    Band $=$ curve $\pm\,1.96$ spreads (about 95\% of believable curves).}
+  \fig{6.95}{2.15}{5.6}{prior_posterior.pdf}
+  \tb{5.4}{7.05}{4.85}{\color{grey}\fs{12.5}{15.5}Left: random curves that are believable before any data (no bending is cheap). Right: random curves still believable after 18 people; together they form the band.\par}
+\end{frame}
+
+% ===================================================== 5. BAYESIAN SPLINES 2/2
+\pageset{Bayesian splines}{5}
+\begin{frame}
+  \ctitle{Bayesian splines (2/2): choosing $\lambda$ and the noise size}
+  \nblock{0.85}{1.98}{5.55}{1}{Evidence: how probable is the data under $\lambda$?}{%
+    Averaged over every believable curve.
+    Too small $\lambda$: many wiggly curves share the believability, so each fits little. Too large: only straight lines, which miss the data.\\[3pt]
+    $\log\text{evidence}=-\tfrac{n}{2}\log\sigma^2+\tfrac12\log|\lambda S|-\tfrac12\log|W^\top W+\lambda S|$}
+  \nblock{0.85}{4.0}{5.55}{2}{Noise size $\sigma^2$}{%
+    The average square of what the curve leaves unexplained:\\[2pt]
+    $\sigma^2=\big(\sum_i(y_i-\hat y_i)^2+\lambda\,h^\top S h\big)/n$\\[2pt]
+    Leftovers $0.3,-0.2,0.1$: $\sigma^2\approx(0.09+0.04+0.01)/3=0.047$.}
+  \nblock{0.85}{5.6}{5.55}{3}{One $\lambda$ per curve}{%
+    Grid from 0.1 to $10^4$; each curve's $\lambda$ is tuned in turn, three rounds. For Y (a chance, not a bell): Newton's method and a Laplace approximation.}
+  \fig{6.9}{2.05}{5.7}{evidence.pdf}
+\end{frame}
+
+% ===================================================== 6. SURFACES
+\pageset{Interactions}{6}
+\begin{frame}
+  \ctitle{Surfaces: when one parent's effect depends on another}
+  \fig{1.35}{1.85}{10.6}{surface.pdf}
+  \lowcol{0.85}{5.65}{3.6}{The problem}{Curves only shift lines.}
+  \lowcol{4.85}{5.65}{3.7}{The fix}{A grid of $9\times9$ heights.}
+  \lowcol{8.95}{5.65}{3.5}{Only the interaction}{The curves keep their meaning.}
+\end{frame}
+
+% ===================================================== 7. FAST
+\pageset{Interactions}{7}
+\begin{frame}
+  \ctitle{Screening: which pairs of parents get a surface?}
+  \nblock{0.85}{1.98}{6.0}{1}{Fit curves only, keep the leftovers}{%
+    leftover $=$ actual value $-$ what the curves predict. An interaction leaves a pattern that needs both parents.}
+  \nblock{0.85}{3.05}{6.0}{2}{FAST: score every pair by quadrants}{%
+    Cut both parents in two; average the leftovers in each quadrant. Opposite corners with the same sign mean an interaction.\\[3pt]
+    $\text{score}=\sum_{q}n_q\,\bar r_q^{\,2}\,\big/\sum_i r_i^2$, \ the share the 4 averages explain\\[2pt]
+    {\color{grey}Cuts at 25, 50 and 75\% of each parent: the best of 9 tries is kept.}}
+  \nblock{0.85}{5.0}{6.0}{3}{Check the best three with the evidence}{%
+    Refit with the surface added; keep it only if the data becomes more than $e^3\approx20$ times more probable.}
+  \fig{7.55}{2.0}{4.85}{fast.pdf}
+  \tb{4.85}{7.55}{6.05}{\color{grey}\fs{12.5}{15.5}Leftovers for Y with an income $\times$ savings term; the numbers are the quadrant averages (Lou et al., 2013).\par}
+\end{frame}
+
+% ===================================================== 8. ARCHITECTURE
+\pageset{Architecture}{8}
+\begin{frame}
+  \ctitle{The current causal KAN}
+  \tb{11.6}{0.85}{1.95}{\color{ink}\fs{16}{20}$x_j=c_j+\sum_{i}\phi_{ij}(x_i)+\sum_{(a,b)}\psi_{abj}(x_a,x_b)+u_j$
+    \qquad $P(Y{=}1)=\sigma\big(c_Y+\sum_i\phi_{iY}(x_i)+\sum_{(a,b)}\psi_{abY}(x_a,x_b)\big)$\par}
+  \definecolor{sblue}{HTML}{2F5D8A}
+  \begin{page}
+    \tikzset{
+      var/.style={circle,draw=ink,line width=1.2pt,fill=white,minimum size=0.62in,inner sep=0pt,text=ink,font=\bfseries\fontsize{17}{17}\selectfont},
+      prot/.style={var,draw=cred,line width=2pt},
+      vname/.style={inner sep=0pt,text=ink,font=\bfseries\fontsize{13.5}{16}\selectfont},
+      e/.style={-{Latex[length=2.2mm]},ink,line width=1.2pt,rounded corners=6pt},
+      ep/.style={e,cred},
+      noise/.style={-{Latex[length=1.8mm]},grey,line width=0.9pt},
+      nlab/.style={inner sep=1pt,text=grey,font=\fontsize{12}{14}\selectfont}}
+    % ---- edges (drawn first, the curve boxes sit on top)
+    \draw[ep] (1.95,4.3) -- (4.15,3.35);                         % group -> education
+    \draw[e]  (4.85,3.35) -- (7.05,4.3);                         % education -> income
+    \draw[ep] (2.05,4.6) -- (7.0,4.6);                           % group -> income
+    \draw[e]  (7.8,4.6) -- (10.95,4.6);                          % income -> Y
+    \draw[ep] (1.65,4.95) -- (1.65,6.15) -- (11.3,6.15) -- (11.3,4.95);  % group -> Y
+    % ---- the surface group x income -> Y
+    \fill[ink] (8.15,6.15) circle (0.045);
+    \fill[ink] (8.15,4.6) circle (0.045);
+    \draw[ep] (8.15,6.15) -- (8.15,5.6) -- (9.05,5.6);
+    \draw[e]  (8.15,4.6) -- (8.15,5.3) -- (9.05,5.3);
+    \foreach \i/\j/\c in {0/0/cred!70,1/0/white,2/0/sblue,0/1/white,1/1/white,2/1/white,0/2/sblue,1/2/white,2/2/cred!70}
+      {\fill[\c] (9.05+0.2*\i,5.15+0.2*\j) rectangle ++(0.2,0.2);}
+    \draw[ink,line width=0.9pt] (9.05,5.15) rectangle (9.65,5.75);
+    \draw[e] (9.65,5.45) -- (10.95,5.45) -- (11.1,4.95);
+    % ---- one curve per edge
+    \minibox{3.05}{3.83}{0.62}{0.42}{cred}\minicurve{3.05}{3.83}{0.62}{0.42}{cred,line width=1.3pt}{1-\t}
+    \minibox{5.95}{3.83}{0.62}{0.42}{ink}\minicurve{5.95}{3.83}{0.62}{0.42}{ink,line width=1.3pt}{\t}
+    \minibox{4.5}{4.6}{0.62}{0.42}{cred}\minicurve{4.5}{4.6}{0.62}{0.42}{cred,line width=1.3pt}{1-0.8*\t}
+    \minibox{9.35}{4.6}{0.62}{0.42}{ink}\minicurve{9.35}{4.6}{0.62}{0.42}{ink,line width=1.3pt}{1/(1+exp(-10*(\t-0.5)))}
+    \minibox{5.6}{6.15}{0.62}{0.42}{cred}\minicurve{5.6}{6.15}{0.62}{0.42}{cred,line width=1.3pt}{1-0.6*\t}
+    % ---- noise
+    \draw[noise] (4.5,2.55) -- (4.5,2.88); \node[nlab,anchor=south] at (4.5,2.55) {$+\,u$};
+    \draw[noise] (7.4,3.8) -- (7.4,4.13); \node[nlab,anchor=south] at (7.4,3.8) {$+\,u$};
+    % ---- variables
+    \node[prot] at (1.65,4.6) {$\Sigma$};
+    \node[var] at (4.5,3.2) {$\Sigma$};
+    \node[var] at (7.4,4.6) {$\Sigma$};
+    \node[var,fill=ink,text=white] at (11.3,4.6) {$\sigma$};
+        \node[vname,anchor=east,text=cred] at (1.25,4.6) {group};
+    \node[vname,anchor=west] at (4.95,2.95) {education};
+    \node[vname,anchor=north] at (7.4,5.0) {income};
+    \node[vname,anchor=west] at (11.68,4.6) {Y};
+    % ---- labels
+    \node[nlab,anchor=north] at (4.5,4.9) {one curve $\phi$ per edge};
+    \node[nlab,anchor=north west,align=left] at (9.05,5.85) {surface $\psi$};
+  \end{page}
+  \lowcol{0.85}{6.45}{3.7}{Edge}{one B-spline curve, fitted Bayesian}
+  \lowcol{4.85}{6.45}{3.7}{Square}{a surface, kept by screening}
+  \lowcol{8.85}{6.45}{3.65}{\color{cred}Red}{edges out of the protected group}
+\end{frame}
+
+\end{document}
