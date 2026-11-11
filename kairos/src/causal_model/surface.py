@@ -23,8 +23,7 @@ class Surface:
         self.first = first
         self.second = second
         self.heights = np.zeros(len(first.heights) * len(second.heights))  # the grid, row by row
-        self.covariance = None or np.zeros((len(first.heights) * len(second.heights),
-                                           len(first.heights) * len(second.heights)))
+        self.covariance: np.ndarray | None = None  # how unsure the grid is; set when the node is fitted
         self.free = np.eye(len(first.heights) * len(second.heights))       
 
     def centre_on(self, x1: np.ndarray, x2: np.ndarray) -> None:
@@ -47,6 +46,20 @@ class Surface:
         along_first = np.kron(self.first.bending(), np.eye(columns))
         along_second = np.kron(np.eye(rows), self.second.bending())
         return [self.free.T @ along_first @ self.free, self.free.T @ along_second @ self.free]
+
+    def saddle(self) -> np.ndarray:
+        """A smoothness cost for the one shape bending does not charge for.
+
+        Bending along either parent is zero for the simple saddle
+        (x1 − average)·(x2 − average): it is straight along both. Without a
+        cost of its own, only the tiny ridge would hold it, and whether a
+        surface is kept would then depend on that arbitrary number. This cost
+        is a projection onto those shapes, so its λ, picked by the evidence
+        like any other, decides how large the saddle may be."""
+        along_first, along_second = self.bending()
+        values, vectors = np.linalg.eigh(along_first + along_second)
+        free_shapes = vectors[:, values < 1e-9 * max(values.max(), 1.0)]
+        return free_shapes @ free_shapes.T
 
     def flattening(self) -> np.ndarray:
         """How far the surface is from flat, for the free numbers: steps between

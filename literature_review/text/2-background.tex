@@ -1,3 +1,143 @@
-\chapter{Background Knowledge}
+% State of the Art, part 1 of 2: the chapter opening and the Background Knowledge section.
+% The chapter continues in text/3-literature-review.tex (the Literature Review section).
+\chapter{State of the Art}
+\label{chap:state-of-the-art}
 \label{chap:background}
 
+% CHAPTER INTRO (to write): one paragraph saying that Section~\ref{sec:background} introduces the
+% concepts the rest of the document relies on, and Section~\ref{sec:literature-review} reviews the
+% work this thesis builds on and ends with a comparison of that work (Section~\ref{sec:lr-gaps}).
+
+\section{Background Knowledge}
+\label{sec:background}
+
+% SECTION INTRO (to write): what a reader needs before the literature review: recourse, causal
+% models, fairness, drift, and the spline machinery behind the proposed causal KAN.
+
+\subsection{Notation}
+\label{sec:bg-notation}
+
+% TO WRITE. Fix the symbols once and reuse them in Chapter~\ref{chap:proposed-approach}:
+% person x, features X_1..X_d, outcome Y, classifier h, protected attribute A, causal graph G,
+% structural equations f_j and noise U_j, intervention do(X_i = a), action cost c(x, a),
+% time or window t, curve phi_ij on edge i -> j, surface psi_abj for a pair of parents.
+% Suggested reading:
+% - Karimi et al. (2022), A Survey of Algorithmic Recourse (karimi2022survey, already in
+%   references.bib): its notation is the one most recourse papers follow, so reusing it keeps the
+%   review and Chapter 4 consistent with the field.
+
+\subsection{Counterfactual Explanations and Algorithmic Recourse}
+\label{sec:bg-recourse}
+
+% TO WRITE: what a counterfactual explanation is, what recourse adds (actions a person can take),
+% and the usual desiderata (validity, proximity, sparsity, plausibility, actionability, causality).
+% Suggested reading:
+% - Wachter, Mittelstadt & Russell (2018), Counterfactual Explanations Without Opening the Black
+%   Box, Harvard Journal of Law & Technology (cited in Chapter 1 as wachter2018counterfactual, not
+%   yet in references.bib): the original definition every method in Section~\ref{sec:lr-cf-search}
+%   starts from.
+% - Ustun, Spangher & Liu (2019), Actionable Recourse in Linear Classification
+%   (ustun2019actionable, in references.bib): introduces the term "recourse" and actionability
+%   constraints (immutable vs. actionable features).
+% - Karimi et al. (2022) (karimi2022survey) and Verma et al. (2024) (verma2024counterfactual), both
+%   in references.bib: surveys that define the desiderata used to compare methods later on.
+% - Venkatasubramanian & Alfano (2020), The Philosophical Basis of Algorithmic Recourse
+%   (venkatasubramanian2020philosophical, in references.bib): why recourse matters, a short
+%   normative grounding for the motivation.
+
+\subsection{Structural Causal Models, Interventions and Counterfactuals}
+\label{sec:bg-scm}
+
+% TO WRITE: SCMs (graph, structural equations, noise), interventions and the do-operator, the
+% three steps of a counterfactual (abduction, action, prediction), additive noise models.
+% Suggested reading:
+% - Pearl (2009), Causality: Models, Reasoning, and Inference (2nd ed.), Cambridge University
+%   Press: the standard source for SCMs, do() and the three-step counterfactual.
+% - Peters, Janzing & Schölkopf (2017), Elements of Causal Inference, MIT Press: additive noise
+%   models and identifiability; the causal KAN's equations are additive noise models.
+% - Lewis (1973) (lewis1973counterfactuals) and Tian & Pearl (2000) (tian2000probabilities), both
+%   in references.bib: the semantics of counterfactuals and probabilities of causation; they fit
+%   here rather than in the literature review.
+
+\subsection{Fairness: Statistical and Causal Notions}
+\label{sec:bg-fairness}
+
+% TO WRITE: group criteria (independence, separation, sufficiency), counterfactual fairness, and
+% path-specific fairness (which routes from the protected attribute are allowed).
+% Suggested reading:
+% - Barocas, Hardt & Narayanan (2023), Fairness and Machine Learning: Limitations and
+%   Opportunities, MIT Press: the clearest account of the statistical criteria.
+% - Kusner, Loftus, Russell & Silva (2017), Counterfactual Fairness, NeurIPS: the causal notion
+%   that von Kügelgen et al. (Section~\ref{sec:lr-fair-recourse}) build on.
+% - Kilbertus et al. (2017), Avoiding Discrimination through Causal Reasoning, NeurIPS: "resolving"
+%   variables, i.e. routes that are acceptable, which is how a fairness policy can be stated by roles.
+% - Nabi & Shpitser (2018), Fair Inference on Outcomes, AAAI, and Chiappa (2019), Path-Specific
+%   Counterfactual Fairness, AAAI: removing the protected attribute's effect along chosen paths only.
+
+\subsection{Concept Drift and Distribution Shift}
+\label{sec:bg-drift}
+
+% TO WRITE: definitions (covariate, prior and concept shift), drift types (sudden, gradual,
+% recurring), and drift as a change in some causal mechanisms but not others.
+% Suggested reading:
+% - Gama et al. (2014), A Survey on Concept Drift Adaptation, ACM Computing Surveys: the standard
+%   taxonomy and the detect-then-adapt view.
+% - Lu et al. (2019), Learning under Concept Drift: A Review, IEEE TKDE: frames drift
+%   understanding as when, how and where; "where" is the localisation this thesis targets.
+% - Moreno-Torres et al. (2012), A Unifying View on Dataset Shift in Classification, Pattern
+%   Recognition: the vocabulary that separates "who the people are changed" from "the rule changed".
+% - Webb et al. (2016), Characterizing Concept Drift, Data Mining and Knowledge Discovery: formal
+%   definitions to cite when the drift scenarios are described.
+% - Shimodaira (2000) (SHIMODAIRA2000227, in references.bib): the origin of covariate shift and
+%   importance weighting.
+% - Schölkopf et al. (2021), Toward Causal Representation Learning, Proceedings of the IEEE: the
+%   sparse mechanism shift idea that Perry et al. (Section~\ref{sec:lr-drift}) formalise.
+
+\subsection{Splines and Additive Models}
+\label{sec:bg-splines}
+
+% TO WRITE: Bézier curves and B-splines (bumps, knots, intervals + 3 heights), additive models,
+% and tensor-product surfaces for interactions.
+% Suggested reading:
+% - de Boor (2001), A Practical Guide to Splines (revised ed.), Springer: the B-spline definition
+%   and the Cox-de Boor recursion (the tests check the code against it).
+% - Hastie & Tibshirani (1990), Generalized Additive Models, Chapman & Hall: the statistical
+%   ancestor of "one curve per edge, summed at the node".
+% - Wood (2017), Generalized Additive Models: An Introduction with R (2nd ed.), CRC Press: one
+%   modern reference for penalised splines, tensor products and smoothness selection.
+% - Wood (2006), Low-Rank Scale-Invariant Tensor Product Smooths for Generalized Additive Mixed
+%   Models, Biometrics: the ti()-style surfaces that hold only the interaction.
+
+\subsection{Bayesian Smoothing and Model Evidence}
+\label{sec:bg-bayesian-smoothing}
+
+% TO WRITE: the smoothness belief (difference penalty as a prior), the posterior and its bands,
+% choosing lambda by the evidence, the Laplace approximation for a yes/no outcome.
+% Suggested reading:
+% - Eilers & Marx (1996), Flexible Smoothing with B-splines and Penalties, Statistical Science:
+%   P-splines, the bending penalty used in the code.
+% - Lang & Brezger (2004), Bayesian P-Splines, Journal of Computational and Graphical Statistics:
+%   the same penalty read as a prior, i.e. the believability formula.
+% - MacKay (1992), Bayesian Interpolation, Neural Computation: the evidence and its Occam factor,
+%   which picks lambda and decides surfaces and drift.
+% - Wood (2011), Fast Stable Restricted Maximum Likelihood and Marginal Likelihood Estimation of
+%   Semiparametric Generalized Linear Models, JRSS-B: marginal-likelihood smoothness selection,
+%   including the Laplace approximation for non-Gaussian outcomes.
+% - Marra & Wood (2011), Practical Variable Selection for Generalized Additive Models,
+%   Computational Statistics & Data Analysis: the extra penalty on shapes the smoothness penalty
+%   leaves free; it justifies the surface's saddle penalty.
+
+\subsection{Kolmogorov--Arnold Networks}
+\label{sec:bg-kan}
+
+% TO WRITE: the Kolmogorov--Arnold representation theorem, KAN layers (learnable curves on edges,
+% sums at nodes), and why a causal graph whose equations are curves is itself a KAN.
+% Suggested reading:
+% - Kolmogorov (1957), On the Representation of Continuous Functions of Many Variables by
+%   Superposition of Continuous Functions of One Variable and Addition, Doklady Akademii Nauk SSSR:
+%   the theorem behind the name.
+% - Liu et al. (2025), KAN: Kolmogorov--Arnold Networks, ICLR (cited in Chapter 1 as liu2025kan,
+%   not yet in references.bib): the architecture itself.
+% - Somvanshi et al. (2025) (somvanshi2025survey) and Noorizadegan et al. (2025)
+%   (noorizadegan2025practitioners), both in references.bib: surveys of KAN variants, including
+%   B-spline bases.

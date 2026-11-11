@@ -122,13 +122,14 @@ class ChangeFit:
     @staticmethod
     def _change_blocks(fitting: BayesianFitting, size: int, change_columns: dict, flattening: dict) -> list[SmoothnessBlock]:
         top = max(fitting.grid)
-        return [SmoothnessBlock(f"change {label}", slice(size + c.start, size + c.stop), flattening[label], start=top)
-                for label, c in change_columns.items()]
+        level = SmoothnessBlock("change level", slice(size, size + 1), np.ones((1, 1)), start=top)
+        return [level] + [SmoothnessBlock(f"change {label}", slice(size + c.start, size + c.stop), flattening[label], start=top)
+                          for label, c in change_columns.items()]
 
     @staticmethod
     def _gains(fitting: BayesianFitting, solve: Solve, result: Fit, blocks: list[SmoothnessBlock], size: int, total: int) -> dict[str, float]:
-        """For each change, and the level change: how much more probable the data
-        is with it on than with it switched off (in log units)."""
+        """For each change, the level change included: how much more probable the
+        data is with it on than with it switched off (in log units)."""
         gains = {}
         for index, block in enumerate(blocks):
             if block.label.startswith("change "):
@@ -136,9 +137,6 @@ class ChangeFit:
                 strengths[index] = OFF
                 off = solve(fitting.penalty(strengths, total, blocks))
                 gains[block.label.removeprefix("change ")] = result.evidence - off.evidence
-        level_off = fitting.penalty(list(result.smoothness), total, blocks)
-        level_off[size, size] += OFF
-        gains["level"] = result.evidence - solve(level_off).evidence
         return gains
 
     @staticmethod

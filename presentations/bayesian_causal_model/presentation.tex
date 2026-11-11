@@ -372,52 +372,49 @@
   \begin{page}
     \tikzset{
       var/.style={circle,draw=ink,line width=1.2pt,fill=white,minimum size=0.62in,inner sep=0pt,text=ink,font=\bfseries\fontsize{17}{17}\selectfont},
-      prot/.style={var,draw=cred,line width=2pt},
       vname/.style={inner sep=0pt,text=ink,font=\bfseries\fontsize{13.5}{16}\selectfont},
       e/.style={-{Latex[length=2.2mm]},ink,line width=1.2pt,rounded corners=6pt},
-      ep/.style={e,cred},
       noise/.style={-{Latex[length=1.8mm]},grey,line width=0.9pt},
       nlab/.style={inner sep=1pt,text=grey,font=\fontsize{12}{14}\selectfont}}
-    % ---- edges (drawn first, the curve boxes sit on top)
-    \draw[ep] (1.95,4.3) -- (4.15,3.35);                         % group -> education
-    \draw[e]  (4.85,3.35) -- (7.05,4.3);                         % education -> income
-    \draw[ep] (2.05,4.6) -- (7.0,4.6);                           % group -> income
-    \draw[e]  (7.8,4.6) -- (10.95,4.6);                          % income -> Y
-    \draw[ep] (1.65,4.95) -- (1.65,6.15) -- (11.3,6.15) -- (11.3,4.95);  % group -> Y
-    % ---- the surface group x income -> Y
-    \fill[ink] (8.15,6.15) circle (0.045);
-    \fill[ink] (8.15,4.6) circle (0.045);
-    \draw[ep] (8.15,6.15) -- (8.15,5.6) -- (9.05,5.6);
-    \draw[e]  (8.15,4.6) -- (8.15,5.3) -- (9.05,5.3);
-    \foreach \i/\j/\c in {0/0/cred!70,1/0/white,2/0/sblue,0/1/white,1/1/white,2/1/white,0/2/sblue,1/2/white,2/2/cred!70}
-      {\fill[\c] (9.05+0.2*\i,5.15+0.2*\j) rectangle ++(0.2,0.2);}
-    \draw[ink,line width=0.9pt] (9.05,5.15) rectangle (9.65,5.75);
-    \draw[e] (9.65,5.45) -- (10.95,5.45) -- (11.1,4.95);
-    % ---- one curve per edge
-    \minibox{3.05}{3.83}{0.62}{0.42}{cred}\minicurve{3.05}{3.83}{0.62}{0.42}{cred,line width=1.3pt}{1-\t}
-    \minibox{5.95}{3.83}{0.62}{0.42}{ink}\minicurve{5.95}{3.83}{0.62}{0.42}{ink,line width=1.3pt}{\t}
-    \minibox{4.5}{4.6}{0.62}{0.42}{cred}\minicurve{4.5}{4.6}{0.62}{0.42}{cred,line width=1.3pt}{1-0.8*\t}
-    \minibox{9.35}{4.6}{0.62}{0.42}{ink}\minicurve{9.35}{4.6}{0.62}{0.42}{ink,line width=1.3pt}{1/(1+exp(-10*(\t-0.5)))}
-    \minibox{5.6}{6.15}{0.62}{0.42}{cred}\minicurve{5.6}{6.15}{0.62}{0.42}{cred,line width=1.3pt}{1-0.6*\t}
-    % ---- noise
-    \draw[noise] (4.5,2.55) -- (4.5,2.88); \node[nlab,anchor=south] at (4.5,2.55) {$+\,u$};
-    \draw[noise] (7.4,3.8) -- (7.4,4.13); \node[nlab,anchor=south] at (7.4,3.8) {$+\,u$};
     % ---- variables
-    \node[prot] at (1.65,4.6) {$\Sigma$};
-    \node[var] at (4.5,3.2) {$\Sigma$};
-    \node[var] at (7.4,4.6) {$\Sigma$};
-    \node[var,fill=ink,text=white] at (11.3,4.6) {$\sigma$};
-        \node[vname,anchor=east,text=cred] at (1.25,4.6) {group};
-    \node[vname,anchor=west] at (4.95,2.95) {education};
-    \node[vname,anchor=north] at (7.4,5.0) {income};
-    \node[vname,anchor=west] at (11.68,4.6) {Y};
+    \node[var] (I) at (1.75,4.2) {$\Sigma$};
+    \node[var] (D) at (1.75,5.6) {$\Sigma$};
+    \node[var] (S) at (5.4,3.1) {$\Sigma$};
+    \node[var,fill=ink,text=white] (Y) at (11.2,4.2) {$\sigma$};
+    \node[vname,anchor=east] at (1.3,4.2) {income};
+    \node[vname,anchor=east] at (1.3,5.6) {debt};
+    \node[vname,anchor=west] at (5.85,2.9) {savings};
+    \node[vname,anchor=west] at (11.58,4.2) {Y};
+    % ---- edges
+    \draw[e] (I) -- (S);                                   % income -> savings
+    \draw[e] (S.east) -- (11.2,3.1) -- (Y.north);          % savings -> Y
+    \draw[e] (I.east) -- (Y.west);                         % income -> Y
+    \draw[e] (D.east) -- (11.2,5.6) -- (Y.south);          % debt -> Y
+    % ---- the surface income x debt -> Y
+    \fill[ink] (7.9,4.2) circle (0.045);
+    \fill[ink] (8.3,5.6) circle (0.045);
+    \draw[e] (7.9,4.2) -- (7.9,4.75) -- (9.0,4.75);
+    \draw[e] (8.3,5.6) -- (8.3,5.15) -- (9.0,5.15);
+    \foreach \i/\j/\c in {0/0/cred!70,1/0/white,2/0/sblue,0/1/white,1/1/white,2/1/white,0/2/sblue,1/2/white,2/2/cred!70}
+      {\fill[\c] (9.0+0.2*\i,4.65+0.2*\j) rectangle ++(0.2,0.2);}
+    \draw[ink,line width=0.9pt] (9.0,4.65) rectangle (9.6,5.25);
+    \draw[e] (9.6,4.95) -- (10.75,4.95) -- (10.98,4.45);
+    % ---- one curve per edge
+    \minibox{3.55}{3.65}{0.62}{0.42}{ink}\minicurve{3.55}{3.65}{0.62}{0.42}{ink,line width=1.3pt}{\t*\t}
+    \minibox{8.2}{3.1}{0.62}{0.42}{ink}\minicurve{8.2}{3.1}{0.62}{0.42}{ink,line width=1.3pt}{0.2+0.6*\t}
+    \minibox{5.4}{4.2}{0.62}{0.42}{ink}\minicurve{5.4}{4.2}{0.62}{0.42}{ink,line width=1.3pt}{1/(1+exp(-10*(\t-0.5)))}
+    \minibox{5.4}{5.6}{0.86}{0.52}{ink}\minicurve{5.4}{5.6}{0.86}{0.52}{ink,line width=1.3pt}{0.62-0.24*\t}
+      \minicurve{5.4}{5.6}{0.86}{0.52}{amber,line width=1.6pt,dash pattern=on 3pt off 1.8pt}{1-\t}
+    % ---- noise
+    \draw[noise] (5.4,2.45) -- (5.4,2.78); \node[nlab,anchor=south] at (5.4,2.45) {$+\,u$};
     % ---- labels
-    \node[nlab,anchor=north] at (4.5,4.9) {one curve $\phi$ per edge};
-    \node[nlab,anchor=north west,align=left] at (9.05,5.85) {surface $\psi$};
+    \node[nlab,anchor=north] at (5.4,4.47) {one curve $\phi$ per edge};
+    \node[nlab,anchor=north west] at (9.0,5.33) {surface $\psi$};
+    \node[inner sep=1pt,text=amber,font=\fontsize{12}{14}\selectfont,anchor=north] at (5.4,5.92) {after the drift: shared $+$ change};
   \end{page}
-  \lowcol{0.85}{6.45}{3.7}{Edge}{one B-spline curve, fitted Bayesian}
-  \lowcol{4.85}{6.45}{3.7}{Square}{a surface, kept by screening}
-  \lowcol{8.85}{6.45}{3.65}{\color{cred}Red}{edges out of the protected group}
+  \lowcol{0.85}{6.35}{3.7}{Edge}{one B-spline curve, fitted Bayesian}
+  \lowcol{4.85}{6.35}{3.7}{Square}{a surface, kept by screening}
+  \lowcol{8.85}{6.35}{3.65}{\color{amber}Dashed}{a change part, kept if gain $>3$}
 \end{frame}
 
 \end{document}

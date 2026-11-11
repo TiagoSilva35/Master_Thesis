@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Homebrew) (preloaded format=pdflatex 2026.3.4)  11 NOV 2026 13:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026/Homebrew) (preloaded format=pdflatex 2026.3.4)  11 NOV 2026 13:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1353,19 +1353,19 @@ Package pdftex.def Info: assets/fast.pdf  used on input line 363.
  [9
 
  <./assets/fast.pdf>]
-LaTeX Font Info:    Calculating math sizes for size <16> on input line 421.
+LaTeX Font Info:    Calculating math sizes for size <16> on input line 418.
 
 
 LaTeX Font Warning: Font shape `OT1/cmss/m/n' in size <16> not available
-(Font)              size <17.28> substituted on input line 421.
+(Font)              size <17.28> substituted on input line 418.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <16> not available
-(Font)              size <17.28> substituted on input line 421.
+(Font)              size <17.28> substituted on input line 418.
 
 
 LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <16> not available
-(Font)              size <17.28> substituted on input line 421.
+(Font)              size <17.28> substituted on input line 418.
 
 [10
 
@@ -1393,13 +1393,13 @@ Package rerunfilecheck Info: File `presentation.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 26164 strings out of 467525
- 522850 string characters out of 5408440
- 927840 words of memory out of 5000000
- 54534 multiletter control sequences out of 15000+600000
+ 26217 strings out of 467525
+ 523672 string characters out of 5408440
+ 928130 words of memory out of 5000000
+ 54587 multiletter control sequences out of 15000+600000
  859459 words of font info for 221 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 128i,14n,123p,408b,817s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 128i,14n,123p,408b,825s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/fonts/type1/public/am
 sfonts/cm/cmex10.pfb></opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/fo
 nts/type1/public/amsfonts/cm/cmmi10.pfb></opt/homebrew/Cellar/texlive/20260301/
@@ -1419,7 +1419,7 @@ r/texlive/20260301/share/texmf-dist/fonts/type1/public/tex-gyre/qhvb.pfb></opt/
 homebrew/Cellar/texlive/20260301/share/texmf-dist/fonts/type1/public/tex-gyre/q
 hvr.pfb></opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/fonts/type1/pub
 lic/tex-gyre/qhvri.pfb>
-Output written on presentation.pdf (10 pages, 464817 bytes).
+Output written on presentation.pdf (10 pages, 464181 bytes).
 PDF statistics:
  320 PDF objects out of 1000 (max. 8388607)
  192 compressed objects within 2 object streams

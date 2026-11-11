@@ -12,14 +12,38 @@ class Spline:
         self.gap = self.knots[1] - self.knots[0]
         self.centers = np.linspace(low - self.gap, high + self.gap, intervals + 3)
         self.heights = np.zeros(intervals + 3)
-        self.covariance = None or np.zeros((intervals + 3, intervals + 3))  # how unsure the heights are; set when the node is fitted
+        self.covariance: np.ndarray | None = None  # how unsure the heights are; set when the node is fitted
 
     def weights(self, x):
-        x = np.clip(np.asarray(x, dtype=float), self.knots[0], self.knots[-1])
-        u = np.abs(x[..., None] - self.centers) / self.gap  
-        near = (4.0 - 6.0 * u**2 + 3.0 * u**3) / 6.0          
-        far = (2.0 - u) ** 3 / 6.0                            
+        """Each bump's weight at x. Beyond the range the curve continues as a
+        straight line with the slope it has at the edge (a linear tail):
+        weights(edge) + distance past the edge × slope of the weights at the edge."""
+        x = np.asarray(x, dtype=float)
+        edge = np.clip(x, self.knots[0], self.knots[-1])
+        weights = self._bumps(edge)
+        beyond = x - edge  # 0 inside the range
+        if np.any(beyond != 0.0):
+            weights = weights + beyond[..., None] * self._bump_slopes(edge)
+        return weights
+
+    def outside(self, x) -> np.ndarray:
+        """True where x lies beyond the range the curve was fitted on (the curve is extrapolated there)."""
+        x = np.asarray(x, dtype=float)
+        return (x < self.knots[0]) | (x > self.knots[-1])
+
+    def _bumps(self, x: np.ndarray) -> np.ndarray:
+        u = np.abs(x[..., None] - self.centers) / self.gap
+        near = (4.0 - 6.0 * u**2 + 3.0 * u**3) / 6.0
+        far = (2.0 - u) ** 3 / 6.0
         return np.where(u < 1.0, near, np.where(u < 2.0, far, 0.0))
+
+    def _bump_slopes(self, x: np.ndarray) -> np.ndarray:
+        """How fast each bump's weight changes with x (the derivative of _bumps)."""
+        distance = (x[..., None] - self.centers) / self.gap
+        u = np.abs(distance)
+        near = -2.0 * u + 1.5 * u**2
+        far = -0.5 * (2.0 - u) ** 2
+        return np.where(u < 1.0, near, np.where(u < 2.0, far, 0.0)) * np.sign(distance) / self.gap
 
     def __call__(self, x):
         return self.weights(x) @ self.heights

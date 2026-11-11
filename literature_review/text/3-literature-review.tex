@@ -1,5 +1,9 @@
-\chapter{Literature Review}
-\label{chap:literature-review}
+% State of the Art, part 2 of 2: the Literature Review section (the chapter starts in
+% text/2-background.tex). The paragraphs are unchanged; headings moved down one level.
+\section{Literature Review}
+\label{sec:literature-review}
+% NOTE: the next paragraph still says "This chapter"; this is now a section. It also lists only the
+% sections that already have text, not the new blank ones or the comparison at the end.
 This chapter reviews the work on which a causal, fair and drift-aware recourse method can build.
 Section~\ref{sec:lr-cf-search} covers how counterfactuals are searched for, and
 Section~\ref{sec:lr-plausibility} how they are kept plausible and causally consistent.
@@ -8,15 +12,23 @@ examines what happens when models, populations or causal mechanisms change over 
 Finally, Section~\ref{sec:lr-readable-structural-equations} turns to readable representations of
 structural equations, including those based on Kolmogorov--Arnold Networks (KANs).
 
-\section{Counterfactual Search Methods}
+\subsection{Counterfactual Search Methods}
 \label{sec:lr-cf-search}
+% Suggested reading for this subsection:
+% - Pawelczyk et al. (2021), CARLA: A Python Library to Benchmark Algorithmic Recourse and
+%   Counterfactual Explanation Algorithms, NeurIPS Datasets and Benchmarks (cited in Chapter 4 as
+%   pawelczyk2021carla, not yet in references.bib): compares many of these methods on the same
+%   data and metrics, a useful anchor for the trade-offs this subsection describes.
 In this section, we analyse the current landscape of counterfactual search methods, focusing on
 which strategies are used to find valid counterfactuals and which trade-offs they make between
 search efficiency, plausibility and causal consistency. We group the methods into three categories:
 exact solver-based methods, gradient-based methods, and evolutionary and surrogate-based methods.
 
-\subsection{Exact Solver-Based Methods}
+\subsubsection{Exact Solver-Based Methods}
 \label{subsec:lr-solver-search}
+% Suggested reading: Ustun, Spangher & Liu (2019), Actionable Recourse in Linear Classification
+% (ustun2019actionable, already in references.bib): integer programming for linear classifiers with
+% actionability constraints, and the paper that named "recourse"; it predates the three works below.
 
 \citet{russell2019efficient} proposes a mixed-integer programming approach to generating
 counterfactual explanations for linear classifiers, including logistic regression, linear regression
@@ -52,8 +64,10 @@ causal relationships between features, and it can be computationally expensive b
 time depends directly on the solver: under five seconds for logistic regression, but between one
 minute and three hours for a multilayer perceptron.
 
-\subsection{Gradient-Based Methods}
+\subsubsection{Gradient-Based Methods}
 \label{subsec:lr-gradient-search}
+% Suggested reading: Wachter, Mittelstadt & Russell (2018) (wachter2018counterfactual, not yet in
+% references.bib): the original gradient-based search that prototypes and DiCE extend.
 \citet{vanlooveren2020interpretable} use class prototypes to guide the counterfactual search. A term
 added to the loss function encourages the counterfactual to be close to the prototype of the desired
 class, obtained either from an encoder or from class-specific k-d trees, which makes the generated
@@ -76,7 +90,7 @@ Club datasets. Its limitations are that it assumes a differentiable and static m
 features independently, which can produce causally infeasible counterfactuals; causal constraints are
 only used to filter these out afterwards.
 
-\subsection{Evolutionary and Surrogate-Based Methods}
+\subsubsection{Evolutionary and Surrogate-Based Methods}
 \label{subsec:lr-heuristic-search}
 \citet{white2019measurable} introduce CLEAR and a definition of the fidelity of local explanation models
 to the underlying classifier, based on distances to a decision boundary. The method generates
@@ -96,14 +110,20 @@ most 40 features, which raises concerns about scalability to high-dimensional da
 open how one should choose the final counterfactual from the Pareto front, gives no guarantee of causal
 consistency, and can be computationally expensive due to the nature of evolutionary algorithms.
 
-\section{Plausibility and Causal Consistency}
+\subsection{Plausibility and Causal Consistency}
 \label{sec:lr-plausibility}
 A counterfactual that is close to the original instance is not necessarily one that a person can reach.
 This section reviews two responses to that problem: keeping counterfactuals on the data manifold, and
 explicitly modelling the causal relationships between features.
 
-\subsection{Data-Manifold Methods}
+\subsubsection{Data-Manifold Methods}
 \label{subsec:lr-data-manifold}
+% Suggested reading:
+% - Downs et al. (2020), CRUDS (downs2020cruds, already in references.bib): a generative,
+%   disentangled-latent alternative to REVISE.
+% - Pawelczyk, Broelemann & Kasneci (2020), Learning Model-Agnostic Counterfactual Explanations for
+%   Tabular Data, The Web Conference (C-CHVAE): manifold-faithful counterfactuals for tabular data,
+%   closer to credit-style settings than MNIST or Atari.
 \citet{poyiadzi2020face} propose FACE, a graph-based method for generating counterfactuals. It constructs
 a graph where nodes are observed data points (e.g., people's financial profiles), edges connect nearby
 nodes, and density-weighted edge weights represent the cost of moving from one node to another, which
@@ -143,8 +163,10 @@ independent feature changes, and they provide no guarantee that it works. They a
 can act as a diagnostic, revealing whether a classifier is systematically confounded by specific
 attributes.
 
-\subsection{Causal Constraints and Recourse as Interventions}
+\subsubsection{Causal Constraints and Recourse as Interventions}
 \label{subsec:lr-causal-recourse}
+% Suggested reading: Lash et al. (2018), Prophit (lash2018prophit, already in references.bib): an
+% early causal take on inverse classification with continuous treatments, before Mahajan et al.
 \citet{mahajan2019preserving} are among the first to connect the feasibility of counterfactuals with
 causal relationships between features, arguing that feasibility is fundamentally a causal concept. They
 use a VAE-based generator with constraints derived from a partial structural causal model (SCM) and, when
@@ -179,8 +201,21 @@ ensures that the average effect of the action is positive for a group of people,
 a given individual. The authors treat the classifier as given, and they point to fair decision making
 with a classifier that evolves over time as an important direction for future research.
 
-\section{Fairness of Recourse}
+\subsection{Fairness of Recourse}
 \label{sec:lr-fair-recourse}
+% Suggested reading for this subsection:
+% - Gupta et al. (2019), Equalizing Recourse across Groups, arXiv:1909.03166 (cited in Chapter 1 as
+%   gupta2019equalizing, not yet in references.bib): the first group-level recourse-fairness
+%   criterion (equal average distance to the boundary), the baseline later works argue with.
+% - Barrainkua, De Toni, Lozano & Quadrianto (2026), Revisiting (Un)Fairness in Recourse by
+%   Minimizing Worst-Case Social Burden, AAAI (cited in Chapter 1 as barrainkua2026revisiting, not
+%   yet in references.bib): argues that equal expected cost can hide unequal burden.
+% - Ezzeddine et al. (2026) (ezzeddine2026fair, already in references.bib): individual and group
+%   fairness of counterfactual explanations at once.
+% - Guldogan et al. (2023), Equal Improvability: A New Fairness Notion Considering the Long-Term
+%   Impact, ICLR: equal effort to improve across groups, close to fair recourse over time.
+% CHECK: bell2024fairness (arXiv:2401.16088) and bell2025much (EAAMO 2025) have nearly the same
+% title; the first is probably the preprint of the second, so one entry may be enough.
 Even when recourse is valid, it may be harder for some people to achieve than for others. This section
 reviews how that inequality has been measured, first through distance-based audits, then through causal
 notions of fairness, and finally over time.
@@ -222,14 +257,27 @@ on agent simulations, so its results depend on assumed human behaviour, it uses 
 experiments use a simple logistic classifier. The authors also point to the lack of public real-world
 recourse data as a main limitation.
 
-\section{Recourse and Causal Models Under Drift}
+\subsection{Recourse and Causal Models Under Drift}
 \label{sec:lr-drift}
+% NOTE: the next paragraph announces three steps; a fourth, blank one now follows
+% (Subsection~\ref{subsec:lr-online-causal}, tracking causal models online).
 Most of the works above assume that the model, the population and the causal mechanisms stay fixed. This
 section relaxes that assumption in three steps: the world changes and invalidates recourse, recourse itself
 causes change, and causal structure has to be learned from change.
 
-\subsection{Recourse in a Changing World}
+\subsubsection{Recourse in a Changing World}
 \label{subsec:lr-changing-world}
+% Suggested reading:
+% - Dominguez-Olmedo, Karimi & Schölkopf (2022), On the Adversarial Robustness of Causal
+%   Algorithmic Recourse, ICML: robustness for causal recourse, the causal counterpart of ROAR.
+% - Pawelczyk et al. (2023), Probabilistically Robust Recourse: Navigating the Trade-offs between
+%   Costs and Robustness in Algorithmic Recourse, ICLR: robustness as a chosen probability of
+%   staying valid, rather than ROAR's worst case.
+% - Ferrario & Loi (2022), The Robustness of Counterfactual Explanations Over Time, IEEE Access:
+%   one of the few studies of counterfactual validity across time.
+% - Schnurr et al. (2024) (schnurr2024drift) and Lafrance et al. (2026) (lafrance2026causal), both
+%   already in references.bib: a predictor built for temporal shift, and a causal simulator of
+%   drift for evaluating classifiers (the latter may fit Chapter 4's experimental design better).
 One of the most relevant works on recourse in changing environments is \citet{de2025time}, where the authors
 treat the world as a causal process that changes over time, rather than treating the model as the only
 shifting component. They start by proving that counterfactual recourse for a future time cannot be optimal
@@ -260,8 +308,13 @@ recourse cost. Experiments on temporal, geospatial and data-correction shifts co
 in practice, and that causally generated recourse is not immune to it. The work offers no solution, however,
 and its theory covers only sparse counterfactual recourse.
 
-\subsection{Recourse That Causes Its Own Drift}
+\subsubsection{Recourse That Causes Its Own Drift}
 \label{subsec:lr-recourse-drift}
+% Suggested reading:
+% - Perdomo et al. (2020), Performative Prediction, ICML: the general framework for predictions
+%   that change the data they are evaluated on; König et al. build on this idea.
+% - Miller, Milli & Hardt (2020), Strategic Classification is Causal Modeling in Disguise, ICML:
+%   why gaming and genuine improvement can only be told apart with a causal model.
 \citet{konig2026performative} define performative validity as whether recourse still holds under the best model
 after people act on it. Their work proves that recourse can fail when actions intervene on, or are influenced
 by, effect variables. Improvement-focused causal recourse stays valid across a broad range of settings, whereas
@@ -276,8 +329,14 @@ feature space by favouring people from less crowded regions, and the latter redu
 Here, there is no causal model, and the theory focuses on logistic regression in a saturated system. In both
 papers, drift comes from recourse and not from the outside world.
 
-\subsection{Learning Causal Structure from Change}
+\subsubsection{Learning Causal Structure from Change}
 \label{subsec:lr-learning-causal-structure}
+% Suggested reading:
+% - Zhang et al. (2017), Causal Discovery from Nonstationary/Heterogeneous Data: Skeleton
+%   Estimation and Orientation Determination, IJCAI: the conference precursor of CD-NOD.
+% - Mameche, Kaltenpoth & Vreeken (2022), Discovering Invariant and Changing Mechanisms from Data,
+%   KDD: detects which mechanisms change across contexts; the closest idea to flagging drift edge
+%   by edge, but without recourse.
 \citet{huang2020causal} propose Constraint-based causal Discovery from heterogeneous/NOnstationary Data (CD-NOD), a
 framework that leverages distribution shifts to learn causal structure. It also extracts a low-dimensional
 ``driving force'' of the change and allows edges to appear and vanish over time. \citet{perry2022causal} make
@@ -288,8 +347,71 @@ tests used by CD-NOD have a cost of $O(N^3)$ in the number of samples. Both also
 sparse shift remains a hypothesis rather than an established fact, and neither work produces counterfactuals or
 recourse.
 
-\section{Readable Structural Equations}
+\subsubsection{Tracking Causal Models Online}
+\label{subsec:lr-online-causal}
+
+% TO WRITE (blank): learning or updating causal structure and mechanisms from a data stream, which
+% the batch methods above cannot do.
+% Suggested reading:
+% - Kummerfeld & Danks (2013), Tracking Time-varying Graphical Structure, NeurIPS: LoSST updates
+%   graph structure and parameters as data arrive, matching batch learning when nothing changes.
+% - Hoang et al. (2026) (hoang2026ultrafast, already in references.bib): online learning in KANs
+%   through spline locality, i.e. only the bumps near a new sample are updated.
+
+\subsection{Detecting and Explaining Concept Drift}
+\label{sec:lr-drift-explanation}
+
+% TO WRITE (blank): methods that say where and how the data changed, not only that it changed.
+% This is the "explainable drift" part of the thesis goal.
+% Suggested reading:
+% - Hinder, Vaquet & Hammer (2024), One or Two Things We Know about Concept Drift: A Survey on
+%   Monitoring in Evolving Environments. Part B: Locating and Explaining Concept Drift, Frontiers
+%   in Artificial Intelligence 7:1330258: the survey of drift localisation and explanation.
+% - Hinder, Vaquet, Brinkrolf & Hammer (2023), Model-Based Explanations of Concept Drift,
+%   Neurocomputing 126640: explains drift by explaining a model trained to tell time windows apart.
+% - Hinder, Komnick, Lammers, Hammer & Vaquet (2026), Causal Explanation of Concept Drift: A Truly
+%   Actionable Approach, ECML PKDD workshops (Springer CCIS 2842; arXiv:2507.23389): isolates the
+%   causally relevant features affected by drift; the closest work to per-edge drift explanation.
+% - Webb et al. (2018), Analyzing Concept Drift and Shift from Sample Data, Data Mining and
+%   Knowledge Discovery: quantitative descriptions of drift (magnitude, duration) from samples.
+
+\subsection{Fairness Under Distribution Shift}
+\label{sec:lr-fairness-shift}
+
+% TO WRITE (blank): what happens to fairness guarantees when the population or the rule changes,
+% the setting where fair recourse under drift sits.
+% Suggested reading:
+% - Singh, Singh, Mhasawade & Chunara (2021), Fairness Violations and Mitigation under Covariate
+%   Shift, FAccT: when fairness transfers under shift, framed with causal graphs.
+% - Rezaei, Liu, Memarrast & Ziebart (2021), Robust Fairness under Covariate Shift, AAAI: keeping a
+%   fairness constraint when the test population differs.
+% - Schrouff et al. (2022), Diagnosing Failures of Fairness Transfer across Distribution Shift in
+%   Real-World Medical Settings, NeurIPS: a causal diagnosis of why fairness breaks after a shift.
+
+\subsection{Interpretable Additive Models with Interactions}
+\label{sec:lr-additive-interactions}
+
+% TO WRITE (blank): glass-box models built from one-variable curves plus a few pairwise
+% interactions; the proposed causal KAN's surfaces and screening come from this line of work.
+% Suggested reading:
+% - Rudin (2019), Stop Explaining Black Box Machine Learning Models for High Stakes Decisions and
+%   Use Interpretable Models Instead, Nature Machine Intelligence (cited in Chapter 1 as
+%   rudin2019stop, not yet in references.bib): the argument for interpretable-by-design models.
+% - Lou, Caruana & Gehrke (2012), Intelligible Models for Classification and Regression, KDD:
+%   accurate additive models with readable shape functions.
+% - Lou, Caruana, Gehrke & Hooker (2013), Accurate Intelligible Models with Pairwise Interactions,
+%   KDD: GA2M and the FAST screening used to choose which surfaces to add.
+% - Nori et al. (2019), InterpretML: A Unified Framework for Machine Learning Interpretability,
+%   arXiv:1909.09223: Explainable Boosting Machines, the widely used GA2M implementation.
+% - Agarwal et al. (2021), Neural Additive Models: Interpretable Machine Learning with Neural
+%   Nets, NeurIPS: the neural-network counterpart, the closest relative of KAN-style additive models.
+
+\subsection{Readable Structural Equations}
 \label{sec:lr-readable-structural-equations}
+% Suggested reading: Priyadarshini et al. (2026) (priyadarshini2026learning) and Valencia et al.
+% (2026) (valencia2026counterfactual), both already in references.bib: KANs used for fair
+% representations and for counterfactual explanations, the only KAN papers in the bibliography
+% that touch fairness or counterfactuals.
 \citet{ma2025causal} propose Causal-KAN, which puts SCM functions into KANs and encodes causal direction through
 initialisation and constraints, claiming less overfitting and more readable mappings. Alongside it,
 \citet{almodovar2026kolmogorov} show that KANs can be used to learn the structural equations of a known causal
@@ -302,3 +424,68 @@ in both low and high dimensions. CAM assumes that there are no hidden variables 
 such models are not closed under marginalisation, so a hidden variable can take the data outside the model class.
 
 Nevertheless, none of these works provides any connection to recourse, much less to drift and fairness.
+
+\subsection{Comparison and Research Gaps}
+\label{sec:lr-gaps}
+
+% TO WRITE (blank): read Table~\ref{tab:lr-comparison} column by column, name the gaps, and say
+% which ones this thesis addresses (the last row).
+
+\begin{table}[htbp]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{5.1cm}cccccccc@{}}
+\toprule
+Work & Rec. & Causal & Fair & Time & Loc. & Read. & Unc. & Online \\
+\midrule
+\multicolumn{9}{@{}l}{\textit{Counterfactual search}} \\
+\citet{russell2019efficient}        & \checkmark &  &  &  &  &  &  &  \\
+\citet{kanamori2020dace}            & \checkmark &  &  &  &  &  &  &  \\
+\citet{karimi2020model}             & \checkmark &  &  &  &  &  &  &  \\
+\citet{vanlooveren2020interpretable} & \checkmark &  &  &  &  &  &  &  \\
+\citet{mothilal2020explaining}      & \checkmark & (\checkmark) &  &  &  &  &  &  \\
+\citet{white2019measurable}         & \checkmark &  &  &  &  &  &  &  \\
+\citet{dandl2020multiobjective}     & \checkmark &  &  &  &  &  &  &  \\
+\midrule
+\multicolumn{9}{@{}l}{\textit{Plausibility and causal consistency}} \\
+\citet{poyiadzi2020face}            & \checkmark &  &  &  &  &  &  &  \\
+\citet{Olson_2021}                  & \checkmark &  &  &  &  &  &  &  \\
+\citet{joshi2019towards}            & \checkmark & (\checkmark) &  &  &  &  &  &  \\
+\citet{mahajan2019preserving}       & \checkmark & (\checkmark) &  &  &  &  &  &  \\
+\citet{karimi2021algorithmic}       & \checkmark & \checkmark &  &  &  &  &  &  \\
+\citet{karimi2020algorithmic}       & \checkmark & \checkmark &  &  &  &  & \checkmark &  \\
+\midrule
+\multicolumn{9}{@{}l}{\textit{Fairness of recourse}} \\
+\citet{sharma2020certifai}          & \checkmark &  & \checkmark &  &  &  &  &  \\
+\citet{vonkugelgen2022fairness}     & \checkmark & \checkmark & \checkmark &  &  &  &  &  \\
+\citet{fonseca2023setting}          & \checkmark &  &  & \checkmark &  &  &  &  \\
+\citet{bell2025much}                & \checkmark &  & \checkmark & \checkmark &  &  &  &  \\
+\midrule
+\multicolumn{9}{@{}l}{\textit{Recourse and causal models under drift}} \\
+\citet{de2025time}                  & \checkmark & \checkmark &  & \checkmark &  &  & (\checkmark) &  \\
+\citet{kostrzewa2026counterfactual} & \checkmark &  &  & \checkmark &  &  &  & (\checkmark) \\
+\citet{upadhyay2021towards}         & \checkmark &  &  & (\checkmark) &  &  &  &  \\
+\citet{rawal2020algorithmic}        & \checkmark & (\checkmark) &  & \checkmark &  &  &  &  \\
+\citet{konig2026performative}       & \checkmark & \checkmark &  & (\checkmark) &  &  &  &  \\
+\citet{liu2025understanding}        & \checkmark &  & (\checkmark) & \checkmark &  &  &  &  \\
+\citet{huang2020causal}             &  & \checkmark &  & \checkmark & \checkmark &  &  &  \\
+\citet{perry2022causal}             &  & \checkmark &  & (\checkmark) & \checkmark &  &  &  \\
+\midrule
+\multicolumn{9}{@{}l}{\textit{Readable structural equations}} \\
+\citet{ma2025causal}                &  & \checkmark &  &  &  & \checkmark &  &  \\
+\citet{almodovar2026kolmogorov}     &  & \checkmark &  &  &  & \checkmark &  &  \\
+\citet{buhlmann2014cam}             &  & \checkmark &  &  &  & \checkmark &  &  \\
+\midrule
+\textbf{This work}                  & $\circ$ & \checkmark & $\circ$ & \checkmark & \checkmark & \checkmark & \checkmark & $\circ$ \\
+\bottomrule
+\end{tabular}
+\caption[Comparison of the reviewed works]{Comparison of the reviewed works. \textbf{Rec.}: produces
+counterfactuals or recourse actions; \textbf{Causal}: uses a causal graph or structural causal model;
+\textbf{Fair}: measures or enforces fairness; \textbf{Time}: handles change over time (model, population
+or mechanism); \textbf{Loc.}: identifies which mechanism changed; \textbf{Read.}: learned mechanisms can be
+read directly; \textbf{Unc.}: quantifies uncertainty; \textbf{Online}: updates from a data stream.
+\checkmark{} addressed; (\checkmark) partly addressed; $\circ$ planned in this work; blank: not
+addressed.}
+\label{tab:lr-comparison}
+\end{table}

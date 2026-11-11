@@ -1,2 +1,6 @@
 numpy
 matplotlib
+
+# tests (run from kairos/: venv/bin/python -m pytest)
+pytest
+pytest-bdd

@@ -124,7 +124,8 @@ class Node:
         return columns
 
     def smoothness_blocks(self) -> list[SmoothnessBlock]:
-        """One smoothness belief per curve, two per surface (one along each parent)."""
+        """One smoothness belief per curve; three per surface: one along each
+        parent, and one on the saddle, which bending does not charge for."""
         columns = self.columns()
         blocks = [SmoothnessBlock(parent, columns[parent], self.curves[parent].bending())
                   for parent in self.parents]
@@ -133,6 +134,7 @@ class Node:
             along_first, along_second = self.surfaces[pair].bending()
             blocks.append(SmoothnessBlock(f"{label} along {pair[0]}", columns[label], along_first))
             blocks.append(SmoothnessBlock(f"{label} along {pair[1]}", columns[label], along_second))
+            blocks.append(SmoothnessBlock(f"{label} saddle", columns[label], self.surfaces[pair].saddle()))
         return blocks
 
     def solver(self, design: np.ndarray, target: np.ndarray):
