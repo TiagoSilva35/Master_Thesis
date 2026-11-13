@@ -6,47 +6,47 @@ The style file: plainnat.bst
 Reallocating 'name_of_file' (item size: 1) to 11 items.
 Database file #1: references.bib
 Warning--string name "june" is undefined
---line 425 of file references.bib
+--line 481 of file references.bib
 Warning--can't use both volume and number fields in liu2025understanding
-You've used 31 entries,
+You've used 52 entries,
             2773 wiz_defined-function locations,
-            772 strings with 11752 characters,
-and the built_in function-call counts, 17886 in all, are:
-= -- 1586
-> -- 1149
-< -- 23
-+ -- 387
-- -- 354
-* -- 1475
-:= -- 2629
-add.period$ -- 104
-call.type$ -- 31
-change.case$ -- 210
-chr.to.int$ -- 29
-cite$ -- 63
-duplicate$ -- 785
-empty$ -- 1381
-format.name$ -- 389
-if$ -- 3837
+            898 strings with 15987 characters,
+and the built_in function-call counts, 30551 in all, are:
+= -- 2727
+> -- 1962
+< -- 42
++ -- 660
+- -- 606
+* -- 2556
+:= -- 4503
+add.period$ -- 182
+call.type$ -- 52
+change.case$ -- 356
+chr.to.int$ -- 50
+cite$ -- 105
+duplicate$ -- 1332
+empty$ -- 2335
+format.name$ -- 664
+if$ -- 6545
 int.to.chr$ -- 3
 int.to.str$ -- 1
-missing$ -- 27
-newline$ -- 172
-num.names$ -- 124
-pop$ -- 463
+missing$ -- 48
+newline$ -- 290
+num.names$ -- 208
+pop$ -- 759
 preamble$ -- 1
-purify$ -- 180
+purify$ -- 306
 quote$ -- 0
-skip$ -- 666
+skip$ -- 1128
 stack$ -- 0
-substring$ -- 712
-swap$ -- 180
-text.length$ -- 18
+substring$ -- 1253
+swap$ -- 302
+text.length$ -- 33
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 331
+type$ -- 557
 warning$ -- 1
-while$ -- 148
+while$ -- 252
 width$ -- 0
-write$ -- 427
+write$ -- 732
 (There were 2 warnings)

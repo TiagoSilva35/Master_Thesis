@@ -21,15 +21,20 @@
 % Chapter~\ref{chap:proposed-approach}. Rows marked "% planned" belong to sections that are not
 % written yet: check them when writing that section, then delete the mark. Add a row whenever a
 % new symbol is shared between sections; symbols used in one place only stay out of the table.
-% Naming follows Karimi et al. (2022, karimi2022survey) where possible. Differences from kairos and
+% Naming follows the recourse literature where possible. do(X_I = theta), with index set I and new
+% values theta, is from Karimi et al. (2020, karimi2020algorithmic). Careful: in Karimi et al.
+% (2022, karimi2022survey) theta_i is a shift added to x_i, not the new value. Counterfactuals
+% (x^F, u^F, x_{theta_I}(u^F) and the twin v_a(u^F)) follow von Kugelgen et al. (2022,
+% vonkugelgen2022fairness), with \mathtt{F} for their \texttt{F}. Differences from kairos and
 % the Friday slides: the constant c_j is alpha_j here (c is the cost), the surface psi_abj is
 % psi_klj (a is a value of A), and the spline heights h_k are beta_m (h is the classifier).
 This subsection fixes the notation used in the rest of the document. Uppercase italic letters
 denote random variables, such as a feature $X_j$, the outcome $Y$ or the protected attribute $A$,
 and the corresponding lowercase letters denote the values they take ($x_j$, $y$, $a$). Bold letters
 denote vectors or sets of variables: $\mathbf{X} = (X_1, \dots, X_d)$ collects the $d$ features and
-$\mathbf{x}$ holds the feature values of one person. Calligraphic letters denote graphs and sets
-of indices, such as the causal graph $\mathcal{G}$; $\mathcal{N}$ and $\mathrm{Unif}$ denote the
+$\mathbf{x}$ holds the feature values of one person. Calligraphic letters denote graphs and sets,
+such as the causal graph $\mathcal{G}$, the set $\mathcal{I}$ of intervened variables and the set
+$\mathcal{F}(\mathbf{x}^{\mathtt{F}})$ of feasible actions of a person; $\mathcal{N}$ and $\mathrm{Unif}$ denote the
 normal and uniform distributions. The index $j$ refers to the variable being explained, $i$, $k$
 and $l$ to its parents or to intervened variables, $m$ to a basis function and $t$ to a time
 window. A hat marks a quantity estimated from data, as in $\hat{f}_j$ for the estimate of $f_j$.
@@ -41,6 +46,9 @@ Table~\ref{tab:bg-notation} lists the symbols that are used in more than one sec
 with the section that defines each of them. Symbols used in a single place are defined where they
 appear.
 
+% The table fills most of a page and cannot share one with the text above, so it starts a new page;
+% [htbp] then places it here (h), before Section~\ref{sec:bg-recourse} rather than after its start.
+\clearpage
 \begin{table}[htbp]
 \centering
 \small
@@ -51,23 +59,32 @@ Symbol & Meaning & Section \\
 \multicolumn{3}{@{}l}{\textit{People, decisions and recourse}} \\
 $\mathbf{x} = (x_1, \dots, x_d)$ & feature values of one person & \ref{sec:bg-recourse} \\ % planned
 $X_j$, $Y$ & $j$-th feature; outcome & \ref{sec:bg-recourse} \\ % planned
-$h$ & classifier (decision model) & \ref{sec:bg-recourse} \\ % planned
-$\mathbf{x}'$ & counterfactual explanation of $\mathbf{x}$ & \ref{sec:bg-recourse} \\ % planned
-$c(\mathbf{x}, \cdot)$ & cost of an action for the person $\mathbf{x}$ & \ref{sec:bg-recourse} \\ % planned
-$A$, $a$ & protected attribute and its value & \ref{sec:bg-fairness} \\ % planned
+$h$ & classifier (decision model) & \ref{sec:bg-recourse} \\
+$\mathbf{x}^{\mathtt{F}}$ & observed (factual) feature values of one person & \ref{sec:bg-recourse} \\
+$\mathbf{x}^{\mathtt{CFE}}$ & counterfactual explanation of $\mathbf{x}^{\mathtt{F}}$ (found without a causal model) & \ref{sec:bg-recourse} \\
+$\boldsymbol{\theta}_{\mathcal{I}}$ & action $\mathrm{do}(\mathbf{X}_{\mathcal{I}} = \boldsymbol{\theta})$ taken by a person & \ref{sec:bg-recourse} \\
+$c(\mathbf{x}^{\mathtt{F}}, \boldsymbol{\theta}_{\mathcal{I}})$ & cost of the action $\boldsymbol{\theta}_{\mathcal{I}}$ for the person $\mathbf{x}^{\mathtt{F}}$ & \ref{sec:bg-recourse} \\
+$A$, $a$ & protected attribute and its value & \ref{sec:bg-fairness} \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{Causal models}} \\
 $\mathcal{G}$ & causal graph & \ref{sec:bg-scm} \\
-$\mathbf{PA}_j$, $\mathbf{pa}_j$ & parents of $X_j$ and their values & \ref{sec:bg-scm} \\
-$f_j$, $\hat{f}_j$ & structural equation of $X_j$ and its estimate & \ref{sec:bg-scm} \\
-$U_j$, $u_j$ & noise of $X_j$ and its value & \ref{sec:bg-scm} \\
+$\mathbf{PA}_j$ & parents of $X_j$ & \ref{sec:bg-scm} \\
+$f_j$ & structural assignment (equation) of $X_j$ & \ref{sec:bg-scm} \\
+$U_j$, $U_Y$ & noise variables of $X_j$ and of $Y$ & \ref{sec:bg-scm} \\
 $\mathrm{do}(X_i = \theta)$ & intervention that sets $X_i$ to $\theta$;
   $\mathrm{do}(\mathbf{X}_{\mathcal{I}} = \boldsymbol{\theta})$ sets every $X_i$ with
-  $i \in \mathcal{I}$ & \ref{sec:bg-scm} \\
+  $i \in \mathcal{I}$ to $\theta_i$ & \ref{sec:bg-scm} \\
+$\mathbf{u}^{\mathtt{F}}$ & noise values inferred from the factual features
+  $\mathbf{x}^{\mathtt{F}}$ & \ref{sec:bg-recourse} \\
+$\mathbf{x}_{\boldsymbol{\theta}_{\mathcal{I}}}(\mathbf{u}^{\mathtt{F}})$ & counterfactual: the
+  person's features had $\mathbf{X}_{\mathcal{I}}$ been set to $\boldsymbol{\theta}$ &
+  \ref{sec:bg-recourse} \\
+$\mathbf{v}_a(\mathbf{u}^{\mathtt{F}})$ & counterfactual twin: all of the person's variables,
+  $\mathbf{v}^{\mathtt{F}} = (\mathbf{x}^{\mathtt{F}}, a^{\mathtt{F}})$, had $A$ been $a$ & \ref{sec:bg-fairness} \\
 $\sigma(z)$ & logistic function, $1 / (1 + e^{-z})$ & \ref{sec:bg-scm} \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{Change over time}} \\
-$t$, $P_t$ & time window; distribution of the data in window $t$ & \ref{sec:bg-drift} \\ % planned
+$t$, $P_t$ & time window; distribution of the data in window $t$ & \ref{sec:bg-drift} \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{Curves and the causal KAN}} \\
 $B_m$, $\beta_m$ & $m$-th B-spline basis function and its height (coefficient) & \ref{sec:bg-splines} \\ % planned
@@ -82,32 +99,15 @@ $\sigma_j^2$ & noise variance of $X_j$ & \ref{sec:bg-bayesian-smoothing} \\ % pl
 \label{tab:bg-notation}
 \end{table}
 
-\subsection{Counterfactual Explanations and Algorithmic Recourse}
-\label{sec:bg-recourse}
-
-% TO WRITE: what a counterfactual explanation is, what recourse adds (actions a person can take),
-% and the usual desiderata (validity, proximity, sparsity, plausibility, actionability, causality).
-% Suggested reading:
-% - Wachter, Mittelstadt & Russell (2018), Counterfactual Explanations Without Opening the Black
-%   Box, Harvard Journal of Law & Technology (cited in Chapter 1 as wachter2018counterfactual, not
-%   yet in references.bib): the original definition every method in Section~\ref{sec:lr-cf-search}
-%   starts from.
-% - Ustun, Spangher & Liu (2019), Actionable Recourse in Linear Classification
-%   (ustun2019actionable, in references.bib): introduces the term "recourse" and actionability
-%   constraints (immutable vs. actionable features).
-% - Karimi et al. (2022) (karimi2022survey) and Verma et al. (2024) (verma2024counterfactual), both
-%   in references.bib: surveys that define the desiderata used to compare methods later on.
-% - Venkatasubramanian & Alfano (2020), The Philosophical Basis of Algorithmic Recourse
-%   (venkatasubramanian2020philosophical, in references.bib): why recourse matters, a short
-%   normative grounding for the motivation.
-
 \subsection{Structural Causal Models and Interventions}
 \label{sec:bg-scm}
 
 Recourse asks what would happen to a person's decision if they acted, and counterfactual fairness
 asks what the decision would have been had a protected attribute been different. Both are, inevitably, causal
 questions, and this thesis answers them with structural causal models (SCMs)
-\cite{pearl2009causality, peters2017elements}. This subsection introduces SCMs and interventions.
+\cite{pearl2009causality, peters2017elements}. This subsection introduces SCMs and interventions;
+counterfactuals computed from an SCM follow in Section~\ref{sec:bg-recourse}, where they are first
+needed.
 
 \paragraph{Structural causal models.}
 An SCM describes how each variable is produced from its direct causes. Following
@@ -122,24 +122,32 @@ $X_j$, together with a joint distribution $P_{\mathbf{U}}$ over the noise variab
 $U_1, \dots, U_d$, which are required to be jointly independent. \citet{peters2017elements} write
 the noise variables as $N_j$. This thesis writes $U_j$, the letter used by \citet{pearl2009overview}
 and the recourse literature \cite{karimi2021algorithmic}, where $U_j$ is called an exogenous
-variable and $X_j$ an endogenous one. There, independence is an extra assumption rather
-than part of the definition: \citet{pearl2009overview} calls a model whose graph is acyclic and
-whose exogenous variables are jointly independent \emph{Markovian}. Drawing an arrow from each parent to
-its child gives the causal graph $\mathcal{G}$, which is assumed to be a directed acyclic graph. 
-The parents of $X_j$ are its direct causes and $U_j$ gathers everything else that affects $X_j$ but is
-not modelled; requiring the noise variables to be independent and, therefore, rules out hidden
-variables that affect two observed ones (causal sufficiency). An acyclic SCM entails a single
-joint distribution over $X_1, \dots, X_d$ \cite{peters2017elements}, which factorises into one
-conditional distribution per variable \cite{pearl2009causality}:
+variable and $X_j$ an endogenous one. Drawing an arrow from each parent to its child gives the
+causal graph $\mathcal{G}$, which \citet{peters2017elements} assume to be acyclic. In Pearl's
+formulation and in the recourse literature, independent noise is not part of the definition but
+an extra assumption, which this thesis makes: \citet{pearl2009overview} calls a model Markovian
+when its graph is acyclic and its exogenous variables are jointly independent.
+
+The parents of $X_j$ are its direct causes, and $U_j$ gathers everything else that affects $X_j$
+but is not modelled. Requiring the noise variables to be independent therefore rules out hidden
+confounders, that is, unobserved variables that affect two or more of the modelled ones; this
+assumption is called causal sufficiency. An acyclic SCM entails a single joint distribution over
+$X_1, \dots, X_d$ \cite{peters2017elements}, and in a Markovian model this distribution
+factorises into one conditional distribution per variable
+\cite{pearl2009causality, pearl2009overview}:
 \begin{equation}
   P(X_1, \dots, X_d) = \prod_{j=1}^{d} P(X_j \mid \mathbf{PA}_j).
   \label{eq:bg-markov}
 \end{equation}
-Each factor is the \emph{causal mechanism} of one variable. The principle of independent
+Each factor is the causal mechanism of one variable. The principle of independent
 mechanisms states that these factors do not inform or influence one another, so that one of them
-can change while the others stay the same \cite{peters2017elements}.
-Section~\ref{sec:bg-drift} uses this idea to describe drift as a change in some mechanisms but
-not in others.
+can change while the others stay the same \cite{peters2017elements}. Without causal sufficiency,
+Equation~\ref{eq:bg-markov} no longer holds in general. One solution is to add the hidden
+confounder to the model as a latent variable. \citet{louizos2017causal}, for example, infer an
+unobserved confounder $Z$ from observed proxies of it, assuming that the proxies carry enough
+information to recover the joint distribution of $Z$ and the observed variables; since $Z$ is
+the only hidden confounder in their model, adding it makes the model Markovian again.
+
 
 \paragraph{Running example.}
 Figure~\ref{fig:bg-running-example} shows the SCM used as a running example. A person's income
@@ -165,62 +173,424 @@ same income.
   \includegraphics{figures/scm-running-example.pdf}
   \caption[Causal graph of the running example]{Causal graph of the running example
   (Equation~\ref{eq:bg-example}). Solid arrows are causal effects, labelled with the term that
-  each parent adds to its child's equation; dashed arrows come from the noise variables.}
+  each parent adds to its child's equation (for $Y$, to the argument of $\sigma$); dashed arrows
+  come from the noise variables.}
   \label{fig:bg-running-example}
 \end{figure}
 
 \paragraph{Interventions.}
 An intervention sets a variable from outside the system. The intervention
 $\mathrm{do}(X_i = \theta)$ replaces the equation of $X_i$ with the constant $\theta$ and leaves
-every other equation unchanged \cite{pearl2009causality}:
+every other equation unchanged \cite{pearl2009causality, pearl2009overview}:
 \begin{equation}
   X_i := \theta, \qquad X_j := f_j(\mathbf{PA}_j, U_j) \quad \mbox{for all } j \neq i.
   \label{eq:bg-do}
 \end{equation}
-The result is a new SCM, whose graph has no arrows into $X_i$ and whose distribution is the
+The result is a new SCM, whose graph has no arrows into $X_i$
+(Figure~\ref{fig:interventions}) and whose distribution is the
 \emph{interventional} distribution $P(X_1, \dots, X_d \mid \mathrm{do}(X_i = \theta))$. Several
-variables can be set at once: $\mathrm{do}(\mathbf{X}_{\mathcal{I}} = \boldsymbol{\theta})$ replaces
-the equation of every $X_i$ with $i$ in the set of indices $\mathcal{I}$. Intervening is not the
+variables can be set at once. Following \citet{karimi2020algorithmic}, this thesis writes
+$\mathrm{do}(\mathbf{X}_{\mathcal{I}} = \boldsymbol{\theta})$ for the intervention that sets every
+$X_i$ with $i$ in a set of indices $\mathcal{I} \subseteq \{1, \dots, d\}$ to the matching value
+$\theta_i$; \citet{pearl2009overview} writes $\mathrm{do}(X = x)$, with $X$ itself a set of
+variables. Intervening is not the
 same as conditioning. In the running example, $P(Y \mid X_2 = x_2)$ describes the people who
 happen to have savings $x_2$, and those with high savings tend to also have a high income,
 whereas $P(Y \mid \mathrm{do}(X_2 = x_2))$ describes what happens when savings are set to $x_2$
 and income stays as it was. In algorithmic recourse, the action a person takes is modelled as an intervention
-on the features they can change \cite{karimi2021algorithmic}; Section~\ref{subsec:lr-causal-recourse}
-reviews this view.
+on the features they can change \cite{karimi2021algorithmic}.
+
+\begin{figure}[htbp]
+    \centering
+
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]
+        {figures/intervention_on_X1-example.pdf}
+        \caption{Intervention on $X_1$}
+        \label{fig:intervention-X1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]
+        {figures/intervention_on_X2.pdf}
+        \caption{Intervention on $X_2$}
+        \label{fig:intervention-X2}
+    \end{subfigure}
+
+    \caption[Interventions in the running example]{The running example
+    (Figure~\ref{fig:bg-running-example}) under an intervention on income (a) and on savings (b).
+    The intervened variable, drawn as a square, is set from outside: the arrows into it, including
+    the one from its noise variable, are removed, while the arrows out of it stay.}
+    \label{fig:interventions}
+\end{figure}
+
+\subsection{Counterfactual Explanations and Algorithmic Recourse}
+\label{sec:bg-recourse}
+
+% TO WRITE: what a counterfactual explanation is, what recourse adds (actions a person can take),
+% and the usual desiderata (validity, proximity, sparsity, plausibility, actionability, causality).
+% Suggested reading:
+% - Wachter, Mittelstadt & Russell (2018), Counterfactual Explanations Without Opening the Black
+%   Box, Harvard Journal of Law & Technology (cited in Chapter 1 as wachter2018counterfactual, not
+%   yet in references.bib): the original definition every method in Section~\ref{sec:lr-cf-search}
+%   starts from.
+% - Ustun, Spangher & Liu (2019), Actionable Recourse in Linear Classification
+%   (ustun2019actionable, in references.bib): introduces the term "recourse" and actionability
+%   constraints (immutable vs. actionable features).
+% - Karimi et al. (2022) (karimi2022survey) and Verma et al. (2024) (verma2024counterfactual), both
+%   in references.bib: surveys that define the desiderata used to compare methods later on.
+% - Venkatasubramanian & Alfano (2020), The Philosophical Basis of Algorithmic Recourse
+%   (venkatasubramanian2020philosophical, in references.bib): why recourse matters, a short
+%   normative grounding for the motivation.
+This subsection introduces counterfactual explanations and algorithmic recourse: what they are,
+what they are used for and why they matter.
+
+% Sources: Karimi et al. (2022), arXiv:2010.04050, Sec. 2.1 (definitions, Ustun et al. among them,
+% and the unified "understand and act" definition), Sec. 2.2 (Q1/Q2, consequential
+% recommendations), Sec. 2.2.3 (both answers are counterfactuals), Sec. 3 Eq. (2) (minimal
+% consequential recommendation) and the position that follows it.
+\paragraph{Recourse.}
+Algorithmic recourse has been defined in several overlapping ways. We define it by merging the definitions of
+\citet{ustun2019actionable} and 
+\citet{karimi2022survey}: a person who receives an unfavourable
+decision achieves recourse when they can understand a model's decision and act to reverse it by altering
+actionable input variables. A rejected
+loan applicant, such as a person in the running example of Section~\ref{sec:bg-scm}, therefore
+needs answers to two questions~\cite{karimi2022survey}: which profile would have led to the loan being approved (Q1), and
+which actions would have led to that profile (Q2). An answer to Q1 is a counterfactual explanation
+and an answer to Q2 is a recommendation of actions. Consider the statement:
+\begin{quote}
+  \emph{If I had dropped this glass, it would have broken.}
+\end{quote}
+It describes what would have followed had something been different. A statement of this form is a
+counterfactual conditional, or counterfactual for short. The
+antecedent, \emph{I dropped this glass}, is false, and the statement says what would have followed
+had it been true. Writing $D$ for the antecedent and $B$ for the consequent, \emph{the glass broke},
+\citet{lewis1973counterfactuals} denotes the counterfactual by
+\begin{equation}
+  D \mathrel{\Box\!\!\!\rightarrow} B,
+  \label{eq:bg-lewis}
+\end{equation}  
+which we read as ``if $D$ were the case, $B$ would be the case''. \citet{lewis1973counterfactuals}
+interprets this counterfactual in terms of possible worlds, ordered according 
+to their similarity to the actual world. To evaluate Equation~\ref{eq:bg-lewis}, 
+one compares worlds in which the glass is dropped and breaks with those in which 
+it is dropped but does not break. More precisely, according to \citet[Analysis~3]{lewis1973counterfactuals},
+the counterfactual is true if some possible world in which the glass is dropped and breaks 
+is more similar to the actual world than every possible world in which it is dropped but 
+does not break. If no possible world makes $D$ true, the counterfactual is vacuously true.
+
+\paragraph{Counterfactual explanations.}
+\citet{wachter2017counterfactual} bring Lewis's ideas to machine learning. They define a
+counterfactual explanation as a statement that gives the feature values behind a decision and the
+values that would have led to a different decision, with all other features held constant. Many
+such statements exist for the same decision, and the aim is to find the one that 
+changes the features as little as
+possible, and so describes the ``closest possible world'' in which the decision changes, a notion
+they take from \citet{lewis1973counterfactuals}. Similarity between worlds thus becomes a distance
+between feature vectors. Wachter et al.\ propose the Manhattan ($L_1$) distance with each feature
+weighted by the inverse of its median absolute deviation (MAD), which favours explanations that change
+only a few features, and they compute the explanation by minimising this distance together with
+the squared gap between the model's output and the desired output. They also point out that their
+approach does not rely on knowledge of the causal structure of the world.
+
+\citet{karimi2022survey} write the same problem as a constrained optimisation. Let $h$ be a binary
+classifier, $\mathcal{X}$ the space of feature vectors and $\mathcal{P}(\mathcal{X}) \subseteq
+\mathcal{X}$ the plausible ones, those consistent with the distribution of training data, and let
+$\mathbf{x}^{\mathtt{F}}$ be the observed (factual) features of a person. A nearest counterfactual
+explanation is then
+\begin{equation}
+  \mathbf{x}^{*\mathtt{CFE}} \in \mathop{\mathrm{arg\,min}}_{\mathbf{x}^{\mathtt{CFE}} \in
+  \mathcal{P}(\mathcal{X})} \mathrm{dist}(\mathbf{x}^{\mathtt{CFE}}, \mathbf{x}^{\mathtt{F}})
+  \quad \mbox{subject to} \quad
+  \begin{array}[t]{l}
+    h(\mathbf{x}^{\mathtt{CFE}}) \neq h(\mathbf{x}^{\mathtt{F}}), \\
+    \mathbf{x}^{\mathtt{CFE}} = \mathbf{x}^{\mathtt{F}} + \boldsymbol{\delta},
+  \end{array}  
+  \label{eq:bg-cfe}
+\end{equation}  
+where $\boldsymbol{\delta}$ shifts each feature independently of the others. Karimi et al.\
+describe these solutions as feature combinations in nearby worlds, again citing
+\citet{lewis1973counterfactuals}. A solution of Equation~\ref{eq:bg-cfe} answers Q1. It does not answer Q2: 
+although a counterfactual explanation yields a feature vector that would have achieved recourse, 
+the actions that would lead the person to it cannot in general be 
+inferred from it \cite{karimi2021algorithmic}.
+
+\paragraph{Structural counterfactuals.}
+An SCM gives a concrete answer to which world is closest to the actual one.
+\citet[Sec.~3.4]{pearl2009overview} reads ``had $X$ been $x$'' as a minimal change to the model:
+the counterfactual world keeps every other structural assignment and the person's own noise values,
+and changes only what the intervention sets.~\citet[Sec.~7.4.1]{pearl2009causality} relates this
+reading to Lewis's counterfactuals. Given the factual features $\mathbf{x}^{\mathtt{F}}$ of a person
+and an intervention $\mathrm{do}(\mathbf{X}_{\mathcal{I}} = \boldsymbol{\theta})$, the
+counterfactual is computed in three steps \citep[Thm.~7.1.7]{pearl2009causality}, which
+\citet{vonkugelgen2022fairness} also follow for recourse. In the abduction step, the distribution
+of the noise is updated with the observation $\mathbf{x}^{\mathtt{F}}$. In the action step, the
+assignments of the variables in $\mathcal{I}$ are replaced as in Equation~\ref{eq:bg-do}. In the
+prediction step, the modified assignments are evaluated under the updated noise distribution, which
+gives a distribution over the counterfactual features \citep[Sec.~7.1.3]{pearl2009causality}. When
+only one value of the noise is consistent with $\mathbf{x}^{\mathtt{F}}$, abduction returns that
+value, $\mathbf{u}^{\mathtt{F}}$, and the counterfactual is a single feature vector. Following \citet{vonkugelgen2022fairness}, it is written
+$\mathbf{x}_{\boldsymbol{\theta}_{\mathcal{I}}}(\mathbf{u}^{\mathtt{F}})$: the features the person
+would have had, had $\mathbf{X}_{\mathcal{I}}$ been set to $\boldsymbol{\theta}$.
+In the running example the noise is additive and can be read off the
+features: $u_1 = x_1$ and $u_2 = x_2 - 0.5\,x_1^2$. A person with $\mathbf{x}^{\mathtt{F}} = (2, 2)$
+thus has $u_2 = 0$, and under $\mathrm{do}(X_1 = 3)$ their savings become $0.5 \cdot 3^2 + 0 = 4.5$,
+so that, with $\mathcal{I} = \{1\}$ and $\boldsymbol{\theta} = 3$,
+$\mathbf{x}_{\boldsymbol{\theta}_{\mathcal{I}}}(\mathbf{u}^{\mathtt{F}}) = (3, 4.5)$. 
+
+\paragraph{Consequential recommendations.}
+\citet{karimi2021algorithmic} model an action as an intervention in an SCM of the world in which
+the person acts, so that its effects on the other variables are taken into account. A recommended
+set of such actions is called a consequential recommendation \cite{karimi2022survey}. Following
+\citet{vonkugelgen2022fairness}, the action $\mathrm{do}(\mathbf{X}_{\mathcal{I}} =
+\boldsymbol{\theta})$ is written $\boldsymbol{\theta}_{\mathcal{I}}$ for short, and
+$\mathcal{F}(\mathbf{x}^{\mathtt{F}})$ denotes the set of feasible actions, those that the person can
+perform. The actions that change the decision are then
+\begin{equation}
+  \mathcal{R} = \left\{ \boldsymbol{\theta}_{\mathcal{I}} \in \mathcal{F}(\mathbf{x}^{\mathtt{F}})
+  \mid h(\mathbf{x}_{\boldsymbol{\theta}_{\mathcal{I}}}(\mathbf{u}^{\mathtt{F}})) \neq
+  h(\mathbf{x}^{\mathtt{F}}) \right\},
+  \label{eq:bg-recourse}
+\end{equation}
+and, given the cost $c(\mathbf{x}^{\mathtt{F}}, \boldsymbol{\theta}_{\mathcal{I}})$ of an action for
+the person, a minimal consequential recommendation is the cheapest of them \cite{karimi2022survey}:
+\begin{equation}
+  \boldsymbol{\theta}^{*}_{\mathcal{I}^{*}} \in \mathop{\mathrm{arg\,min}}_{\boldsymbol{\theta}_{\mathcal{I}}
+  \in \mathcal{F}(\mathbf{x}^{\mathtt{F}})} c(\mathbf{x}^{\mathtt{F}}, \boldsymbol{\theta}_{\mathcal{I}})
+  \quad \mbox{subject to} \quad
+  h(\mathbf{x}_{\boldsymbol{\theta}_{\mathcal{I}}}(\mathbf{u}^{\mathtt{F}})) \neq h(\mathbf{x}^{\mathtt{F}}).
+  \label{eq:bg-min-recourse}
+\end{equation}
+Because notation across papers differ, we will now attempt to clarify it. \citet{karimi2022survey} write the action as
+$a$, the set of feasible actions as $\mathcal{A}(\mathbf{x}^{\mathtt{F}})$, the counterfactual as
+$\mathbf{x}^{\mathtt{SCF}}(a; \mathbf{x}^{\mathtt{F}})$ and the cost as
+$\mathrm{cost}(a; \mathbf{x}^{\mathtt{F}})$, whereas \citet{vonkugelgen2022fairness} write the set
+of feasible actions as $\mathcal{F}(\mathbf{x}^{\mathtt{F}})$. This thesis follows the latter,
+because $a$ denotes a value of the protected attribute $A$, and $\mathcal{A}$ could be read as the
+set of protected attributes. Unlike
+Equation~\ref{eq:bg-cfe}, Equation~\ref{eq:bg-min-recourse} requires an SCM. Its solution also
+gives a counterfactual explanation, $\mathbf{x}_{\boldsymbol{\theta}^{*}_{\mathcal{I}^{*}}}
+(\mathbf{u}^{\mathtt{F}})$, though not necessarily the nearest one, whereas a solution of
+Equation~\ref{eq:bg-cfe} gives no action. For this reason, \citet{karimi2022survey} argue that
+recourse should primarily be offered through minimal consequential recommendations, and that
+nearest counterfactual explanations are of secondary importance.
+
+The running example shows the difference. Suppose that the bank approves a loan when the
+probability of approval is at least $0.5$, that is, $h(\mathbf{x}) = \mathbf{1}[x_1 + 0.5\,x_2
+\geq 4]$, and take again the person with $\mathbf{x}^{\mathtt{F}} = (2, 2)$, who is rejected
+because $2 + 0.5 \cdot 2 = 3 < 4$. With the unweighted $L_1$ distance and no plausibility
+constraint, the nearest counterfactual explanation raises income by one unit,
+$\mathbf{x}^{*\mathtt{CFE}} = (3, 2)$. However, raising income to 3 does not lead to this profile.
+As computed above, savings also rise, to 4.5, so the person ends up at $(3, 4.5)$. The explanation
+describes a profile that the person cannot reach by changing income alone, and it asks for a larger
+change than needed. Suppose that the person can change income, savings or both, and that the cost
+of an action is the total amount by which it changes them. The minimal consequential recommendation
+then changes income only. If income is set to $\theta$, savings become $0.5\,\theta^2$, and the
+loan is approved once $\theta + 0.25\,\theta^2 \geq 4$, that is, once $\theta$ reaches about
+$2.47$. Raising income by about $0.47$ is therefore enough, because savings rise to about $3.06$
+along with it, whereas the explanation asked for a rise of $1$.
+
+
 
 \subsection{Fairness: Statistical and Causal Notions}
 \label{sec:bg-fairness}
 
-% TO WRITE: group criteria (independence, separation, sufficiency), counterfactual fairness, and
-% path-specific fairness (which routes from the protected attribute are allowed).
-% Suggested reading:
-% - Barocas, Hardt & Narayanan (2023), Fairness and Machine Learning: Limitations and
-%   Opportunities, MIT Press: the clearest account of the statistical criteria.
-% - Kusner, Loftus, Russell & Silva (2017), Counterfactual Fairness, NeurIPS: the causal notion
-%   that von Kügelgen et al. (Section~\ref{sec:lr-fair-recourse}) build on.
-% - Kilbertus et al. (2017), Avoiding Discrimination through Causal Reasoning, NeurIPS: "resolving"
-%   variables, i.e. routes that are acceptable, which is how a fairness policy can be stated by roles.
-% - Nabi & Shpitser (2018), Fair Inference on Outcomes, AAAI, and Chiappa (2019), Path-Specific
-%   Counterfactual Fairness, AAAI: removing the protected attribute's effect along chosen paths only.
+% Sources: Mitchell et al. (2021), Sec. 1 (checked in arXiv:1811.07867v3, p. 1; check the wording
+% against the published version): "biased" and the motivation of the field.
+% Barocas, Hardt & Narayanan (2023), Ch. 3: independence, separation and sufficiency, their binary
+% forms and other names, Props. 2-4 (any two are incompatible when A and Y are dependent), and the
+% limits of observational criteria.
+% Hardt et al. (2016), Sec. 2: Def. 2.1 (equalized odds), Def. 2.2 (equal opportunity), and the
+% remark that equalized odds lets the decision depend on A only through Y.
+% Kilbertus et al. (2017), Sec. 1 (observational criteria; two scenarios of Hardt et al. with the
+% same joint distribution), Sec. 2 (Berkeley, resolving variable, Def. 1).
+% Kusner et al. (2017), Sec. 2.1 (Def. 1, fairness through unawareness, and its shortcoming),
+% Sec. 3 (Def. 5, counterfactual fairness; intuition from the abstract), Sec. 3.2 (Lemma 1).
+% von Kugelgen et al. (2022), Sec. 2: counterfactual fairness written with the twin v_a(u^F);
+% Defs. 3.1 and 3.2: group-level and individually fair causal recourse.
+% Nabi & Shpitser (2018), section "Formalizing Discrimination ..." (path-specific effects, which
+% paths depend on the domain, the fitness-test example) and the section that follows (the PSE is
+% kept within bounds (eps_l, eps_u) in a distribution close to the data distribution in KL).
+% Chiappa (2019), Sec. 1: counterfactual fairness treats the whole effect of A as unfair; Berkeley;
+% definition of path-specific counterfactual fairness.
+Machine learning models increasingly inform decisions in high-stakes domains, such as
+healthcare~\cite{shailaja2018machine} and hiring~\cite{raghavan2020mitigating}, where their
+predictions directly affect people's lives. In such domains, predicting well is not enough: the
+decisions must also be fair to the people they affect. \citet{mitchell2021algorithmic} note that a
+model is now commonly called biased when its predictive performance unjustifiably differs across
+disadvantaged groups, defined along social axes such as race, gender and class, and describe
+uncovering and rectifying such biases as the motivation of the field of fairness in machine
+learning. This subsection presents the two families of fairness criteria that the rest of the
+thesis relies on: statistical criteria, which compare groups of people, and causal criteria, which
+ask what the decision would have been had the protected attribute been different.
+
+\paragraph{Statistical criteria.}
+In this subsection the classifier may use the protected attribute $A$, such as sex or race, so it
+is applied to all of a person's variables, $\mathbf{v} = (\mathbf{x}, a)$; a classifier that does
+not use $A$, as in Section~\ref{sec:bg-recourse}, simply ignores the last entry. Its decision is
+written $\hat{Y} = h(\mathbf{V})$, with $\mathbf{V} = (\mathbf{X}, A)$.
+\citet[Ch.~3]{barocas2023fairness} group the statistical criteria into three families, called
+independence, separation and sufficiency. Each is a conditional independence between $A$, the
+outcome $Y$ and the decision; in this order, they require
+\begin{equation}
+  \hat{Y} \perp A, \qquad
+  \hat{Y} \perp A \mid Y, \qquad
+  Y \perp A \mid \hat{Y}.
+  \label{eq:bg-group-criteria}
+\end{equation}
+For a binary decision, independence requires the approval rate $P(\hat{Y} = 1 \mid A = a)$ to be
+the same for every value $a$ of $A$; it is also called demographic parity or statistical parity.
+Separation requires every group to have the same true positive rate
+$P(\hat{Y} = 1 \mid Y = 1, A = a)$ and the same false positive rate
+$P(\hat{Y} = 1 \mid Y = 0, A = a)$. \citet{hardt2016equality} call it equalized odds, and call the
+weaker requirement of equal true positive rates alone equal opportunity. Unlike demographic parity,
+separation lets the decision depend on $A$, but only through the outcome $Y$
+\cite{hardt2016equality}. Sufficiency requires that people who receive the same decision have the
+same probability of a positive outcome in every group, that is, equal positive and negative
+predictive values. The three criteria conflict with one another: for a binary outcome whose rate
+differs between groups, so that $A$ and $Y$ are dependent, no two of them can hold at the same time
+except in degenerate cases \citep[Ch.~3]{barocas2023fairness}.
+
+\paragraph{Counterfactual fairness.}
+The criteria above depend only on the joint distribution of $A$, $\mathbf{X}$, $Y$ and the
+decision, which is why they are called observational \cite{kilbertus2017avoiding}. As a result,
+they cannot say what caused a disparity \citep[Ch.~3]{barocas2023fairness}.
+\citet{kilbertus2017avoiding} recall two scenarios, constructed by \citet{hardt2016equality}, that
+have intuitively different social interpretations but the same joint distribution, so that no
+observational criterion can tell them apart. Causal criteria instead reason about an SCM in which
+$A$ is one of the variables. \citet{kusner2017counterfactual} call a decision counterfactually fair
+if, for every person, it would have been the same in a counterfactual world in which the person
+belonged to a different demographic group. Formally, given the observed values $\mathbf{x}$ and
+$a$, the decision must have the same distribution under $\mathrm{do}(A = a')$ as under
+$\mathrm{do}(A = a)$, for every value $a'$ of $A$. The counterfactuals are computed with the three
+steps of Section~\ref{sec:bg-recourse}, now intervening on $A$. When only one value of the noise,
+$\mathbf{u}^{\mathtt{F}}$, is consistent with the observed variables
+$\mathbf{v}^{\mathtt{F}} = (\mathbf{x}^{\mathtt{F}}, a^{\mathtt{F}})$, the counterfactual is a
+single vector $\mathbf{v}_a(\mathbf{u}^{\mathtt{F}})$, called the person's counterfactual twin had
+$A$ been $a$, and the criterion reads \cite{vonkugelgen2022fairness}
+\begin{equation}
+  h(\mathbf{v}^{\mathtt{F}}) = h(\mathbf{v}_a(\mathbf{u}^{\mathtt{F}}))
+  \quad \mbox{for every value } a \mbox{ of } A \mbox{ and every person.}
+  \label{eq:bg-cf-fairness}
+\end{equation}
+Leaving $A$ out of the classifier's inputs, which \citet{kusner2017counterfactual} call fairness
+through unawareness, does not ensure this, because other features can carry information about
+$A$: in the twin, every feature that $A$ affects changes as well. A classifier that uses only
+variables that are not descendants of $A$ in the causal graph, on the other hand, is always
+counterfactually fair \citep[Lemma~1]{kusner2017counterfactual}.
+
+\paragraph{Path-specific fairness.}
+Counterfactual fairness treats every effect of $A$ on the decision as unfair
+\cite{chiappa2019path}, and the most direct way to satisfy it is to discard every descendant of
+$A$ \cite{kusner2017counterfactual}. Some of these effects may be acceptable, however. In the
+Berkeley admissions case, discussed by both \citet{kilbertus2017avoiding} and
+\citet{chiappa2019path}, women had a lower admission rate than men overall because they applied
+more often to competitive departments, and the effect of gender on admission through the choice of
+department is not regarded as unfair. \citet{kilbertus2017avoiding} call a variable through which
+$A$ influences the decision in such an accepted way a resolving variable, and say that a variable
+that is not itself resolving exhibits unresolved discrimination when a directed path from $A$ to it
+is not blocked by a resolving variable. \citet{nabi2018fair} formalise discrimination as the effect
+of $A$ on the outcome along chosen causal paths, called a path-specific effect, and stress that
+which paths are discriminatory depends on the domain: a physical fitness test may be appropriate
+for a construction job but not for an accounting one. They then fit the model to a distribution
+that is as close as possible to the data distribution while keeping the path-specific effect
+within bounds that state how much discrimination is tolerated. \citet{chiappa2019path} combines
+this idea with counterfactual fairness: a decision is path-specific counterfactually fair if it
+coincides with the one that would have been taken in a counterfactual world in which $A$ had been
+different along the unfair paths only.
+
+All of these criteria concern the decision itself. Section~\ref{sec:lr-fair-recourse} reviews how
+they have been carried over to recourse, where the quantity compared between groups, or between a
+person and their counterfactual twin, is the cost of the action needed to change the decision
+\cite{vonkugelgen2022fairness}.
+
 
 \subsection{Concept Drift and Distribution Shift}
 \label{sec:bg-drift}
 
-% TO WRITE: definitions (covariate, prior and concept shift), drift types (sudden, gradual,
-% recurring), and drift as a change in some causal mechanisms but not others.
-% Suggested reading:
-% - Gama et al. (2014), A Survey on Concept Drift Adaptation, ACM Computing Surveys: the standard
-%   taxonomy and the detect-then-adapt view.
-% - Lu et al. (2019), Learning under Concept Drift: A Review, IEEE TKDE: frames drift
-%   understanding as when, how and where; "where" is the localisation this thesis targets.
-% - Moreno-Torres et al. (2012), A Unifying View on Dataset Shift in Classification, Pattern
-%   Recognition: the vocabulary that separates "who the people are changed" from "the rule changed".
-% - Webb et al. (2016), Characterizing Concept Drift, Data Mining and Knowledge Discovery: formal
-%   definitions to cite when the drift scenarios are described.
-% - Shimodaira (2000) (SHIMODAIRA2000227, in references.bib): the origin of covariate shift and
-%   importance weighting.
-% - Schölkopf et al. (2021), Toward Causal Representation Learning, Proceedings of the IEEE: the
-%   sparse mechanism shift idea that Perry et al. (Section~\ref{sec:lr-drift}) formalise.
+% Sources: Gama et al. (2014), abstract (drift as a change in the relation between inputs and
+% target). Webb et al. (2016), arXiv:1511.03816v6: Sec. 3, Eqs. (1)-(4) (concept = P(X, Y),
+% following Gama et al.; drift as a change in it; counterpart of dataset shift), Sec. 4.2.1-4.2.2
+% (class and covariate drift, their examples, and Moreno-Torres et al.'s definitions with their
+% causal-direction constraints, which Webb et al. question). Moreno-Torres et al. (2012) were
+% checked only through Webb et al. Sec. 4.2 and Lu et al. Sec. 2.1, not in the original.
+% Lu et al. (2019), arXiv:2004.05785: Sec. 1 (detection, understanding, adaptation), Sec. 2.1
+% (definition, Sources I-III, virtual and actual drift), Sec. 2.2 and Fig. 4 (four drift types),
+% Sec. 3 (when, how, where). Scholkopf et al. (2021), Sec. 4: ICM principle and the Sparse
+% Mechanism Shift hypothesis. Deho et al. (2024), abstract.
+A model is trained on data from the past and applied to people in the present. When the data change
+in between, a model that was accurate when it was trained can become outdated.
+\citet{gama2014survey} describe this problem, concept drift, as a change over time in the relation
+between the input data and the target variable. Following them, \citet{webb2016characterizing} call
+the joint distribution $P_t(\mathbf{X}, Y)$ of the features and the outcome in time window $t$ the
+concept at time $t$, and most of the literature now says that concept drift occurs when this
+distribution changes \cite{lu2019learning}:
+\begin{equation}
+  P_t(\mathbf{X}, Y) \neq P_{t+1}(\mathbf{X}, Y).
+  \label{eq:bg-drift}
+\end{equation}
+\citet{webb2016characterizing} describe concept drift as the stream-learning counterpart of dataset
+shift, the name used in batch learning when a model is trained on one dataset and tested on another
+\cite{moreno2012unifying}.
+
+\paragraph{What changes.}
+Writing $P_t(\mathbf{X}, Y) = P_t(\mathbf{X})\,P_t(Y \mid \mathbf{X})$ separates two sources of
+drift \cite{lu2019learning}. When only $P_t(\mathbf{X})$ changes, the population changes but the
+relation between features and outcome does not, as when the demographics of a company's customers
+change over time \cite{webb2016characterizing}. This does not move the decision boundary, and is
+also called virtual drift. When $P_t(Y \mid \mathbf{X})$ changes, the relation itself changes, as
+when a new tax law changes which tax-payers count as compliant \cite{webb2016characterizing}. The
+decision boundary then moves and the model's accuracy drops, which is why this is called actual
+drift. In practice, the two often occur together \cite{lu2019learning}. For dataset shift,
+\citet{moreno2012unifying} distinguish covariate shift \cite{SHIMODAIRA2000227}, in which
+$P(\mathbf{X})$ changes while $P(Y \mid \mathbf{X})$ stays the same, prior probability shift, in
+which $P(Y)$ changes while $P(\mathbf{X} \mid Y)$ stays the same, and concept shift, in which the
+relation between features and outcome changes. They also tie covariate shift to problems in which
+the features cause the outcome, and prior probability shift to problems in which the outcome causes
+the features. \citet{webb2016characterizing} question this restriction, because in many real
+problems some features cause the outcome, others are caused by it, and others share causes with it.
+The names also vary: \citet{webb2016characterizing} call a change in $P(Y \mid \mathbf{X})$ class
+drift, and note that it is also called real concept drift or prior probability shift.
+
+\paragraph{How drift unfolds.}
+Drift also differs in how it unfolds over time. \citet{lu2019learning} distinguish four types: in
+sudden drift, a new concept appears within a short time; in gradual drift, a new concept gradually
+replaces the old one; in incremental drift, the old concept changes step by step into the new one;
+and with reoccurring concepts, an old concept returns after some time. They also organise learning
+under drift into three tasks: detecting whether drift has occurred, understanding it, and adapting
+the model to it. Understanding drift means finding when it occurs and how long it lasts, how severe
+it is, and where it occurs, that is, which regions of the data it affects. Methods for detecting
+and explaining drift are reviewed in Section~\ref{sec:lr-drift-explanation}.
+
+\paragraph{Drift in a causal model.}
+In an SCM, the joint distribution factorises into one mechanism per variable
+(Equation~\ref{eq:bg-markov}), and by the principle of independent mechanisms one of them can
+change while the others stay the same (Section~\ref{sec:bg-scm}). \citet{scholkopf2021toward} go
+further with the sparse mechanism shift hypothesis: small changes in the distribution tend to affect
+only a few mechanisms, rather than all of them at once. Drift can then be described by which
+mechanisms changed. This turns the question of where drift occurs, which \citet{lu2019learning}
+answer with regions of the data, into a question about the causal model, and the categories above
+do not answer it: a change in $P(\mathbf{X})$ can come from any of the mechanisms of the features.
+
+The running example shows why this matters for recourse. Suppose that people start saving less, so
+that the equation of savings becomes $X_2 := 0.4\,X_1^2 + U_2$, while the equations of income and of
+the decision stay the same. Since the equation of $Y$ is unchanged, so is
+$P(Y \mid X_1, X_2)$: for the classifier this is covariate shift, and $h$ needs no update. The
+consequential recommendation of Section~\ref{sec:bg-recourse}, however, no longer works. For the
+person with $\mathbf{x}^{\mathtt{F}} = (2, 2)$, abduction now gives $u_2 = 2 - 0.4 \cdot 4 = 0.4$.
+Raising income to $2.47$ now raises savings only to about $2.84$, so the score
+$2.47 + 0.5 \cdot 2.84 \approx 3.89$ stays below 4 and the loan is still rejected; under the new
+equation, income has to reach about $2.52$. Recourse computed with an outdated causal model can thus
+fail even when the classifier itself is still valid. Recourse under drift, and methods that learn
+causal structure from changes in the distribution, are reviewed in Section~\ref{sec:lr-drift}.
+
+Drift can also undo fairness. \citet{deho2024still} find that covariate drift is common in real
+data and can substantially reduce the fairness of models trained to be fair, and that the size and
+direction of the drift do not reliably predict how much fairness is lost. Fairness under
+distribution shift is reviewed in Section~\ref{sec:lr-fairness-shift}.
 
 \subsection{Splines and Additive Models}
 \label{sec:bg-splines}
@@ -236,25 +606,6 @@ reviews this view.
 %   modern reference for penalised splines, tensor products and smoothness selection.
 % - Wood (2006), Low-Rank Scale-Invariant Tensor Product Smooths for Generalized Additive Mixed
 %   Models, Biometrics: the ti()-style surfaces that hold only the interaction.
-
-\subsection{Bayesian Smoothing and Model Evidence}
-\label{sec:bg-bayesian-smoothing}
-
-% TO WRITE: the smoothness belief (difference penalty as a prior), the posterior and its bands,
-% choosing lambda by the evidence, the Laplace approximation for a yes/no outcome.
-% Suggested reading:
-% - Eilers & Marx (1996), Flexible Smoothing with B-splines and Penalties, Statistical Science:
-%   P-splines, the bending penalty used in the code.
-% - Lang & Brezger (2004), Bayesian P-Splines, Journal of Computational and Graphical Statistics:
-%   the same penalty read as a prior, i.e. the believability formula.
-% - MacKay (1992), Bayesian Interpolation, Neural Computation: the evidence and its Occam factor,
-%   which picks lambda and decides surfaces and drift.
-% - Wood (2011), Fast Stable Restricted Maximum Likelihood and Marginal Likelihood Estimation of
-%   Semiparametric Generalized Linear Models, JRSS-B: marginal-likelihood smoothness selection,
-%   including the Laplace approximation for non-Gaussian outcomes.
-% - Marra & Wood (2011), Practical Variable Selection for Generalized Additive Models,
-%   Computational Statistics & Data Analysis: the extra penalty on shapes the smoothness penalty
-%   leaves free; it justifies the surface's saddle penalty.
 
 \subsection{Kolmogorov--Arnold Networks}
 \label{sec:bg-kan}

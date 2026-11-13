@@ -6,6 +6,34 @@
 % Lines marked VERIFY need special attention.
 % Once Zotero + Better BibTeX is set up, let it own this file.
 
+@inproceedings{shailaja2018machine,
+  title={Machine learning in healthcare: A review},
+  author={Shailaja, K and Seetharamulu, Banoth and Jabbar, MA},
+  booktitle={2018 Second international conference on electronics, communication and aerospace technology (ICECA)},
+  pages={910--914},
+  year={2018},
+  organization={IEEE}
+}
+
+@inproceedings{raghavan2020mitigating,
+  title={Mitigating bias in algorithmic hiring: Evaluating claims and practices},
+  author={Raghavan, Manish and Barocas, Solon and Kleinberg, Jon and Levy, Karen},
+  booktitle={Proceedings of the 2020 conference on fairness, accountability, and transparency},
+  pages={469--481},
+  year={2020}
+}
+
+@article{mitchell2021algorithmic,
+  author    = {Mitchell, Shira and Potash, Eric and Barocas, Solon and D'Amour, Alexander and Lum, Kristian},
+  title     = {Algorithmic Fairness: Choices, Assumptions, and Definitions},
+  journal   = {Annual Review of Statistics and Its Application},
+  volume    = {8},
+  pages     = {141--163},
+  year      = {2021},
+  doi       = {10.1146/annurev-statistics-042720-125902}
+}
+
+
 % ---------------------------------------------------------------------------
 % G1 -- Counterfactual search
 % ---------------------------------------------------------------------------
@@ -465,6 +493,129 @@ keywords = {Algorithmic recourse, contrastive explanations and consequential rec
   publisher={Springer}
 }
 
+% Fairness criteria (Section 2.1.4).
+% VERIFY: the page numbers below were not checked against the publishers' pages.
+@book{barocas2023fairness,
+  author    = {Barocas, Solon and Hardt, Moritz and Narayanan, Arvind},
+  title     = {Fairness and Machine Learning: Limitations and Opportunities},
+  publisher = {MIT Press},
+  address   = {Cambridge, MA},
+  year      = {2023}
+}
+
+@inproceedings{hardt2016equality,
+  author    = {Hardt, Moritz and Price, Eric and Srebro, Nathan},
+  title     = {Equality of Opportunity in Supervised Learning},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {29},
+  pages     = {3315--3323},
+  year      = {2016}
+}
+
+@inproceedings{kusner2017counterfactual,
+  author    = {Kusner, Matt J. and Loftus, Joshua and Russell, Chris and Silva, Ricardo},
+  title     = {Counterfactual Fairness},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {30},
+  pages     = {4066--4076},
+  year      = {2017}
+}
+
+@inproceedings{kilbertus2017avoiding,
+  author    = {Kilbertus, Niki and Rojas-Carulla, Mateo and Parascandolo, Giambattista and Hardt, Moritz and Janzing, Dominik and Sch{\"o}lkopf, Bernhard},
+  title     = {Avoiding Discrimination through Causal Reasoning},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {30},
+  pages     = {656--666},
+  year      = {2017}
+}
+
+@inproceedings{nabi2018fair,
+  author    = {Nabi, Razieh and Shpitser, Ilya},
+  title     = {Fair Inference on Outcomes},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {32},
+  pages     = {1931--1940},
+  year      = {2018}
+}
+
+@inproceedings{chiappa2019path,
+  author    = {Chiappa, Silvia},
+  title     = {Path-Specific Counterfactual Fairness},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume    = {33},
+  pages     = {7801--7808},
+  year      = {2019},
+  doi       = {10.1609/aaai.v33i01.33017801}
+}
+
+% Concept drift (Section 2.1.5).
+% VERIFY: pages and DOIs below were not checked against the publishers' pages; the full texts of
+% gama2014survey and moreno2012unifying could not be opened (checked only through Webb et al. and
+% Lu et al.).
+@article{gama2014survey,
+  author    = {Gama, Jo{\~a}o and {\v{Z}}liobait{\.e}, Indr{\.e} and Bifet, Albert and Pechenizkiy, Mykola and Bouchachia, Abdelhamid},
+  title     = {A Survey on Concept Drift Adaptation},
+  journal   = {ACM Computing Surveys},
+  volume    = {46},
+  number    = {4},
+  pages     = {44:1--44:37},
+  year      = {2014},
+  doi       = {10.1145/2523813}
+}
+
+@article{lu2019learning,
+  author    = {Lu, Jie and Liu, Anjin and Dong, Fan and Gu, Feng and Gama, Jo{\~a}o and Zhang, Guangquan},
+  title     = {Learning under Concept Drift: A Review},
+  journal   = {IEEE Transactions on Knowledge and Data Engineering},
+  volume    = {31},
+  number    = {12},
+  pages     = {2346--2363},
+  year      = {2019},
+  doi       = {10.1109/TKDE.2018.2876857}
+}
+
+@article{webb2016characterizing,
+  author    = {Webb, Geoffrey I. and Hyde, Roy and Cao, Hong and Nguyen, Hai Long and Petitjean, Fran{\c{c}}ois},
+  title     = {Characterizing Concept Drift},
+  journal   = {Data Mining and Knowledge Discovery},
+  volume    = {30},
+  number    = {4},
+  pages     = {964--994},
+  year      = {2016},
+  doi       = {10.1007/s10618-015-0448-4}
+}
+
+@article{moreno2012unifying,
+  author    = {Moreno-Torres, Jose G. and Raeder, Troy and Alaiz-Rodr{\'i}guez, Roc{\'i}o and Chawla, Nitesh V. and Herrera, Francisco},
+  title     = {A Unifying View on Dataset Shift in Classification},
+  journal   = {Pattern Recognition},
+  volume    = {45},
+  number    = {1},
+  pages     = {521--530},
+  year      = {2012},
+  doi       = {10.1016/j.patcog.2011.06.019}
+}
+
+@article{scholkopf2021toward,
+  author    = {Sch{\"o}lkopf, Bernhard and Locatello, Francesco and Bauer, Stefan and Ke, Nan Rosemary and Kalchbrenner, Nal and Goyal, Anirudh and Bengio, Yoshua},
+  title     = {Toward Causal Representation Learning},
+  journal   = {Proceedings of the IEEE},
+  volume    = {109},
+  number    = {5},
+  pages     = {612--634},
+  year      = {2021},
+  doi       = {10.1109/JPROC.2021.3058954}
+}
+
+% VERIFY: a peer-reviewed version may exist; prefer it over arXiv.
+@misc{deho2024still,
+  author       = {Deho, Oscar Blessed and Bewong, Michael and Kwashie, Selasi and Li, Jiuyong and Liu, Jixue and Liu, Lin and Joksimovic, Srecko},
+  title        = {Is it Still Fair? {A} Comparative Evaluation of Fairness Algorithms through the Lens of Covariate Drift},
+  howpublished = {arXiv:2409.12428},
+  year         = {2024}
+}
+
 @incollection{lewis1973counterfactuals,
   title={Counterfactuals and comparative possibility},
   author={Lewis, David},
@@ -487,4 +638,22 @@ url = {https://www.sciencedirect.com/science/article/pii/S0378375800001154},
 author = {Hidetoshi Shimodaira},
 keywords = {Akaike information criterion, Design of experiments, Importance sampling, Kullback–Leibler divergence, Misspecification, Sample surveys, Weighted least squares},
 abstract = {A class of predictive densities is derived by weighting the observed samples in maximizing the log-likelihood function. This approach is effective in cases such as sample surveys or design of experiments, where the observed covariate follows a different distribution than that in the whole population. Under misspecification of the parametric model, the optimal choice of the weight function is asymptotically shown to be the ratio of the density function of the covariate in the population to that in the observations. This is the pseudo-maximum likelihood estimation of sample surveys. The optimality is defined by the expected Kullback–Leibler loss, and the optimal weight is obtained by considering the importance sampling identity. Under correct specification of the model, however, the ordinary maximum likelihood estimate (i.e. the uniform weight) is shown to be optimal asymptotically. For moderate sample size, the situation is in between the two extreme cases, and the weight function is selected by minimizing a variant of the information criterion derived as an estimate of the expected loss. The method is also applied to a weighted version of the Bayesian predictive density. Numerical examples as well as Monte-Carlo simulations are shown for polynomial regression. A connection with the robust parametric estimation is discussed.}
+}
+
+@inproceedings{louizos2017causal,
+  author    = {Louizos, Christos and Shalit, Uri and Mooij, Joris M. and Sontag, David and Zemel, Richard and Welling, Max},
+  title     = {Causal Effect Inference with Deep Latent-Variable Models},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {30},
+  year      = {2017}
+}
+
+@article{wachter2017counterfactual,
+  title={Counterfactual explanations without opening the black box: Automated decisions and the GDPR},
+  author={Wachter, Sandra and Mittelstadt, Brent and Russell, Chris},
+  journal={Harv. JL \& Tech.},
+  volume={31},
+  pages={841},
+  year={2017},
+  publisher={HeinOnline}
 }

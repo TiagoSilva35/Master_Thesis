@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.10.7)  11 NOV 2026 22:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.10.7)  13 NOV 2026 15:24
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -955,7 +955,7 @@ Package babel Info: Main language set to 'english'.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<frontmatter/logo-uc-gold.pdf, id=186, 285.065pt x 241.90375pt>
+<frontmatter/logo-uc-gold.pdf, id=182, 285.065pt x 241.90375pt>
 File: frontmatter/logo-uc-gold.pdf Graphic file (type pdf)
 <use frontmatter/logo-uc-gold.pdf>
 Package pdftex.def Info: frontmatter/logo-uc-gold.pdf  used on input line 15.
@@ -1000,7 +1000,7 @@ Package pdftex.def Info: frontmatter/logo-uc-gold.pdf  used on input line 15.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<frontmatter/logo-dei.pdf, id=201, 459.7175pt x 334.24875pt>
+<frontmatter/logo-dei.pdf, id=197, 459.7175pt x 334.24875pt>
 File: frontmatter/logo-dei.pdf Graphic file (type pdf)
 <use frontmatter/logo-dei.pdf>
 Package pdftex.def Info: frontmatter/logo-dei.pdf  used on input line 15.
@@ -1144,19 +1144,26 @@ Chapter 1.
 
 ]
 Chapter 2.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 47.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 47.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 47.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 47.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 47.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 47.
 [3]
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 11.40997pt on input line 55.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 8.33606pt on input line 55.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 6.25204pt on input line 55.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 11.40997pt on input line 55.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 8.33606pt on input line 55.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 6.25204pt on input line 55.
+
+
+LaTeX Warning: Reference `sec:bg-bayesian-smoothing' on page 4 undefined on input line 94.
+
+
+LaTeX Warning: Reference `sec:bg-bayesian-smoothing' on page 4 undefined on input line 95.
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1164,11 +1171,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[4]
-<figures/scm-running-example.pdf, id=404, 318.80304pt x 146.32867pt>
+[4
+
+]
+<figures/scm-running-example.pdf, id=412, 318.80304pt x 146.32867pt>
 File: figures/scm-running-example.pdf Graphic file (type pdf)
 <use figures/scm-running-example.pdf>
-Package pdftex.def Info: figures/scm-running-example.pdf  used on input line 165.
+Package pdftex.def Info: figures/scm-running-example.pdf  used on input line 173.
 (pdftex.def)             Requested size: 318.80226pt x 146.32831pt.
 
 
@@ -1178,10 +1187,17 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[5]) (text/3-literature-review.tex
-Overfull \hbox (2.44429pt too wide) in paragraph at lines 7--14
-\T1/ppl/m/n/12 mod-els, pop-u-la-tions or causal mech-a-nisms change over time. Fi-nally, Sec-tion []2.2.8[]
- []
+[5]
+<figures/intervention_on_X1-example.pdf, id=441, 318.60228pt x 146.32867pt>
+File: figures/intervention_on_X1-example.pdf Graphic file (type pdf)
+<use figures/intervention_on_X1-example.pdf>
+Package pdftex.def Info: figures/intervention_on_X1-example.pdf  used on input line 209.
+(pdftex.def)             Requested size: 204.85802pt x 94.08987pt.
+<figures/intervention_on_X2.pdf, id=442, 318.80304pt x 146.12892pt>
+File: figures/intervention_on_X2.pdf Graphic file (type pdf)
+<use figures/intervention_on_X2.pdf>
+Package pdftex.def Info: figures/intervention_on_X2.pdf  used on input line 217.
+(pdftex.def)             Requested size: 204.85802pt x 93.90123pt.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1190,21 +1206,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[6 <./figures/scm-running-example.pdf>]
-Overfull \hbox (0.23637pt too wide) in paragraph at lines 22--26
-\T1/ppl/m/n/12 ods, fo-cus-ing on which strate-gies are used to find valid coun-ter-fac-tu-als and which
- []
-
-
-Overfull \hbox (4.94006pt too wide) in paragraph at lines 49--56
-[][]\T1/ppl/m/n/12 Kanamori et al.[] [[]2020[]] also rely on math-e-mat-i-cal op-ti-mi-sa-tion, us-ing mixed-integer
- []
-
-
-Overfull \hbox (10.30363pt too wide) in paragraph at lines 49--56
-\T1/ppl/m/n/12 lin-ear op-ti-mi-sa-tion for lin-ear mod-els and tree en-sem-bles, but do so in a distribution-
- []
-
+[6 <./figures/scm-running-example.pdf> <./figures/intervention_on_X1-example.pdf> <./figures/intervention_on_X2.pdf>]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1237,6 +1239,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [10]
+Overfull \hbox (1.62805pt too wide) in paragraph at lines 505--509
+\T1/ppl/m/n/12 have been car-ried over to re-course, where the quan-tity com-pared be-tween groups,
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1245,6 +1251,76 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
 [11]
+Overfull \hbox (2.69604pt too wide) in paragraph at lines 569--577
+\T1/ppl/m/n/12 mech-a-nism per vari-able (Equa-tion []2.2[]), and by the prin-ci-ple of in-de-pen-dent mech-
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[12]) (text/3-literature-review.tex
+Overfull \hbox (2.44429pt too wide) in paragraph at lines 7--14
+\T1/ppl/m/n/12 mod-els, pop-u-la-tions or causal mech-a-nisms change over time. Fi-nally, Sec-tion []2.2.8[]
+ []
+
+
+Overfull \hbox (0.23637pt too wide) in paragraph at lines 22--26
+\T1/ppl/m/n/12 ods, fo-cus-ing on which strate-gies are used to find valid coun-ter-fac-tu-als and which
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[13]
+Overfull \hbox (4.94006pt too wide) in paragraph at lines 49--56
+[][]\T1/ppl/m/n/12 Kanamori et al.[] [[]2020[]] also rely on math-e-mat-i-cal op-ti-mi-sa-tion, us-ing mixed-integer
+ []
+
+
+Overfull \hbox (10.30363pt too wide) in paragraph at lines 49--56
+\T1/ppl/m/n/12 lin-ear op-ti-mi-sa-tion for lin-ear mod-els and tree en-sem-bles, but do so in a distribution-
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[14]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[15]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[16]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[17]
 Overfull \hbox (6.98035pt too wide) in paragraph at lines 252--259
 \T1/ppl/m/n/12 groups need more of both, even un-der a fair clas-si-fier. The pro-posed Circumstance-
  []
@@ -1256,7 +1332,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[12]
+[18]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1264,7 +1340,15 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[13]
+[19]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[20]
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
 (Font)              scaled to size 10.42007pt on input line 438.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
@@ -1281,7 +1365,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[14]
+[21]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1289,20 +1373,28 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[15] [16
-
-]
+[22]
 Chapter 3.
-) (text/5-conclusion.tex [17] [18
+) (text/5-conclusion.tex [23
+
+] [24
 
 ]
 Chapter 4.
-) [19] [20
+) [25] [26
 
-] (main.bbl [21
+] (main.bbl [27
 
 ]
-Underfull \hbox (badness 3536) in paragraph at lines 138--142
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[28]
+Underfull \hbox (badness 3536) in paragraph at lines 220--224
 \T1/ppl/m/n/12 straints in coun-ter-fac-tual ex-pla-na-tions for ma-chine learn-ing clas-si-fiers.
  []
 
@@ -1313,7 +1405,16 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[22])
+[29]
+Underfull \hbox (badness 1460) in paragraph at lines 346--355
+\T1/ppl/m/n/12 by weight-ing the log-likelihood func-tion.  \T1/ppl/m/it/12 Jour-nal of Sta-tis-ti-cal Plan-ning
+ []
+
+
+Underfull \hbox (badness 1527) in paragraph at lines 346--355
+\T1/ppl/m/it/12 and In-fer-ence\T1/ppl/m/n/12 , 90(2):227--244, 2000.  ISSN 0378-3758.  doi: $https : / / doi .
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 14.49998pt, for example:
@@ -1321,40 +1422,52 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-[23] [24
+[30])
 
-] [25
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
 
-] [26] (text/9-appendices.tex
+[31] [32
+
+] [33
+
+] [34] (text/9-appendices.tex
 Appendix A.
-[27
+[35
 
-] [28
+] [36
 
 ]
 Appendix B.
-) [29
+) [37
 
 ] (main.aux)
  ***********
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-08-10>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: D340FCA19CB5C250C8475EDE3C778709;9185.
+(rerunfilecheck)             Checksum: 463FCA20ED282A4C9B0971C2468E890C;8926.
  ) 
 Here is how much of TeX's memory you used:
- 34873 strings out of 467441
- 688603 string characters out of 5407591
- 1148148 words of memory out of 5000000
- 63376 multiletter control sequences out of 15000+600000
- 704407 words of font info for 206 fonts, out of 8000000 for 9000
+ 35045 strings out of 467441
+ 692376 string characters out of 5407591
+ 1150170 words of memory out of 5000000
+ 63485 multiletter control sequences out of 15000+600000
+ 711980 words of font info for 227 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 107i,15n,131p,2528b,665s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\tjcsi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/mathpazo/fplmbi.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/mathpazo/fplmr.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/mathpazo/fplmri.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplb8a.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (49 pages, 637382 bytes).
+ 107i,15n,131p,2528b,683s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\tjcsi\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt8.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt9.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/mathpazo/fplmbi.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/mathpazo/fplmr.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/mathpazo/fplmri.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/symbols/msam10.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplb8a.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplr8a.pfb><C:/Users/tjcsi/AppData/Local/Programs/MiKTeX/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on main.pdf (57 pages, 749632 bytes).
 PDF statistics:
- 794 PDF objects out of 1000 (max. 8388607)
- 143 named destinations out of 1000 (max. 500000)
- 388 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1088 PDF objects out of 1200 (max. 8388607)
+ 189 named destinations out of 1000 (max. 500000)
+ 390 words of extra memory for PDF output out of 10000 (max. 10000000)
 

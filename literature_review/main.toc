@@ -9,41 +9,50 @@
 \contentsline {chapter}{\numberline {2}State of the Art}{3}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Background Knowledge}{3}{section.2.1}%
 \contentsline {subsection}{\numberline {2.1.1}Notation}{3}{subsection.2.1.1}%
-\contentsline {subsection}{\numberline {2.1.2}Counterfactual Explanations and Algorithmic Recourse}{3}{subsection.2.1.2}%
-\contentsline {subsection}{\numberline {2.1.3}Structural Causal Models and Interventions}{3}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.2}Structural Causal Models and Interventions}{4}{subsection.2.1.2}%
 \contentsline {paragraph}{Structural causal models.}{5}{paragraph*.8}%
 \contentsline {paragraph}{Running example.}{5}{paragraph*.9}%
-\contentsline {paragraph}{Interventions.}{5}{paragraph*.11}%
-\contentsline {subsection}{\numberline {2.1.4}Fairness: Statistical and Causal Notions}{6}{subsection.2.1.4}%
-\contentsline {subsection}{\numberline {2.1.5}Concept Drift and Distribution Shift}{6}{subsection.2.1.5}%
-\contentsline {subsection}{\numberline {2.1.6}Splines and Additive Models}{6}{subsection.2.1.6}%
-\contentsline {subsection}{\numberline {2.1.7}Bayesian Smoothing and Model Evidence}{6}{subsection.2.1.7}%
-\contentsline {subsection}{\numberline {2.1.8}Kolmogorov--Arnold Networks}{6}{subsection.2.1.8}%
-\contentsline {section}{\numberline {2.2}Literature Review}{6}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Counterfactual Search Methods}{7}{subsection.2.2.1}%
-\contentsline {subsubsection}{\numberline {2.2.1.1}Exact Solver-Based Methods}{7}{subsubsection.2.2.1.1}%
-\contentsline {subsubsection}{\numberline {2.2.1.2}Gradient-Based Methods}{8}{subsubsection.2.2.1.2}%
-\contentsline {subsubsection}{\numberline {2.2.1.3}Evolutionary and Surrogate-Based Methods}{8}{subsubsection.2.2.1.3}%
-\contentsline {subsection}{\numberline {2.2.2}Plausibility and Causal Consistency}{9}{subsection.2.2.2}%
-\contentsline {subsubsection}{\numberline {2.2.2.1}Data-Manifold Methods}{9}{subsubsection.2.2.2.1}%
-\contentsline {subsubsection}{\numberline {2.2.2.2}Causal Constraints and Recourse as Interventions}{10}{subsubsection.2.2.2.2}%
-\contentsline {subsection}{\numberline {2.2.3}Fairness of Recourse}{11}{subsection.2.2.3}%
-\contentsline {subsection}{\numberline {2.2.4}Recourse and Causal Models Under Drift}{12}{subsection.2.2.4}%
-\contentsline {subsubsection}{\numberline {2.2.4.1}Recourse in a Changing World}{12}{subsubsection.2.2.4.1}%
-\contentsline {subsubsection}{\numberline {2.2.4.2}Recourse That Causes Its Own Drift}{13}{subsubsection.2.2.4.2}%
-\contentsline {subsubsection}{\numberline {2.2.4.3}Learning Causal Structure from Change}{13}{subsubsection.2.2.4.3}%
-\contentsline {subsubsection}{\numberline {2.2.4.4}Tracking Causal Models Online}{14}{subsubsection.2.2.4.4}%
-\contentsline {subsection}{\numberline {2.2.5}Detecting and Explaining Concept Drift}{14}{subsection.2.2.5}%
-\contentsline {subsection}{\numberline {2.2.6}Fairness Under Distribution Shift}{14}{subsection.2.2.6}%
-\contentsline {subsection}{\numberline {2.2.7}Interpretable Additive Models with Interactions}{14}{subsection.2.2.7}%
-\contentsline {subsection}{\numberline {2.2.8}Readable Structural Equations}{14}{subsection.2.2.8}%
-\contentsline {subsection}{\numberline {2.2.9}Comparison and Research Gaps}{14}{subsection.2.2.9}%
-\contentsline {chapter}{\numberline {3}Proposed Approach}{17}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Problem Formulation}{17}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Candidate Architectures}{17}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Experimental Design}{17}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Summary}{17}{section.3.4}%
-\contentsline {chapter}{\numberline {4}Conclusion}{19}{chapter.4}%
-\contentsline {chapter}{References}{21}{chapter*.14}%
-\contentsline {chapter}{Appendix \numberline {A}Title for the first appendix}{27}{appendix.1.A}%
-\contentsline {chapter}{Appendix \numberline {B}Title for the second appendix}{29}{appendix.1.B}%
+\contentsline {paragraph}{Interventions.}{6}{paragraph*.11}%
+\contentsline {subsection}{\numberline {2.1.3}Counterfactual Explanations and Algorithmic Recourse}{7}{subsection.2.1.3}%
+\contentsline {paragraph}{Recourse.}{7}{paragraph*.13}%
+\contentsline {paragraph}{Counterfactual explanations.}{7}{paragraph*.14}%
+\contentsline {paragraph}{Structural counterfactuals.}{8}{paragraph*.15}%
+\contentsline {paragraph}{Consequential recommendations.}{8}{paragraph*.16}%
+\contentsline {subsection}{\numberline {2.1.4}Fairness: Statistical and Causal Notions}{9}{subsection.2.1.4}%
+\contentsline {paragraph}{Statistical criteria.}{10}{paragraph*.17}%
+\contentsline {paragraph}{Counterfactual fairness.}{10}{paragraph*.18}%
+\contentsline {paragraph}{Path-specific fairness.}{11}{paragraph*.19}%
+\contentsline {subsection}{\numberline {2.1.5}Concept Drift and Distribution Shift}{11}{subsection.2.1.5}%
+\contentsline {paragraph}{What changes.}{11}{paragraph*.20}%
+\contentsline {paragraph}{How drift unfolds.}{12}{paragraph*.21}%
+\contentsline {paragraph}{Drift in a causal model.}{12}{paragraph*.22}%
+\contentsline {subsection}{\numberline {2.1.6}Splines and Additive Models}{13}{subsection.2.1.6}%
+\contentsline {subsection}{\numberline {2.1.7}Kolmogorov--Arnold Networks}{13}{subsection.2.1.7}%
+\contentsline {section}{\numberline {2.2}Literature Review}{13}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Counterfactual Search Methods}{13}{subsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.1.1}Exact Solver-Based Methods}{13}{subsubsection.2.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.2.1.2}Gradient-Based Methods}{14}{subsubsection.2.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.2.1.3}Evolutionary and Surrogate-Based Methods}{15}{subsubsection.2.2.1.3}%
+\contentsline {subsection}{\numberline {2.2.2}Plausibility and Causal Consistency}{15}{subsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.2.1}Data-Manifold Methods}{15}{subsubsection.2.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2.2}Causal Constraints and Recourse as Interventions}{16}{subsubsection.2.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Fairness of Recourse}{17}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Recourse and Causal Models Under Drift}{19}{subsection.2.2.4}%
+\contentsline {subsubsection}{\numberline {2.2.4.1}Recourse in a Changing World}{19}{subsubsection.2.2.4.1}%
+\contentsline {subsubsection}{\numberline {2.2.4.2}Recourse That Causes Its Own Drift}{20}{subsubsection.2.2.4.2}%
+\contentsline {subsubsection}{\numberline {2.2.4.3}Learning Causal Structure from Change}{20}{subsubsection.2.2.4.3}%
+\contentsline {subsubsection}{\numberline {2.2.4.4}Tracking Causal Models Online}{21}{subsubsection.2.2.4.4}%
+\contentsline {subsection}{\numberline {2.2.5}Detecting and Explaining Concept Drift}{21}{subsection.2.2.5}%
+\contentsline {subsection}{\numberline {2.2.6}Fairness Under Distribution Shift}{21}{subsection.2.2.6}%
+\contentsline {subsection}{\numberline {2.2.7}Interpretable Additive Models with Interactions}{21}{subsection.2.2.7}%
+\contentsline {subsection}{\numberline {2.2.8}Readable Structural Equations}{21}{subsection.2.2.8}%
+\contentsline {subsection}{\numberline {2.2.9}Comparison and Research Gaps}{21}{subsection.2.2.9}%
+\contentsline {chapter}{\numberline {3}Proposed Approach}{23}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Problem Formulation}{23}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Candidate Architectures}{23}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Experimental Design}{23}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Summary}{23}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Conclusion}{25}{chapter.4}%
+\contentsline {chapter}{References}{27}{chapter*.25}%
+\contentsline {chapter}{Appendix \numberline {A}Title for the first appendix}{35}{appendix.1.A}%
+\contentsline {chapter}{Appendix \numberline {B}Title for the second appendix}{37}{appendix.1.B}%
