@@ -91,8 +91,8 @@ $B_m$, $\beta_m$ & $m$-th B-spline basis function and its height (coefficient) &
 $\alpha_j$ & constant term in the equation of $X_j$ & \ref{sec:bg-splines} \\ % planned
 $\phi_{ij}$ & curve on the edge $X_i \to X_j$ & \ref{sec:bg-splines} \\ % planned
 $\psi_{klj}$ & surface for the pair of parents $X_k$ and $X_l$ of $X_j$ & \ref{sec:bg-splines} \\ % planned
-$\lambda$ & strength of the smoothness belief & \ref{sec:bg-bayesian-smoothing} \\ % planned
-$\sigma_j^2$ & noise variance of $X_j$ & \ref{sec:bg-bayesian-smoothing} \\ % planned
+$\lambda$ & strength of the smoothness belief & \ref{sec:bg-splines} \\ % planned
+$\sigma_j^2$ & noise variance of $X_j$ & \ref{sec:bg-splines} \\ % planned
 \bottomrule
 \end{tabular}
 \caption[Notation]{Symbols used in more than one section, with the section that defines each.}
@@ -170,7 +170,7 @@ same income.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics{figures/scm-running-example.pdf}
+  \includegraphics[scale=\graphscale]{figures/scm-running-example.pdf}
   \caption[Causal graph of the running example]{Causal graph of the running example
   (Equation~\ref{eq:bg-example}). Solid arrows are causal effects, labelled with the term that
   each parent adds to its child's equation (for $Y$, to the argument of $\sigma$); dashed arrows
@@ -205,16 +205,14 @@ on the features they can change \cite{karimi2021algorithmic}.
 
     \begin{subfigure}{0.48\textwidth}
         \centering
-        \includegraphics[width=\linewidth]
-        {figures/intervention_on_X1-example.pdf}
+        \includegraphics[scale=\graphscale]{figures/intervention_on_X1-example.pdf}
         \caption{Intervention on $X_1$}
         \label{fig:intervention-X1}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.48\textwidth}
         \centering
-        \includegraphics[width=\linewidth]
-        {figures/intervention_on_X2.pdf}
+        \includegraphics[scale=\graphscale]{figures/intervention_on_X2.pdf}
         \caption{Intervention on $X_2$}
         \label{fig:intervention-X2}
     \end{subfigure}
@@ -225,6 +223,90 @@ on the features they can change \cite{karimi2021algorithmic}.
     the one from its noise variable, are removed, while the arrows out of it stay.}
     \label{fig:interventions}
 \end{figure}
+
+\subsection{Concept Drift and Distribution Shift}
+\label{sec:bg-drift}
+
+% Sources: Gama et al. (2014), abstract (drift as a change in the relation between inputs and
+% target). Webb et al. (2016), arXiv:1511.03816v6: Sec. 3, Eqs. (1)-(4) (concept = P(X, Y),
+% following Gama et al.; drift as a change in it; counterpart of dataset shift), Sec. 4.2.1-4.2.2
+% (class and covariate drift, their examples, and Moreno-Torres et al.'s definitions with their
+% causal-direction constraints, which Webb et al. question). Moreno-Torres et al. (2012) were
+% checked only through Webb et al. Sec. 4.2 and Lu et al. Sec. 2.1, not in the original.
+% Lu et al. (2019), arXiv:2004.05785: Sec. 1 (detection, understanding, adaptation), Sec. 2.1
+% (definition, Sources I-III, virtual and actual drift), Sec. 2.2 and Fig. 4 (four drift types),
+% Sec. 3 (when, how, where). Scholkopf et al. (2021), Sec. 4: ICM principle and the Sparse
+% Mechanism Shift hypothesis. Deho et al. (2024), abstract.
+A model is trained on data from the past and applied to people in the present. When the data change
+in between, a model that was accurate when it was trained can become outdated.
+\citet{gama2014survey} describe this problem, concept drift, as a change over time in the relation
+between the input data and the target variable. Following them, \citet{webb2016characterizing} call
+the joint distribution $P_t(\mathbf{X}, Y)$ of the features and the outcome in time window $t$ the
+concept at time $t$, and most of the literature now says that concept drift occurs when this
+distribution changes \cite{lu2019learning}:
+\begin{equation}
+  P_t(\mathbf{X}, Y) \neq P_{t+1}(\mathbf{X}, Y).
+  \label{eq:bg-drift}
+\end{equation}
+\citet{webb2016characterizing} describe concept drift as the stream-learning counterpart of dataset
+shift, the name used in batch learning when a model is trained on one dataset and tested on another
+\cite{moreno2012unifying}.
+
+\paragraph{What changes.}
+Writing $P_t(\mathbf{X}, Y) = P_t(\mathbf{X})\,P_t(Y \mid \mathbf{X})$ separates two sources of
+drift \cite{lu2019learning}. When only $P_t(\mathbf{X})$ changes, the population changes but the
+relation between features and outcome does not, as when the demographics of a company's customers
+change over time \cite{webb2016characterizing}. This does not move the decision boundary, and is
+also called virtual drift. When $P_t(Y \mid \mathbf{X})$ changes, the relation itself changes, as
+when a new tax law changes which tax-payers count as compliant \cite{webb2016characterizing}. The
+decision boundary then moves and the model's accuracy drops, which is why this is called actual
+drift. In practice, the two often occur together \cite{lu2019learning}. For dataset shift,
+\citet{moreno2012unifying} distinguish covariate shift \cite{SHIMODAIRA2000227}, in which
+$P(\mathbf{X})$ changes while $P(Y \mid \mathbf{X})$ stays the same, prior probability shift, in
+which $P(Y)$ changes while $P(\mathbf{X} \mid Y)$ stays the same, and concept shift, in which the
+relation between features and outcome changes. They also tie covariate shift to problems in which
+the features cause the outcome, and prior probability shift to problems in which the outcome causes
+the features. \citet{webb2016characterizing} question this restriction, because in many real
+problems some features cause the outcome, others are caused by it, and others share causes with it.
+The names also vary: \citet{webb2016characterizing} call a change in $P(Y \mid \mathbf{X})$ class
+drift, and note that it is also called real concept drift or prior probability shift.
+
+\paragraph{How drift unfolds.}
+Drift also differs in how it unfolds over time. \citet{lu2019learning} distinguish four types: in
+sudden drift, a new concept appears within a short time; in gradual drift, a new concept gradually
+replaces the old one; in incremental drift, the old concept changes step by step into the new one;
+and with reoccurring concepts, an old concept returns after some time. They also organise learning
+under drift into three tasks: detecting whether drift has occurred, understanding it, and adapting
+the model to it. Understanding drift means finding when it occurs and how long it lasts, how severe
+it is, and where it occurs, that is, which regions of the data it affects. Methods for detecting
+and explaining drift are reviewed in Section~\ref{sec:lr-drift-explanation}.
+
+\paragraph{Drift in a causal model.}
+In an SCM, the joint distribution factorises into one mechanism per variable
+(Equation~\ref{eq:bg-markov}), and by the principle of independent mechanisms one of them can
+change while the others stay the same (Section~\ref{sec:bg-scm}). \citet{scholkopf2021toward} go
+further with the sparse mechanism shift hypothesis: small changes in the distribution tend to affect
+only a few mechanisms, rather than all of them at once. Drift can then be described by which
+mechanisms changed. This turns the question of where drift occurs, which \citet{lu2019learning}
+answer with regions of the data, into a question about the causal model, and the categories above
+do not answer it: a change in $P(\mathbf{X})$ can come from any of the mechanisms of the features.
+
+The running example shows why this matters for recourse. Suppose that people start saving less, so
+that the equation of savings becomes $X_2 := 0.4\,X_1^2 + U_2$, while the equations of income and of
+the decision stay the same. Since the equation of $Y$ is unchanged, so is
+$P(Y \mid X_1, X_2)$: for the classifier this is covariate shift, and $h$ needs no update. The
+consequential recommendation of Section~\ref{sec:bg-recourse}, however, no longer works. For the
+person with $\mathbf{x}^{\mathtt{F}} = (2, 2)$, abduction now gives $u_2 = 2 - 0.4 \cdot 4 = 0.4$.
+Raising income to $2.47$ now raises savings only to about $2.84$, so the score
+$2.47 + 0.5 \cdot 2.84 \approx 3.89$ stays below 4 and the loan is still rejected; under the new
+equation, income has to reach about $2.52$. Recourse computed with an outdated causal model can thus
+fail even when the classifier itself is still valid. Recourse under drift, and methods that learn
+causal structure from changes in the distribution, are reviewed in Section~\ref{sec:lr-drift}.
+
+Drift can also undo fairness. \citet{deho2024still} find that covariate drift is common in real
+data and can substantially reduce the fairness of models trained to be fair, and that the size and
+direction of the drift do not reliably predict how much fairness is lost. Fairness under
+distribution shift is reviewed in Section~\ref{sec:lr-fairness-shift}.
 
 \subsection{Counterfactual Explanations and Algorithmic Recourse}
 \label{sec:bg-recourse}
@@ -416,23 +498,21 @@ along with it, whereas the explanation asked for a rise of $1$.
 % kept within bounds (eps_l, eps_u) in a distribution close to the data distribution in KL).
 % Chiappa (2019), Sec. 1: counterfactual fairness treats the whole effect of A as unfair; Berkeley;
 % definition of path-specific counterfactual fairness.
-Machine learning models increasingly inform decisions in high-stakes domains, such as
-healthcare~\cite{shailaja2018machine} and hiring~\cite{raghavan2020mitigating}, where their
-predictions directly affect people's lives. In such domains, predicting well is not enough: the
-decisions must also be fair to the people they affect. \citet{mitchell2021algorithmic} note that a
-model is now commonly called biased when its predictive performance unjustifiably differs across
-disadvantaged groups, defined along social axes such as race, gender and class, and describe
+The widespread use of machine learning models in high-stakes domains, such as
+healthcare~\cite{shailaja2018machine} and hiring~\cite{raghavan2020mitigating}, where their outcomes
+directly affect people's lives means that predicting well is not enough: the
+decisions must also be fair to the people they affect.~\citet{mitchell2021algorithmic} note that a
+model is now commonly called biased when its predictive performance unjustifiably differs 
+along social axes such as race, gender and class, and describe
 uncovering and rectifying such biases as the motivation of the field of fairness in machine
 learning. This subsection presents the two families of fairness criteria that the rest of the
 thesis relies on: statistical criteria, which compare groups of people, and causal criteria, which
 ask what the decision would have been had the protected attribute been different.
 
 \paragraph{Statistical criteria.}
-In this subsection the classifier may use the protected attribute $A$, such as sex or race, so it
-is applied to all of a person's variables, $\mathbf{v} = (\mathbf{x}, a)$; a classifier that does
-not use $A$, as in Section~\ref{sec:bg-recourse}, simply ignores the last entry. Its decision is
-written $\hat{Y} = h(\mathbf{V})$, with $\mathbf{V} = (\mathbf{X}, A)$.
-\citet[Ch.~3]{barocas2023fairness} group the statistical criteria into three families, called
+\citet[Ch.~3]{barocas2023fairness} describe statistical non-dis\-crim\-i\-na\-tion criteria, which define
+the absence of bias in terms of statistical properties of a classification or decision-making process.
+They group the statistical criteria into three families, called
 independence, separation and sufficiency. Each is a conditional independence between $A$, the
 outcome $Y$ and the decision; in this order, they require
 \begin{equation}
@@ -446,7 +526,7 @@ the same for every value $a$ of $A$; it is also called demographic parity or sta
 Separation requires every group to have the same true positive rate
 $P(\hat{Y} = 1 \mid Y = 1, A = a)$ and the same false positive rate
 $P(\hat{Y} = 1 \mid Y = 0, A = a)$. \citet{hardt2016equality} call it equalized odds, and call the
-weaker requirement of equal true positive rates alone equal opportunity. Unlike demographic parity,
+relaxed requirement of equal true positive rates alone equal opportunity. Unlike demographic parity,
 separation lets the decision depend on $A$, but only through the outcome $Y$
 \cite{hardt2016equality}. Sufficiency requires that people who receive the same decision have the
 same probability of a positive outcome in every group, that is, equal positive and negative
@@ -454,15 +534,48 @@ predictive values. The three criteria conflict with one another: for a binary ou
 differs between groups, so that $A$ and $Y$ are dependent, no two of them can hold at the same time
 except in degenerate cases \citep[Ch.~3]{barocas2023fairness}.
 
+\begin{figure}[htbp]
+    \centering
+
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[scale=\graphscale]{figures/same-distribution-graph-a.pdf}
+        \caption{No unresolved discrimination}
+        \label{fig:bg-same-distribution-a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[scale=\graphscale]{figures/same-distribution-graph-b.pdf}
+        \caption{Unresolved discrimination}
+        \label{fig:bg-same-distribution-b}
+    \end{subfigure}
+
+    \caption[Two causal graphs with the same joint distribution]{Two causal graphs, constructed by
+    \citet{hardt2016equality} and redrawn by \citet{kilbertus2017avoiding}, that can generate the
+    same joint distribution of $A$, $Y$, the features $X_1$ and $X_2$, and the best unconstrained
+    (Bayes-optimal) predictor $\hat{Y}^{*}$ ($R^{*}$ in the original). The shaded $X_1$ is a
+    resolving variable, a route through which $A$ may influence the decision in an accepted way
+    (see the paragraph on path-specific fairness). In (a), $A$ reaches $\hat{Y}^{*}$ only through
+    $X_1$; in (b), it reaches $\hat{Y}^{*}$ along the red paths, neither of which passes through
+    $X_1$. Since the data look the same, no observational criterion can tell the two apart.}
+    \label{fig:bg-same-distribution}
+\end{figure}
+
 \paragraph{Counterfactual fairness.}
 The criteria above depend only on the joint distribution of $A$, $\mathbf{X}$, $Y$ and the
-decision, which is why they are called observational \cite{kilbertus2017avoiding}. As a result,
-they cannot say what caused a disparity \citep[Ch.~3]{barocas2023fairness}.
-\citet{kilbertus2017avoiding} recall two scenarios, constructed by \citet{hardt2016equality}, that
-have intuitively different social interpretations but the same joint distribution, so that no
-observational criterion can tell them apart. Causal criteria instead reason about an SCM in which
-$A$ is one of the variables. \citet{kusner2017counterfactual} call a decision counterfactually fair
-if, for every person, it would have been the same in a counterfactual world in which the person
+decision, which is why they are called observational \cite{kilbertus2017avoiding}. The features
+$\mathbf{X}$ do not appear in Equation~\eqref{eq:bg-group-criteria} because they enter implicitly
+through the decision, which the classifier computes from them, $\hat{Y} = h(\mathbf{X})$. As a result,
+the criteria cannot say what caused a disparity \citep[Ch.~3]{barocas2023fairness}.
+For example, \citet{kilbertus2017avoiding} recall two scenarios
+(Figure~\ref{fig:bg-same-distribution}), constructed by
+\citet{hardt2016equality}, that have the same joint distribution but intuitively different social
+interpretations. Since an observational criterion sees only that distribution, it must judge both
+scenarios in the same way. Telling them apart requires knowing how the data were generated, which
+is what causal criteria add, by reasoning about an SCM in which $A$ is one of the variables. One
+such criterion is counterfactual fairness: \citet{kusner2017counterfactual} call a decision
+counterfactually fair if, for every person, it would have been the same in a counterfactual world in which the person
 belonged to a different demographic group. Formally, given the observed values $\mathbf{x}$ and
 $a$, the decision must have the same distribution under $\mathrm{do}(A = a')$ as under
 $\mathrm{do}(A = a)$, for every value $a'$ of $A$. The counterfactuals are computed with the three
@@ -470,7 +583,7 @@ steps of Section~\ref{sec:bg-recourse}, now intervening on $A$. When only one va
 $\mathbf{u}^{\mathtt{F}}$, is consistent with the observed variables
 $\mathbf{v}^{\mathtt{F}} = (\mathbf{x}^{\mathtt{F}}, a^{\mathtt{F}})$, the counterfactual is a
 single vector $\mathbf{v}_a(\mathbf{u}^{\mathtt{F}})$, called the person's counterfactual twin had
-$A$ been $a$, and the criterion reads \cite{vonkugelgen2022fairness}
+$A$ been $a$, and the criterion is written as~\cite{vonkugelgen2022fairness}
 \begin{equation}
   h(\mathbf{v}^{\mathtt{F}}) = h(\mathbf{v}_a(\mathbf{u}^{\mathtt{F}}))
   \quad \mbox{for every value } a \mbox{ of } A \mbox{ and every person.}
@@ -495,12 +608,23 @@ that is not itself resolving exhibits unresolved discrimination when a directed 
 is not blocked by a resolving variable. \citet{nabi2018fair} formalise discrimination as the effect
 of $A$ on the outcome along chosen causal paths, called a path-specific effect, and stress that
 which paths are discriminatory depends on the domain: a physical fitness test may be appropriate
-for a construction job but not for an accounting one. They then fit the model to a distribution
-that is as close as possible to the data distribution while keeping the path-specific effect
-within bounds that state how much discrimination is tolerated. \citet{chiappa2019path} combines
-this idea with counterfactual fairness: a decision is path-specific counterfactually fair if it
-coincides with the one that would have been taken in a counterfactual world in which $A$ had been
-different along the unfair paths only.
+for a construction job (physically demanding) but not for an accounting one. Combining this idea with counterfactual
+fairness gives path-specific counterfactual fairness \cite{chiappa2019path}: a decision is fair if
+it would have been the same in a counterfactual world in which $A$ had been different along the
+unfair paths only (Figure~\ref{fig:bg-path-specific}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[scale=\graphscale]{figures/path-specific-graph.pdf}
+    \caption[Path-specific fairness in the Berkeley admissions case]{The Berkeley admissions case,
+    adapted from \citet{chiappa2019path}. Gender $A$ affects the admission decision $\hat{Y}$
+    directly and through the choice of department $X_1$; $X_2$ is the applicant's qualifications.
+    The route through the department is accepted as fair, which makes $X_1$ a resolving variable
+    (shaded), while the direct route is unfair (red). Counterfactual fairness treats both routes as
+    unfair; path-specific counterfactual fairness only asks that the decision would not change if
+    gender were different along the red route.}
+    \label{fig:bg-path-specific}
+\end{figure}
 
 All of these criteria concern the decision itself. Section~\ref{sec:lr-fair-recourse} reviews how
 they have been carried over to recourse, where the quantity compared between groups, or between a
@@ -508,89 +632,6 @@ person and their counterfactual twin, is the cost of the action needed to change
 \cite{vonkugelgen2022fairness}.
 
 
-\subsection{Concept Drift and Distribution Shift}
-\label{sec:bg-drift}
-
-% Sources: Gama et al. (2014), abstract (drift as a change in the relation between inputs and
-% target). Webb et al. (2016), arXiv:1511.03816v6: Sec. 3, Eqs. (1)-(4) (concept = P(X, Y),
-% following Gama et al.; drift as a change in it; counterpart of dataset shift), Sec. 4.2.1-4.2.2
-% (class and covariate drift, their examples, and Moreno-Torres et al.'s definitions with their
-% causal-direction constraints, which Webb et al. question). Moreno-Torres et al. (2012) were
-% checked only through Webb et al. Sec. 4.2 and Lu et al. Sec. 2.1, not in the original.
-% Lu et al. (2019), arXiv:2004.05785: Sec. 1 (detection, understanding, adaptation), Sec. 2.1
-% (definition, Sources I-III, virtual and actual drift), Sec. 2.2 and Fig. 4 (four drift types),
-% Sec. 3 (when, how, where). Scholkopf et al. (2021), Sec. 4: ICM principle and the Sparse
-% Mechanism Shift hypothesis. Deho et al. (2024), abstract.
-A model is trained on data from the past and applied to people in the present. When the data change
-in between, a model that was accurate when it was trained can become outdated.
-\citet{gama2014survey} describe this problem, concept drift, as a change over time in the relation
-between the input data and the target variable. Following them, \citet{webb2016characterizing} call
-the joint distribution $P_t(\mathbf{X}, Y)$ of the features and the outcome in time window $t$ the
-concept at time $t$, and most of the literature now says that concept drift occurs when this
-distribution changes \cite{lu2019learning}:
-\begin{equation}
-  P_t(\mathbf{X}, Y) \neq P_{t+1}(\mathbf{X}, Y).
-  \label{eq:bg-drift}
-\end{equation}
-\citet{webb2016characterizing} describe concept drift as the stream-learning counterpart of dataset
-shift, the name used in batch learning when a model is trained on one dataset and tested on another
-\cite{moreno2012unifying}.
-
-\paragraph{What changes.}
-Writing $P_t(\mathbf{X}, Y) = P_t(\mathbf{X})\,P_t(Y \mid \mathbf{X})$ separates two sources of
-drift \cite{lu2019learning}. When only $P_t(\mathbf{X})$ changes, the population changes but the
-relation between features and outcome does not, as when the demographics of a company's customers
-change over time \cite{webb2016characterizing}. This does not move the decision boundary, and is
-also called virtual drift. When $P_t(Y \mid \mathbf{X})$ changes, the relation itself changes, as
-when a new tax law changes which tax-payers count as compliant \cite{webb2016characterizing}. The
-decision boundary then moves and the model's accuracy drops, which is why this is called actual
-drift. In practice, the two often occur together \cite{lu2019learning}. For dataset shift,
-\citet{moreno2012unifying} distinguish covariate shift \cite{SHIMODAIRA2000227}, in which
-$P(\mathbf{X})$ changes while $P(Y \mid \mathbf{X})$ stays the same, prior probability shift, in
-which $P(Y)$ changes while $P(\mathbf{X} \mid Y)$ stays the same, and concept shift, in which the
-relation between features and outcome changes. They also tie covariate shift to problems in which
-the features cause the outcome, and prior probability shift to problems in which the outcome causes
-the features. \citet{webb2016characterizing} question this restriction, because in many real
-problems some features cause the outcome, others are caused by it, and others share causes with it.
-The names also vary: \citet{webb2016characterizing} call a change in $P(Y \mid \mathbf{X})$ class
-drift, and note that it is also called real concept drift or prior probability shift.
-
-\paragraph{How drift unfolds.}
-Drift also differs in how it unfolds over time. \citet{lu2019learning} distinguish four types: in
-sudden drift, a new concept appears within a short time; in gradual drift, a new concept gradually
-replaces the old one; in incremental drift, the old concept changes step by step into the new one;
-and with reoccurring concepts, an old concept returns after some time. They also organise learning
-under drift into three tasks: detecting whether drift has occurred, understanding it, and adapting
-the model to it. Understanding drift means finding when it occurs and how long it lasts, how severe
-it is, and where it occurs, that is, which regions of the data it affects. Methods for detecting
-and explaining drift are reviewed in Section~\ref{sec:lr-drift-explanation}.
-
-\paragraph{Drift in a causal model.}
-In an SCM, the joint distribution factorises into one mechanism per variable
-(Equation~\ref{eq:bg-markov}), and by the principle of independent mechanisms one of them can
-change while the others stay the same (Section~\ref{sec:bg-scm}). \citet{scholkopf2021toward} go
-further with the sparse mechanism shift hypothesis: small changes in the distribution tend to affect
-only a few mechanisms, rather than all of them at once. Drift can then be described by which
-mechanisms changed. This turns the question of where drift occurs, which \citet{lu2019learning}
-answer with regions of the data, into a question about the causal model, and the categories above
-do not answer it: a change in $P(\mathbf{X})$ can come from any of the mechanisms of the features.
-
-The running example shows why this matters for recourse. Suppose that people start saving less, so
-that the equation of savings becomes $X_2 := 0.4\,X_1^2 + U_2$, while the equations of income and of
-the decision stay the same. Since the equation of $Y$ is unchanged, so is
-$P(Y \mid X_1, X_2)$: for the classifier this is covariate shift, and $h$ needs no update. The
-consequential recommendation of Section~\ref{sec:bg-recourse}, however, no longer works. For the
-person with $\mathbf{x}^{\mathtt{F}} = (2, 2)$, abduction now gives $u_2 = 2 - 0.4 \cdot 4 = 0.4$.
-Raising income to $2.47$ now raises savings only to about $2.84$, so the score
-$2.47 + 0.5 \cdot 2.84 \approx 3.89$ stays below 4 and the loan is still rejected; under the new
-equation, income has to reach about $2.52$. Recourse computed with an outdated causal model can thus
-fail even when the classifier itself is still valid. Recourse under drift, and methods that learn
-causal structure from changes in the distribution, are reviewed in Section~\ref{sec:lr-drift}.
-
-Drift can also undo fairness. \citet{deho2024still} find that covariate drift is common in real
-data and can substantially reduce the fairness of models trained to be fair, and that the size and
-direction of the drift do not reliably predict how much fairness is lost. Fairness under
-distribution shift is reviewed in Section~\ref{sec:lr-fairness-shift}.
 
 \subsection{Splines and Additive Models}
 \label{sec:bg-splines}

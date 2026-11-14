@@ -1,52 +1,52 @@
-This is BibTeX, Version 0.99e
+This is BibTeX, Version 0.99e (TeX Live 2026/Homebrew)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
-Reallocating 'name_of_file' (item size: 1) to 9 items.
 The style file: plainnat.bst
-Reallocating 'name_of_file' (item size: 1) to 11 items.
 Database file #1: references.bib
 Warning--string name "june" is undefined
---line 481 of file references.bib
+--line 242 of file references.bib
+Warning--can't use both volume and number fields in chiappa2019path
 Warning--can't use both volume and number fields in liu2025understanding
+Warning--can't use both volume and number fields in nabi2018fair
 You've used 52 entries,
             2773 wiz_defined-function locations,
-            898 strings with 15987 characters,
-and the built_in function-call counts, 30551 in all, are:
-= -- 2727
+            897 strings with 16013 characters,
+and the built_in function-call counts, 29593 in all, are:
+= -- 2609
 > -- 1962
-< -- 42
+< -- 35
 + -- 660
 - -- 606
-* -- 2556
-:= -- 4503
-add.period$ -- 182
+* -- 2501
+:= -- 4423
+add.period$ -- 180
 call.type$ -- 52
 change.case$ -- 356
 chr.to.int$ -- 50
-cite$ -- 105
-duplicate$ -- 1332
-empty$ -- 2335
+cite$ -- 107
+duplicate$ -- 1278
+empty$ -- 2245
 format.name$ -- 664
-if$ -- 6545
+if$ -- 6288
 int.to.chr$ -- 3
 int.to.str$ -- 1
 missing$ -- 48
-newline$ -- 290
+newline$ -- 288
 num.names$ -- 208
-pop$ -- 759
+pop$ -- 749
 preamble$ -- 1
 purify$ -- 306
 quote$ -- 0
-skip$ -- 1128
+skip$ -- 1067
 stack$ -- 0
-substring$ -- 1253
-swap$ -- 302
-text.length$ -- 33
+substring$ -- 1101
+swap$ -- 256
+text.length$ -- 26
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 557
-warning$ -- 1
-while$ -- 252
+warning$ -- 3
+while$ -- 240
 width$ -- 0
-write$ -- 732
-(There were 2 warnings)
+write$ -- 723
+(There were 4 warnings)

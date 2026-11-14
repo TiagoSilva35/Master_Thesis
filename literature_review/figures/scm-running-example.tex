@@ -1,5 +1,7 @@
 % Causal graph of the running example in Section 2.1 (kairos world 1, savings habits).
 % Compile on its own (pdflatex scm-running-example.tex); the thesis includes the PDF.
+% The noise circles sit above their variables, which keeps the figure narrow enough to
+% place two of them side by side at the thesis's common figure scale.
 \documentclass[12pt,border=2pt]{standalone}
 \usepackage[T1]{fontenc}
 \usepackage{mathpazo}
@@ -17,9 +19,9 @@
   \node[var]   (I)  at (0, 0)     {$X_1$};
   \node[var]   (S)  at (3.4, 1.7) {$X_2$};
   \node[var]   (Y)  at (6.8, 0)   {$Y$};
-  \node[noise] (UI) at (-1.7, 0)  {$U_1$};
+  \node[noise] (UI) at (0, 1.7) {$U_1$};
   \node[noise] (US) at (3.4, 3.35) {$U_2$};
-  \node[noise] (UY) at (8.5, 0)   {$U_Y$};
+  \node[noise] (UY) at (6.8, 1.7) {$U_Y$};
 
   \draw[arr] (I) -- node[lab, sloped, above] {$0.5\,x_1^2$} (S);
   \draw[arr] (S) -- node[lab, sloped, above] {$0.5\,x_2$} (Y);
@@ -30,6 +32,6 @@
 
   \node[word, below=6.5mm] at (I) {income};
   \node[word, below=6.5mm] at (Y) {decision};
-  \node[word, left=6.5mm]  at (S) {savings};
+  \node[word, anchor=south east] at ([xshift=-1mm, yshift=1mm]S.north west) {savings};
 \end{tikzpicture}
 \end{document}

@@ -5,258 +5,177 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Almod{\'o}var et~al.(2026)Almod{\'o}var, Elizo, Apell{\'a}niz, Zazo,
-  and Parras]{almodovar2026kolmogorov}
-Alejandro Almod{\'o}var, Mar Elizo, Patricia~A. Apell{\'a}niz, Santiago Zazo,
-  and Juan Parras.
+\bibitem[Almod{\'o}var et~al.(2026)Almod{\'o}var, Elizo, Apell{\'a}niz, Zazo, and Parras]{almodovar2026kolmogorov}
+Alejandro Almod{\'o}var, Mar Elizo, Patricia~A. Apell{\'a}niz, Santiago Zazo, and Juan Parras.
 \newblock {Kolmogorov-Arnold} causal generative models.
 \newblock arXiv:2603.20184, 2026.
 
-\bibitem[Barocas et~al.(2023)Barocas, Hardt, and
-  Narayanan]{barocas2023fairness}
+\bibitem[Barocas et~al.(2023)Barocas, Hardt, and Narayanan]{barocas2023fairness}
 Solon Barocas, Moritz Hardt, and Arvind Narayanan.
-\newblock \emph{Fairness and Machine Learning: Limitations and Opportunities}.
-\newblock MIT Press, Cambridge, MA, 2023.
+\newblock \emph{Fairness and machine learning: Limitations and opportunities}.
+\newblock MIT press, 2023.
 
-\bibitem[Bell et~al.(2025)Bell, Fonseca, Abrate, Bonchi, and
-  Stoyanovich]{bell2025much}
-Andrew Bell, Joao Fonseca, Carlo Abrate, Francesco Bonchi, and Julia
-  Stoyanovich.
-\newblock How much effort is enough? fairness in algorithmic recourse through
-  the lens of substantive equality of opportunity.
-\newblock In \emph{Proceedings of the 5th ACM Conference on Equity and Access
-  in Algorithms, Mechanisms, and Optimization}, pages 170--184, 2025.
+\bibitem[Bell et~al.(2025)Bell, Fonseca, Abrate, Bonchi, and Stoyanovich]{bell2025much}
+Andrew Bell, Joao Fonseca, Carlo Abrate, Francesco Bonchi, and Julia Stoyanovich.
+\newblock How much effort is enough? fairness in algorithmic recourse through the lens of substantive equality of opportunity.
+\newblock In \emph{Proceedings of the 5th ACM Conference on Equity and Access in Algorithms, Mechanisms, and Optimization}, pages 170--184, 2025.
 
-\bibitem[B{\"u}hlmann et~al.(2014)B{\"u}hlmann, Peters, and
-  Ernest]{buhlmann2014cam}
+\bibitem[B{\"u}hlmann et~al.(2014)B{\"u}hlmann, Peters, and Ernest]{buhlmann2014cam}
 Peter B{\"u}hlmann, Jonas Peters, and Jan Ernest.
-\newblock Cam: Causal additive models, high-dimensional order search and
-  penalized regression.
-\newblock \emph{The Annals of Statistics}, 42\penalty0 (6):\penalty0
-  2526--2556, 2014.
+\newblock Cam: Causal additive models, high-dimensional order search and penalized regression.
+\newblock \emph{The Annals of Statistics}, 42\penalty0 (6):\penalty0 2526--2556, 2014.
 
 \bibitem[Chiappa(2019)]{chiappa2019path}
 Silvia Chiappa.
 \newblock Path-specific counterfactual fairness.
-\newblock In \emph{Proceedings of the AAAI Conference on Artificial
-  Intelligence}, volume~33, pages 7801--7808, 2019.
-\newblock \doi{10.1609/aaai.v33i01.33017801}.
+\newblock In \emph{Proceedings of the AAAI conference on artificial intelligence}, volume~33, pages 7801--7808, 2019.
 
-\bibitem[Dandl et~al.(2020)Dandl, Molnar, Binder, and
-  Bischl]{dandl2020multiobjective}
+\bibitem[Dandl et~al.(2020)Dandl, Molnar, Binder, and Bischl]{dandl2020multiobjective}
 Susanne Dandl, Christoph Molnar, Martin Binder, and Bernd Bischl.
 \newblock Multi-objective counterfactual explanations.
-\newblock In \emph{Parallel Problem Solving from Nature -- {PPSN} {XVI}}, pages
-  448--469. Springer, 2020.
+\newblock In \emph{Parallel Problem Solving from Nature -- {PPSN} {XVI}}, pages 448--469. Springer, 2020.
 \newblock \doi{10.1007/978-3-030-58112-1_31}.
 
 \bibitem[De~Toni et~al.(2025)De~Toni, Teso, Lepri, and Passerini]{de2025time}
 Giovanni De~Toni, Stefano Teso, Bruno Lepri, and Andrea Passerini.
 \newblock Time can invalidate algorithmic recourse.
-\newblock In \emph{Proceedings of the 2025 ACM Conference on Fairness,
-  Accountability, and Transparency}, pages 89--107, 2025.
+\newblock In \emph{Proceedings of the 2025 ACM Conference on Fairness, Accountability, and Transparency}, pages 89--107, 2025.
 
-\bibitem[Deho et~al.(2024)Deho, Bewong, Kwashie, Li, Liu, Liu, and
-  Joksimovic]{deho2024still}
-Oscar~Blessed Deho, Michael Bewong, Selasi Kwashie, Jiuyong Li, Jixue Liu, Lin
-  Liu, and Srecko Joksimovic.
-\newblock Is it still fair? {A} comparative evaluation of fairness algorithms
-  through the lens of covariate drift.
+\bibitem[Deho et~al.(2024)Deho, Bewong, Kwashie, Li, Liu, Liu, and Joksimovic]{deho2024still}
+Oscar~Blessed Deho, Michael Bewong, Selasi Kwashie, Jiuyong Li, Jixue Liu, Lin Liu, and Srecko Joksimovic.
+\newblock Is it still fair? {A} comparative evaluation of fairness algorithms through the lens of covariate drift.
 \newblock arXiv:2409.12428, 2024.
 
-\bibitem[Fonseca et~al.(2023)Fonseca, Bell, Abrate, Bonchi, and
-  Stoyanovich]{fonseca2023setting}
-Jo{\~a}o Fonseca, Andrew Bell, Carlo Abrate, Francesco Bonchi, and Julia
-  Stoyanovich.
+\bibitem[Fonseca et~al.(2023)Fonseca, Bell, Abrate, Bonchi, and Stoyanovich]{fonseca2023setting}
+Jo{\~a}o Fonseca, Andrew Bell, Carlo Abrate, Francesco Bonchi, and Julia Stoyanovich.
 \newblock Setting the right expectations: Algorithmic recourse over time.
-\newblock In \emph{Proceedings of the 3rd ACM Conference on Equity and Access
-  in Algorithms, Mechanisms, and Optimization}, pages 1--11, 2023.
+\newblock In \emph{Proceedings of the 3rd ACM Conference on Equity and Access in Algorithms, Mechanisms, and Optimization}, pages 1--11, 2023.
 
-\bibitem[Gama et~al.(2014)Gama, {\v{Z}}liobait{\.e}, Bifet, Pechenizkiy, and
-  Bouchachia]{gama2014survey}
-Jo{\~a}o Gama, Indr{\.e} {\v{Z}}liobait{\.e}, Albert Bifet, Mykola Pechenizkiy,
-  and Abdelhamid Bouchachia.
+\bibitem[Gama et~al.(2014)Gama, {\v{Z}}liobait{\.e}, Bifet, Pechenizkiy, and Bouchachia]{gama2014survey}
+Jo{\~a}o Gama, Indr{\.e} {\v{Z}}liobait{\.e}, Albert Bifet, Mykola Pechenizkiy, and Abdelhamid Bouchachia.
 \newblock A survey on concept drift adaptation.
-\newblock \emph{ACM Computing Surveys}, 46\penalty0 (4):\penalty0 44:1--44:37,
-  2014.
+\newblock \emph{ACM Computing Surveys}, 46\penalty0 (4):\penalty0 44:1--44:37, 2014.
 \newblock \doi{10.1145/2523813}.
 
 \bibitem[Hardt et~al.(2016)Hardt, Price, and Srebro]{hardt2016equality}
-Moritz Hardt, Eric Price, and Nathan Srebro.
+Moritz Hardt, Eric Price, and Nati Srebro.
 \newblock Equality of opportunity in supervised learning.
-\newblock In \emph{Advances in Neural Information Processing Systems},
-  volume~29, pages 3315--3323, 2016.
+\newblock \emph{Advances in neural information processing systems}, 29, 2016.
 
-\bibitem[Huang et~al.(2020)Huang, Zhang, Zhang, Ramsey, Sanchez-Romero,
-  Glymour, and Sch{\"o}lkopf]{huang2020causal}
-Biwei Huang, Kun Zhang, Jiji Zhang, Joseph Ramsey, Ruben Sanchez-Romero, Clark
-  Glymour, and Bernhard Sch{\"o}lkopf.
+\bibitem[Huang et~al.(2020)Huang, Zhang, Zhang, Ramsey, Sanchez-Romero, Glymour, and Sch{\"o}lkopf]{huang2020causal}
+Biwei Huang, Kun Zhang, Jiji Zhang, Joseph Ramsey, Ruben Sanchez-Romero, Clark Glymour, and Bernhard Sch{\"o}lkopf.
 \newblock Causal discovery from heterogeneous/nonstationary data.
-\newblock \emph{Journal of Machine Learning Research}, 21\penalty0
-  (89):\penalty0 1--53, 2020.
+\newblock \emph{Journal of Machine Learning Research}, 21\penalty0 (89):\penalty0 1--53, 2020.
 
-\bibitem[Joshi et~al.(2019)Joshi, Koyejo, Vijitbenjaronk, Kim, and
-  Ghosh]{joshi2019towards}
-Shalmali Joshi, Oluwasanmi Koyejo, Warut Vijitbenjaronk, Been Kim, and Joydeep
-  Ghosh.
-\newblock Towards realistic individual recourse and actionable explanations in
-  black-box decision making systems.
+\bibitem[Joshi et~al.(2019)Joshi, Koyejo, Vijitbenjaronk, Kim, and Ghosh]{joshi2019towards}
+Shalmali Joshi, Oluwasanmi Koyejo, Warut Vijitbenjaronk, Been Kim, and Joydeep Ghosh.
+\newblock Towards realistic individual recourse and actionable explanations in black-box decision making systems.
 \newblock arXiv:1907.09615, 2019.
 
-\bibitem[Kanamori et~al.(2020)Kanamori, Takagi, Kobayashi, and
-  Arimura]{kanamori2020dace}
+\bibitem[Kanamori et~al.(2020)Kanamori, Takagi, Kobayashi, and Arimura]{kanamori2020dace}
 Kentaro Kanamori, Takuya Takagi, Ken Kobayashi, and Hiroki Arimura.
-\newblock {DACE}: Distribution-aware counterfactual explanation by
-  mixed-integer linear optimization.
-\newblock In \emph{Proceedings of the Twenty-Ninth International Joint
-  Conference on Artificial Intelligence (IJCAI)}, pages 2855--2862, 2020.
+\newblock {DACE}: Distribution-aware counterfactual explanation by mixed-integer linear optimization.
+\newblock In \emph{Proceedings of the Twenty-Ninth International Joint Conference on Artificial Intelligence (IJCAI)}, pages 2855--2862, 2020.
 \newblock \doi{10.24963/ijcai.2020/395}.
 
-\bibitem[Karimi et~al.(2020{\natexlab{a}})Karimi, Barthe, Balle, and
-  Valera]{karimi2020model}
+\bibitem[Karimi et~al.(2020{\natexlab{a}})Karimi, Barthe, Balle, and Valera]{karimi2020model}
 Amir-Hossein Karimi, Gilles Barthe, Borja Balle, and Isabel Valera.
-\newblock Model-agnostic counterfactual explanations for consequential
-  decisions.
-\newblock In \emph{Proceedings of the 23rd International Conference on
-  Artificial Intelligence and Statistics (AISTATS)}, volume 108 of
-  \emph{Proceedings of Machine Learning Research}, pages 895--905,
-  2020{\natexlab{a}}.
+\newblock Model-agnostic counterfactual explanations for consequential decisions.
+\newblock In \emph{Proceedings of the 23rd International Conference on Artificial Intelligence and Statistics (AISTATS)}, volume 108 of \emph{Proceedings of Machine Learning Research}, pages 895--905, 2020{\natexlab{a}}.
 
-\bibitem[Karimi et~al.(2020{\natexlab{b}})Karimi, von K{\"u}gelgen,
-  Sch{\"o}lkopf, and Valera]{karimi2020algorithmic}
-Amir-Hossein Karimi, Julius von K{\"u}gelgen, Bernhard Sch{\"o}lkopf, and
-  Isabel Valera.
-\newblock Algorithmic recourse under imperfect causal knowledge: A
-  probabilistic approach.
-\newblock In \emph{Advances in Neural Information Processing Systems
-  (NeurIPS)}, volume~33, 2020{\natexlab{b}}.
+\bibitem[Karimi et~al.(2020{\natexlab{b}})Karimi, von K{\"u}gelgen, Sch{\"o}lkopf, and Valera]{karimi2020algorithmic}
+Amir-Hossein Karimi, Julius von K{\"u}gelgen, Bernhard Sch{\"o}lkopf, and Isabel Valera.
+\newblock Algorithmic recourse under imperfect causal knowledge: A probabilistic approach.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~33, 2020{\natexlab{b}}.
 
-\bibitem[Karimi et~al.(2021)Karimi, Sch{\"o}lkopf, and
-  Valera]{karimi2021algorithmic}
+\bibitem[Karimi et~al.(2021)Karimi, Sch{\"o}lkopf, and Valera]{karimi2021algorithmic}
 Amir-Hossein Karimi, Bernhard Sch{\"o}lkopf, and Isabel Valera.
-\newblock Algorithmic recourse: from counterfactual explanations to
-  interventions.
-\newblock In \emph{Proceedings of the ACM Conference on Fairness,
-  Accountability, and Transparency (FAccT)}, pages 353--362, 2021.
+\newblock Algorithmic recourse: from counterfactual explanations to interventions.
+\newblock In \emph{Proceedings of the ACM Conference on Fairness, Accountability, and Transparency (FAccT)}, pages 353--362, 2021.
 
-\bibitem[Karimi et~al.(2022)Karimi, Barthe, Sch{\"o}lkopf, and
-  Valera]{karimi2022survey}
+\bibitem[Karimi et~al.(2022)Karimi, Barthe, Sch{\"o}lkopf, and Valera]{karimi2022survey}
 Amir-Hossein Karimi, Gilles Barthe, Bernhard Sch{\"o}lkopf, and Isabel Valera.
-\newblock A survey of algorithmic recourse: Contrastive explanations and
-  consequential recommendations.
+\newblock A survey of algorithmic recourse: Contrastive explanations and consequential recommendations.
 \newblock \emph{ACM Comput. Surv.}, 55\penalty0 (5), December 2022.
 \newblock ISSN 0360-0300.
 \newblock \doi{10.1145/3527848}.
 \newblock URL \url{https://doi.org/10.1145/3527848}.
 
-\bibitem[Kilbertus et~al.(2017)Kilbertus, Rojas-Carulla, Parascandolo, Hardt,
-  Janzing, and Sch{\"o}lkopf]{kilbertus2017avoiding}
-Niki Kilbertus, Mateo Rojas-Carulla, Giambattista Parascandolo, Moritz Hardt,
-  Dominik Janzing, and Bernhard Sch{\"o}lkopf.
+\bibitem[Kilbertus et~al.(2017)Kilbertus, Rojas~Carulla, Parascandolo, Hardt, Janzing, and Sch{\"o}lkopf]{kilbertus2017avoiding}
+Niki Kilbertus, Mateo Rojas~Carulla, Giambattista Parascandolo, Moritz Hardt, Dominik Janzing, and Bernhard Sch{\"o}lkopf.
 \newblock Avoiding discrimination through causal reasoning.
-\newblock In \emph{Advances in Neural Information Processing Systems},
-  volume~30, pages 656--666, 2017.
+\newblock \emph{Advances in neural information processing systems}, 30, 2017.
 
-\bibitem[K{\"o}nig et~al.(2025)K{\"o}nig, Fokkema, Freiesleben,
-  Mendler-D{\"u}nner, and von Luxburg]{konig2026performative}
-Gunnar K{\"o}nig, Hidde Fokkema, Timo Freiesleben, Celestine
-  Mendler-D{\"u}nner, and Ulrike von Luxburg.
+\bibitem[K{\"o}nig et~al.(2025)K{\"o}nig, Fokkema, Freiesleben, Mendler-D{\"u}nner, and von Luxburg]{konig2026performative}
+Gunnar K{\"o}nig, Hidde Fokkema, Timo Freiesleben, Celestine Mendler-D{\"u}nner, and Ulrike von Luxburg.
 \newblock Performative validity of recourse explanations.
-\newblock \emph{Advances in Neural Information Processing Systems},
-  38:\penalty0 139334--139370, 2025.
+\newblock \emph{Advances in Neural Information Processing Systems}, 38:\penalty0 139334--139370, 2025.
 
-\bibitem[Kostrzewa et~al.(2026)Kostrzewa, Stefanowski, and
-  Zi{\k{e}}ba]{kostrzewa2026counterfactual}
+\bibitem[Kostrzewa et~al.(2026)Kostrzewa, Stefanowski, and Zi{\k{e}}ba]{kostrzewa2026counterfactual}
 Marcin Kostrzewa, Jerzy Stefanowski, and Maciej Zi{\k{e}}ba.
 \newblock Counterfactual explanations under concept drift.
 \newblock \emph{arXiv preprint arXiv:2605.17651}, 2026.
 
-\bibitem[Kusner et~al.(2017)Kusner, Loftus, Russell, and
-  Silva]{kusner2017counterfactual}
-Matt~J. Kusner, Joshua Loftus, Chris Russell, and Ricardo Silva.
+\bibitem[Kusner et~al.(2017)Kusner, Loftus, Russell, and Silva]{kusner2017counterfactual}
+Matt~J Kusner, Joshua Loftus, Chris Russell, and Ricardo Silva.
 \newblock Counterfactual fairness.
-\newblock In \emph{Advances in Neural Information Processing Systems},
-  volume~30, pages 4066--4076, 2017.
+\newblock \emph{Advances in neural information processing systems}, 30, 2017.
 
 \bibitem[Lewis(1973)]{lewis1973counterfactuals}
 David Lewis.
 \newblock Counterfactuals and comparative possibility.
-\newblock In \emph{IFS: Conditionals, belief, decision, chance and time}, pages
-  57--85. Springer, 1973.
+\newblock In \emph{IFS: Conditionals, belief, decision, chance and time}, pages 57--85. Springer, 1973.
 
-\bibitem[Liu et~al.(2025)Liu, Liu, Chen, Tsai, Gao, and
-  Yang]{liu2025understanding}
-Bo-Yi Liu, Zhi-Xuan Liu, Kuan~Lun Chen, Shih-Yu Tsai, Jie Gao, and Hao-Tsung
-  Yang.
-\newblock Understanding endogenous data drift in adaptive models with
-  recourse-seeking users.
-\newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and
-  Society}, volume~8, pages 1598--1610, 2025.
+\bibitem[Liu et~al.(2025)Liu, Liu, Chen, Tsai, Gao, and Yang]{liu2025understanding}
+Bo-Yi Liu, Zhi-Xuan Liu, Kuan~Lun Chen, Shih-Yu Tsai, Jie Gao, and Hao-Tsung Yang.
+\newblock Understanding endogenous data drift in adaptive models with recourse-seeking users.
+\newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society}, volume~8, pages 1598--1610, 2025.
 
-\bibitem[Louizos et~al.(2017)Louizos, Shalit, Mooij, Sontag, Zemel, and
-  Welling]{louizos2017causal}
-Christos Louizos, Uri Shalit, Joris~M. Mooij, David Sontag, Richard Zemel, and
-  Max Welling.
+\bibitem[Louizos et~al.(2017)Louizos, Shalit, Mooij, Sontag, Zemel, and Welling]{louizos2017causal}
+Christos Louizos, Uri Shalit, Joris~M. Mooij, David Sontag, Richard Zemel, and Max Welling.
 \newblock Causal effect inference with deep latent-variable models.
-\newblock In \emph{Advances in Neural Information Processing Systems
-  (NeurIPS)}, volume~30, 2017.
+\newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~30, 2017.
 
 \bibitem[Lu et~al.(2019)Lu, Liu, Dong, Gu, Gama, and Zhang]{lu2019learning}
 Jie Lu, Anjin Liu, Fan Dong, Feng Gu, Jo{\~a}o Gama, and Guangquan Zhang.
 \newblock Learning under concept drift: A review.
-\newblock \emph{IEEE Transactions on Knowledge and Data Engineering},
-  31\penalty0 (12):\penalty0 2346--2363, 2019.
+\newblock \emph{IEEE Transactions on Knowledge and Data Engineering}, 31\penalty0 (12):\penalty0 2346--2363, 2019.
 \newblock \doi{10.1109/TKDE.2018.2876857}.
 
 \bibitem[Ma et~al.(2025)Ma, Li, Liu, Chen, Liu, Huang, and Zhang]{ma2025causal}
-Yiming Ma, Yanmin Li, Kaiyue Liu, Zhihao Chen, Lihua Liu, Hongbin Huang, and
-  Hang Zhang.
-\newblock Causal-kan: Learning causal mapping representations by injecting
-  causal knowledge.
-\newblock In \emph{2025 11th International Conference on Big Data and
-  Information Analytics (BigDIA)}, pages 613--620. IEEE, 2025.
+Yiming Ma, Yanmin Li, Kaiyue Liu, Zhihao Chen, Lihua Liu, Hongbin Huang, and Hang Zhang.
+\newblock Causal-kan: Learning causal mapping representations by injecting causal knowledge.
+\newblock In \emph{2025 11th International Conference on Big Data and Information Analytics (BigDIA)}, pages 613--620. IEEE, 2025.
 
 \bibitem[Mahajan et~al.(2019)Mahajan, Tan, and Sharma]{mahajan2019preserving}
 Divyat Mahajan, Chenhao Tan, and Amit Sharma.
-\newblock Preserving causal constraints in counterfactual explanations for
-  machine learning classifiers.
+\newblock Preserving causal constraints in counterfactual explanations for machine learning classifiers.
 \newblock arXiv:1912.03277, 2019.
 
-\bibitem[Mitchell et~al.(2021)Mitchell, Potash, Barocas, D'Amour, and
-  Lum]{mitchell2021algorithmic}
-Shira Mitchell, Eric Potash, Solon Barocas, Alexander D'Amour, and Kristian
-  Lum.
+\bibitem[Mitchell et~al.(2021)Mitchell, Potash, Barocas, D'Amour, and Lum]{mitchell2021algorithmic}
+Shira Mitchell, Eric Potash, Solon Barocas, Alexander D'Amour, and Kristian Lum.
 \newblock Algorithmic fairness: Choices, assumptions, and definitions.
-\newblock \emph{Annual Review of Statistics and Its Application}, 8:\penalty0
-  141--163, 2021.
-\newblock \doi{10.1146/annurev-statistics-042720-125902}.
+\newblock \emph{Annual review of statistics and its application}, 8\penalty0 (1):\penalty0 141--163, 2021.
 
-\bibitem[Moreno-Torres et~al.(2012)Moreno-Torres, Raeder, Alaiz-Rodr{\'i}guez,
-  Chawla, and Herrera]{moreno2012unifying}
-Jose~G. Moreno-Torres, Troy Raeder, Roc{\'i}o Alaiz-Rodr{\'i}guez, Nitesh~V.
-  Chawla, and Francisco Herrera.
+\bibitem[Moreno-Torres et~al.(2012)Moreno-Torres, Raeder, Alaiz-Rodr{\'i}guez, Chawla, and Herrera]{moreno2012unifying}
+Jose~G. Moreno-Torres, Troy Raeder, Roc{\'i}o Alaiz-Rodr{\'i}guez, Nitesh~V. Chawla, and Francisco Herrera.
 \newblock A unifying view on dataset shift in classification.
 \newblock \emph{Pattern Recognition}, 45\penalty0 (1):\penalty0 521--530, 2012.
 \newblock \doi{10.1016/j.patcog.2011.06.019}.
 
-\bibitem[Mothilal et~al.(2020)Mothilal, Sharma, and
-  Tan]{mothilal2020explaining}
+\bibitem[Mothilal et~al.(2020)Mothilal, Sharma, and Tan]{mothilal2020explaining}
 Ramaravind~K. Mothilal, Amit Sharma, and Chenhao Tan.
-\newblock Explaining machine learning classifiers through diverse
-  counterfactual explanations.
-\newblock In \emph{Proceedings of the Conference on Fairness, Accountability,
-  and Transparency (FAT*)}, pages 607--617, 2020.
+\newblock Explaining machine learning classifiers through diverse counterfactual explanations.
+\newblock In \emph{Proceedings of the Conference on Fairness, Accountability, and Transparency (FAT*)}, pages 607--617, 2020.
 
 \bibitem[Nabi and Shpitser(2018)]{nabi2018fair}
 Razieh Nabi and Ilya Shpitser.
 \newblock Fair inference on outcomes.
-\newblock In \emph{Proceedings of the AAAI Conference on Artificial
-  Intelligence}, volume~32, pages 1931--1940, 2018.
+\newblock In \emph{Proceedings of the AAAI conference on artificial intelligence}, volume~32, 2018.
 
 \bibitem[Olson et~al.(2021)Olson, Khanna, Neal, Li, and Wong]{Olson_2021}
 Matthew~L. Olson, Roli Khanna, Lawrence Neal, Fuxin Li, and Weng-Keen Wong.
-\newblock Counterfactual state explanations for reinforcement learning agents
-  via generative deep learning.
+\newblock Counterfactual state explanations for reinforcement learning agents via generative deep learning.
 \newblock \emph{Artificial Intelligence}, 295:\penalty0 103455, 2021.
 \newblock ISSN 0004-3702.
 \newblock \doi{10.1016/j.artint.2021.103455}.
@@ -265,8 +184,7 @@ Matthew~L. Olson, Roli Khanna, Lawrence Neal, Fuxin Li, and Weng-Keen Wong.
 \bibitem[Pearl(2009{\natexlab{a}})]{pearl2009causality}
 Judea Pearl.
 \newblock \emph{Causality: Models, Reasoning, and Inference}.
-\newblock Cambridge University Press, Cambridge, second edition,
-  2009{\natexlab{a}}.
+\newblock Cambridge University Press, Cambridge, second edition, 2009{\natexlab{a}}.
 \newblock \doi{10.1017/CBO9780511803161}.
 
 \bibitem[Pearl(2009{\natexlab{b}})]{pearl2009overview}
@@ -275,125 +193,91 @@ Judea Pearl.
 \newblock \emph{Statistics Surveys}, 3:\penalty0 96--146, 2009{\natexlab{b}}.
 \newblock \doi{10.1214/09-SS057}.
 
-\bibitem[Perry et~al.(2022)Perry, Von~K{\"u}gelgen, and
-  Sch{\"o}lkopf]{perry2022causal}
+\bibitem[Perry et~al.(2022)Perry, Von~K{\"u}gelgen, and Sch{\"o}lkopf]{perry2022causal}
 Ronan Perry, Julius Von~K{\"u}gelgen, and Bernhard Sch{\"o}lkopf.
-\newblock Causal discovery in heterogeneous environments under the sparse
-  mechanism shift hypothesis.
-\newblock \emph{Advances in Neural Information Processing Systems},
-  35:\penalty0 10904--10917, 2022.
+\newblock Causal discovery in heterogeneous environments under the sparse mechanism shift hypothesis.
+\newblock \emph{Advances in Neural Information Processing Systems}, 35:\penalty0 10904--10917, 2022.
 
-\bibitem[Peters et~al.(2017)Peters, Janzing, and
-  Sch{\"o}lkopf]{peters2017elements}
+\bibitem[Peters et~al.(2017)Peters, Janzing, and Sch{\"o}lkopf]{peters2017elements}
 Jonas Peters, Dominik Janzing, and Bernhard Sch{\"o}lkopf.
-\newblock \emph{Elements of Causal Inference: Foundations and Learning
-  Algorithms}.
+\newblock \emph{Elements of Causal Inference: Foundations and Learning Algorithms}.
 \newblock MIT Press, Cambridge, MA, 2017.
 
-\bibitem[Poyiadzi et~al.(2020)Poyiadzi, Sokol, Santos-Rodriguez, De~Bie, and
-  Flach]{poyiadzi2020face}
-Rafael Poyiadzi, Kacper Sokol, Raul Santos-Rodriguez, Tijl De~Bie, and Peter
-  Flach.
+\bibitem[Poyiadzi et~al.(2020)Poyiadzi, Sokol, Santos-Rodriguez, De~Bie, and Flach]{poyiadzi2020face}
+Rafael Poyiadzi, Kacper Sokol, Raul Santos-Rodriguez, Tijl De~Bie, and Peter Flach.
 \newblock {FACE}: Feasible and actionable counterfactual explanations.
-\newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and
-  Society (AIES)}, pages 344--350, 2020.
+\newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society (AIES)}, pages 344--350, 2020.
 
-\bibitem[Raghavan et~al.(2020)Raghavan, Barocas, Kleinberg, and
-  Levy]{raghavan2020mitigating}
+\bibitem[Raghavan et~al.(2020)Raghavan, Barocas, Kleinberg, and Levy]{raghavan2020mitigating}
 Manish Raghavan, Solon Barocas, Jon Kleinberg, and Karen Levy.
-\newblock Mitigating bias in algorithmic hiring: Evaluating claims and
-  practices.
-\newblock In \emph{Proceedings of the 2020 conference on fairness,
-  accountability, and transparency}, pages 469--481, 2020.
+\newblock Mitigating bias in algorithmic hiring: Evaluating claims and practices.
+\newblock In \emph{Proceedings of the 2020 conference on fairness, accountability, and transparency}, pages 469--481, 2020.
 
 \bibitem[Rawal et~al.(2020)Rawal, Kamar, and Lakkaraju]{rawal2020algorithmic}
 Kaivalya Rawal, Ece Kamar, and Himabindu Lakkaraju.
-\newblock Algorithmic recourse in the wild: Understanding the impact of data
-  and model shifts.
+\newblock Algorithmic recourse in the wild: Understanding the impact of data and model shifts.
 \newblock arXiv:2012.11788, 2020.
 
 \bibitem[Russell(2019)]{russell2019efficient}
 Chris Russell.
 \newblock Efficient search for diverse coherent explanations.
-\newblock In \emph{Proceedings of the Conference on Fairness, Accountability,
-  and Transparency (FAT*)}, pages 20--28, 2019.
+\newblock In \emph{Proceedings of the Conference on Fairness, Accountability, and Transparency (FAT*)}, pages 20--28, 2019.
 \newblock \doi{10.1145/3287560.3287569}.
 
-\bibitem[Sch{\"o}lkopf et~al.(2021)Sch{\"o}lkopf, Locatello, Bauer, Ke,
-  Kalchbrenner, Goyal, and Bengio]{scholkopf2021toward}
-Bernhard Sch{\"o}lkopf, Francesco Locatello, Stefan Bauer, Nan~Rosemary Ke, Nal
-  Kalchbrenner, Anirudh Goyal, and Yoshua Bengio.
+\bibitem[Sch{\"o}lkopf et~al.(2021)Sch{\"o}lkopf, Locatello, Bauer, Ke, Kalchbrenner, Goyal, and Bengio]{scholkopf2021toward}
+Bernhard Sch{\"o}lkopf, Francesco Locatello, Stefan Bauer, Nan~Rosemary Ke, Nal Kalchbrenner, Anirudh Goyal, and Yoshua Bengio.
 \newblock Toward causal representation learning.
-\newblock \emph{Proceedings of the IEEE}, 109\penalty0 (5):\penalty0 612--634,
-  2021.
+\newblock \emph{Proceedings of the IEEE}, 109\penalty0 (5):\penalty0 612--634, 2021.
 \newblock \doi{10.1109/JPROC.2021.3058954}.
 
-\bibitem[Shailaja et~al.(2018)Shailaja, Seetharamulu, and
-  Jabbar]{shailaja2018machine}
+\bibitem[Shailaja et~al.(2018)Shailaja, Seetharamulu, and Jabbar]{shailaja2018machine}
 K~Shailaja, Banoth Seetharamulu, and MA~Jabbar.
 \newblock Machine learning in healthcare: A review.
-\newblock In \emph{2018 Second international conference on electronics,
-  communication and aerospace technology (ICECA)}, pages 910--914. IEEE, 2018.
+\newblock In \emph{2018 Second international conference on electronics, communication and aerospace technology (ICECA)}, pages 910--914. IEEE, 2018.
 
 \bibitem[Sharma et~al.(2020)Sharma, Henderson, and Ghosh]{sharma2020certifai}
 Shubham Sharma, Jette Henderson, and Joydeep Ghosh.
-\newblock {CERTIFAI}: A common framework to provide explanations and analyse
-  the fairness and robustness of black-box models.
-\newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and
-  Society (AIES)}, pages 166--172, 2020.
+\newblock {CERTIFAI}: A common framework to provide explanations and analyse the fairness and robustness of black-box models.
+\newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society (AIES)}, pages 166--172, 2020.
 
 \bibitem[Shimodaira(2000)]{SHIMODAIRA2000227}
 Hidetoshi Shimodaira.
-\newblock Improving predictive inference under covariate shift by weighting the
-  log-likelihood function.
-\newblock \emph{Journal of Statistical Planning and Inference}, 90\penalty0
-  (2):\penalty0 227--244, 2000.
+\newblock Improving predictive inference under covariate shift by weighting the log-likelihood function.
+\newblock \emph{Journal of Statistical Planning and Inference}, 90\penalty0 (2):\penalty0 227--244, 2000.
 \newblock ISSN 0378-3758.
 \newblock \doi{https://doi.org/10.1016/S0378-3758(00)00115-4}.
-\newblock URL
-  \url{https://www.sciencedirect.com/science/article/pii/S0378375800001154}.
+\newblock URL \url{https://www.sciencedirect.com/science/article/pii/S0378375800001154}.
 
-\bibitem[Upadhyay et~al.(2021)Upadhyay, Joshi, and
-  Lakkaraju]{upadhyay2021towards}
+\bibitem[Upadhyay et~al.(2021)Upadhyay, Joshi, and Lakkaraju]{upadhyay2021towards}
 Sohini Upadhyay, Shalmali Joshi, and Himabindu Lakkaraju.
 \newblock Towards robust and reliable algorithmic recourse.
-\newblock \emph{Advances in Neural Information Processing Systems},
-  34:\penalty0 16926--16937, 2021.
+\newblock \emph{Advances in Neural Information Processing Systems}, 34:\penalty0 16926--16937, 2021.
 
 \bibitem[Ustun et~al.(2019)Ustun, Spangher, and Liu]{ustun2019actionable}
 Berk Ustun, Alexander Spangher, and Yang Liu.
 \newblock Actionable recourse in linear classification.
-\newblock In \emph{Proceedings of the Conference on Fairness, Accountability,
-  and Transparency (FAT*)}, pages 10--19, 2019.
+\newblock In \emph{Proceedings of the Conference on Fairness, Accountability, and Transparency (FAT*)}, pages 10--19, 2019.
 
 \bibitem[Van~Looveren and Klaise(2020)]{vanlooveren2020interpretable}
 Arnaud Van~Looveren and Janis Klaise.
 \newblock Interpretable counterfactual explanations guided by prototypes.
 \newblock arXiv:1907.02584, 2020.
 
-\bibitem[von K{\"u}gelgen et~al.(2022)von K{\"u}gelgen, Karimi, Bhatt, Valera,
-  Weller, and Sch{\"o}lkopf]{vonkugelgen2022fairness}
-Julius von K{\"u}gelgen, Amir-Hossein Karimi, Umang Bhatt, Isabel Valera,
-  Adrian Weller, and Bernhard Sch{\"o}lkopf.
+\bibitem[von K{\"u}gelgen et~al.(2022)von K{\"u}gelgen, Karimi, Bhatt, Valera, Weller, and Sch{\"o}lkopf]{vonkugelgen2022fairness}
+Julius von K{\"u}gelgen, Amir-Hossein Karimi, Umang Bhatt, Isabel Valera, Adrian Weller, and Bernhard Sch{\"o}lkopf.
 \newblock On the fairness of causal algorithmic recourse.
-\newblock In \emph{Proceedings of the AAAI Conference on Artificial
-  Intelligence}, volume~36, pages 9584--9594, 2022.
+\newblock In \emph{Proceedings of the AAAI Conference on Artificial Intelligence}, volume~36, pages 9584--9594, 2022.
 \newblock \doi{10.1609/aaai.v36i9.21192}.
 
-\bibitem[Wachter et~al.(2017)Wachter, Mittelstadt, and
-  Russell]{wachter2017counterfactual}
+\bibitem[Wachter et~al.(2017)Wachter, Mittelstadt, and Russell]{wachter2017counterfactual}
 Sandra Wachter, Brent Mittelstadt, and Chris Russell.
-\newblock Counterfactual explanations without opening the black box: Automated
-  decisions and the gdpr.
+\newblock Counterfactual explanations without opening the black box: Automated decisions and the gdpr.
 \newblock \emph{Harv. JL \& Tech.}, 31:\penalty0 841, 2017.
 
-\bibitem[Webb et~al.(2016)Webb, Hyde, Cao, Nguyen, and
-  Petitjean]{webb2016characterizing}
-Geoffrey~I. Webb, Roy Hyde, Hong Cao, Hai~Long Nguyen, and Fran{\c{c}}ois
-  Petitjean.
+\bibitem[Webb et~al.(2016)Webb, Hyde, Cao, Nguyen, and Petitjean]{webb2016characterizing}
+Geoffrey~I. Webb, Roy Hyde, Hong Cao, Hai~Long Nguyen, and Fran{\c{c}}ois Petitjean.
 \newblock Characterizing concept drift.
-\newblock \emph{Data Mining and Knowledge Discovery}, 30\penalty0 (4):\penalty0
-  964--994, 2016.
+\newblock \emph{Data Mining and Knowledge Discovery}, 30\penalty0 (4):\penalty0 964--994, 2016.
 \newblock \doi{10.1007/s10618-015-0448-4}.
 
 \bibitem[White and d'Avila Garcez(2019)]{white2019measurable}

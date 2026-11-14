@@ -2,6 +2,8 @@
 % Compile on its own (pdflatex intervention_on_X1-example.tex); the thesis includes the PDF.
 % The invisible node in place of U_1 keeps the same size as scm-running-example.pdf and
 % intervention_on_X2.pdf, so all three are drawn at the same scale.
+% The noise circles sit above their variables, which keeps the figure narrow enough to
+% place two of them side by side at the thesis's common figure scale.
 \documentclass[12pt,border=2pt]{standalone}
 \usepackage[T1]{fontenc}
 \usepackage{mathpazo}
@@ -21,8 +23,8 @@
   \node[var]   (S)  at (3.4, 1.7) {$X_2$};
   \node[var]   (Y)  at (6.8, 0)   {$Y$};
   \node[noise] (US) at (3.4, 3.35) {$U_2$};
-  \node[noise] (UY) at (8.5, 0)   {$U_Y$};
-  \node[noise, draw=none] at (-1.7, 0) {};   % invisible, where U_1 was
+  \node[noise] (UY) at (6.8, 1.7) {$U_Y$};
+  \node[noise, draw=none] at (0, 1.7) {};   % invisible, where U_1 was
 
   \draw[arr] (I) -- node[lab, sloped, above] {$0.5\,x_1^2$} (S);
   \draw[arr] (S) -- node[lab, sloped, above] {$0.5\,x_2$} (Y);
@@ -32,6 +34,6 @@
 
   \node[word, below=6.5mm] at (I) {income};
   \node[word, below=6.5mm] at (Y) {decision};
-  \node[word, left=6.5mm]  at (S) {savings};
+  \node[word, anchor=south east] at ([xshift=-1mm, yshift=1mm]S.north west) {savings};
 \end{tikzpicture}
 \end{document}
