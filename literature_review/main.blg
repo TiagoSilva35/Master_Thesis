@@ -8,45 +8,45 @@ Warning--string name "june" is undefined
 Warning--can't use both volume and number fields in chiappa2019path
 Warning--can't use both volume and number fields in liu2025understanding
 Warning--can't use both volume and number fields in nabi2018fair
-You've used 52 entries,
+You've used 58 entries,
             2773 wiz_defined-function locations,
-            897 strings with 16013 characters,
-and the built_in function-call counts, 29593 in all, are:
-= -- 2609
-> -- 1962
-< -- 35
-+ -- 660
-- -- 606
-* -- 2501
-:= -- 4423
-add.period$ -- 180
-call.type$ -- 52
-change.case$ -- 356
-chr.to.int$ -- 50
-cite$ -- 107
-duplicate$ -- 1278
-empty$ -- 2245
-format.name$ -- 664
-if$ -- 6288
-int.to.chr$ -- 3
+            932 strings with 16858 characters,
+and the built_in function-call counts, 32499 in all, are:
+= -- 2862
+> -- 2118
+< -- 42
++ -- 715
+- -- 654
+* -- 2746
+:= -- 4860
+add.period$ -- 197
+call.type$ -- 58
+change.case$ -- 389
+chr.to.int$ -- 55
+cite$ -- 119
+duplicate$ -- 1423
+empty$ -- 2489
+format.name$ -- 718
+if$ -- 6897
+int.to.chr$ -- 4
 int.to.str$ -- 1
-missing$ -- 48
-newline$ -- 288
-num.names$ -- 208
-pop$ -- 749
+missing$ -- 57
+newline$ -- 317
+num.names$ -- 232
+pop$ -- 814
 preamble$ -- 1
-purify$ -- 306
+purify$ -- 334
 quote$ -- 0
-skip$ -- 1067
+skip$ -- 1171
 stack$ -- 0
-substring$ -- 1101
-swap$ -- 256
-text.length$ -- 26
+substring$ -- 1227
+swap$ -- 282
+text.length$ -- 30
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 557
+type$ -- 613
 warning$ -- 3
-while$ -- 240
+while$ -- 268
 width$ -- 0
-write$ -- 723
+write$ -- 803
 (There were 4 warnings)

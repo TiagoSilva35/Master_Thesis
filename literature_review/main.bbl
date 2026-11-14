@@ -1,4 +1,4 @@
-\begin{thebibliography}{52}
+\begin{thebibliography}{58}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -9,6 +9,12 @@
 Alejandro Almod{\'o}var, Mar Elizo, Patricia~A. Apell{\'a}niz, Santiago Zazo, and Juan Parras.
 \newblock {Kolmogorov-Arnold} causal generative models.
 \newblock arXiv:2603.20184, 2026.
+
+\bibitem[Arnold(1957)]{arnold1957functions}
+Vladimir~I. Arnold.
+\newblock On functions of three variables.
+\newblock \emph{Doklady Akademii Nauk SSSR}, 114\penalty0 (4):\penalty0 679--681, 1957.
+\newblock In Russian.
 
 \bibitem[Barocas et~al.(2023)Barocas, Hardt, and Narayanan]{barocas2023fairness}
 Solon Barocas, Moritz Hardt, and Arvind Narayanan.
@@ -36,15 +42,15 @@ Susanne Dandl, Christoph Molnar, Martin Binder, and Bernd Bischl.
 \newblock In \emph{Parallel Problem Solving from Nature -- {PPSN} {XVI}}, pages 448--469. Springer, 2020.
 \newblock \doi{10.1007/978-3-030-58112-1_31}.
 
+\bibitem[de~Boor(2001)]{deboor2001practical}
+Carl de~Boor.
+\newblock \emph{A Practical Guide to Splines}, volume~27 of \emph{Applied Mathematical Sciences}.
+\newblock Springer, New York, revised edition, 2001.
+
 \bibitem[De~Toni et~al.(2025)De~Toni, Teso, Lepri, and Passerini]{de2025time}
 Giovanni De~Toni, Stefano Teso, Bruno Lepri, and Andrea Passerini.
 \newblock Time can invalidate algorithmic recourse.
 \newblock In \emph{Proceedings of the 2025 ACM Conference on Fairness, Accountability, and Transparency}, pages 89--107, 2025.
-
-\bibitem[Deho et~al.(2024)Deho, Bewong, Kwashie, Li, Liu, Liu, and Joksimovic]{deho2024still}
-Oscar~Blessed Deho, Michael Bewong, Selasi Kwashie, Jiuyong Li, Jixue Liu, Lin Liu, and Srecko Joksimovic.
-\newblock Is it still fair? {A} comparative evaluation of fairness algorithms through the lens of covariate drift.
-\newblock arXiv:2409.12428, 2024.
 
 \bibitem[Fonseca et~al.(2023)Fonseca, Bell, Abrate, Bonchi, and Stoyanovich]{fonseca2023setting}
 Jo{\~a}o Fonseca, Andrew Bell, Carlo Abrate, Francesco Bonchi, and Julia Stoyanovich.
@@ -54,8 +60,7 @@ Jo{\~a}o Fonseca, Andrew Bell, Carlo Abrate, Francesco Bonchi, and Julia Stoyano
 \bibitem[Gama et~al.(2014)Gama, {\v{Z}}liobait{\.e}, Bifet, Pechenizkiy, and Bouchachia]{gama2014survey}
 Jo{\~a}o Gama, Indr{\.e} {\v{Z}}liobait{\.e}, Albert Bifet, Mykola Pechenizkiy, and Abdelhamid Bouchachia.
 \newblock A survey on concept drift adaptation.
-\newblock \emph{ACM Computing Surveys}, 46\penalty0 (4):\penalty0 44:1--44:37, 2014.
-\newblock \doi{10.1145/2523813}.
+\newblock \emph{ACM computing surveys (CSUR)}, 46\penalty0 (4):\penalty0 1--37, 2014.
 
 \bibitem[Hardt et~al.(2016)Hardt, Price, and Srebro]{hardt2016equality}
 Moritz Hardt, Eric Price, and Nati Srebro.
@@ -106,6 +111,12 @@ Niki Kilbertus, Mateo Rojas~Carulla, Giambattista Parascandolo, Moritz Hardt, Do
 \newblock Avoiding discrimination through causal reasoning.
 \newblock \emph{Advances in neural information processing systems}, 30, 2017.
 
+\bibitem[Kolmogorov(1957)]{kolmogorov1957representation}
+Andrei~N. Kolmogorov.
+\newblock On the representation of continuous functions of many variables by superposition of continuous functions of one variable and addition.
+\newblock \emph{Doklady Akademii Nauk SSSR}, 114\penalty0 (5):\penalty0 953--956, 1957.
+\newblock In Russian.
+
 \bibitem[K{\"o}nig et~al.(2025)K{\"o}nig, Fokkema, Freiesleben, Mendler-D{\"u}nner, and von Luxburg]{konig2026performative}
 Gunnar K{\"o}nig, Hidde Fokkema, Timo Freiesleben, Celestine Mendler-D{\"u}nner, and Ulrike von Luxburg.
 \newblock Performative validity of recourse explanations.
@@ -126,21 +137,25 @@ David Lewis.
 \newblock Counterfactuals and comparative possibility.
 \newblock In \emph{IFS: Conditionals, belief, decision, chance and time}, pages 57--85. Springer, 1973.
 
-\bibitem[Liu et~al.(2025)Liu, Liu, Chen, Tsai, Gao, and Yang]{liu2025understanding}
+\bibitem[Liu et~al.(2025{\natexlab{a}})Liu, Liu, Chen, Tsai, Gao, and Yang]{liu2025understanding}
 Bo-Yi Liu, Zhi-Xuan Liu, Kuan~Lun Chen, Shih-Yu Tsai, Jie Gao, and Hao-Tsung Yang.
 \newblock Understanding endogenous data drift in adaptive models with recourse-seeking users.
-\newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society}, volume~8, pages 1598--1610, 2025.
+\newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society}, volume~8, pages 1598--1610, 2025{\natexlab{a}}.
+
+\bibitem[Liu et~al.(2025{\natexlab{b}})Liu, Wang, Vaidya, Ruehle, Halverson, Soljacic, Hou, and Tegmark]{liu2025kan}
+Ziming Liu, Yixuan Wang, Sachin Vaidya, Fabian Ruehle, James Halverson, Marin Soljacic, Thomas Hou, and Max Tegmark.
+\newblock Kan: Kolmogorov--arnold networks.
+\newblock In \emph{International conference on learning representations}, volume 2025, pages 70367--70413, 2025{\natexlab{b}}.
 
 \bibitem[Louizos et~al.(2017)Louizos, Shalit, Mooij, Sontag, Zemel, and Welling]{louizos2017causal}
 Christos Louizos, Uri Shalit, Joris~M. Mooij, David Sontag, Richard Zemel, and Max Welling.
 \newblock Causal effect inference with deep latent-variable models.
 \newblock In \emph{Advances in Neural Information Processing Systems (NeurIPS)}, volume~30, 2017.
 
-\bibitem[Lu et~al.(2019)Lu, Liu, Dong, Gu, Gama, and Zhang]{lu2019learning}
-Jie Lu, Anjin Liu, Fan Dong, Feng Gu, Jo{\~a}o Gama, and Guangquan Zhang.
+\bibitem[Lu et~al.(2018)Lu, Liu, Dong, Gu, Gama, and Zhang]{lu2018learning}
+Jie Lu, Anjin Liu, Fan Dong, Feng Gu, Joao Gama, and Guangquan Zhang.
 \newblock Learning under concept drift: A review.
-\newblock \emph{IEEE Transactions on Knowledge and Data Engineering}, 31\penalty0 (12):\penalty0 2346--2363, 2019.
-\newblock \doi{10.1109/TKDE.2018.2876857}.
+\newblock \emph{IEEE transactions on knowledge and data engineering}, 31\penalty0 (12):\penalty0 2346--2363, 2018.
 
 \bibitem[Ma et~al.(2025)Ma, Li, Liu, Chen, Liu, Huang, and Zhang]{ma2025causal}
 Yiming Ma, Yanmin Li, Kaiyue Liu, Zhihao Chen, Lihua Liu, Hongbin Huang, and Hang Zhang.
@@ -157,11 +172,10 @@ Shira Mitchell, Eric Potash, Solon Barocas, Alexander D'Amour, and Kristian Lum.
 \newblock Algorithmic fairness: Choices, assumptions, and definitions.
 \newblock \emph{Annual review of statistics and its application}, 8\penalty0 (1):\penalty0 141--163, 2021.
 
-\bibitem[Moreno-Torres et~al.(2012)Moreno-Torres, Raeder, Alaiz-Rodr{\'i}guez, Chawla, and Herrera]{moreno2012unifying}
-Jose~G. Moreno-Torres, Troy Raeder, Roc{\'i}o Alaiz-Rodr{\'i}guez, Nitesh~V. Chawla, and Francisco Herrera.
+\bibitem[Moreno-Torres et~al.(2012)Moreno-Torres, Raeder, Alaiz-Rodr{\'\i}guez, Chawla, and Herrera]{moreno2012unifying}
+Jose~G Moreno-Torres, Troy Raeder, Roc{\'\i}o Alaiz-Rodr{\'\i}guez, Nitesh~V Chawla, and Francisco Herrera.
 \newblock A unifying view on dataset shift in classification.
-\newblock \emph{Pattern Recognition}, 45\penalty0 (1):\penalty0 521--530, 2012.
-\newblock \doi{10.1016/j.patcog.2011.06.019}.
+\newblock \emph{Pattern recognition}, 45\penalty0 (1):\penalty0 521--530, 2012.
 
 \bibitem[Mothilal et~al.(2020)Mothilal, Sharma, and Tan]{mothilal2020explaining}
 Ramaravind~K. Mothilal, Amit Sharma, and Chenhao Tan.
@@ -172,6 +186,12 @@ Ramaravind~K. Mothilal, Amit Sharma, and Chenhao Tan.
 Razieh Nabi and Ilya Shpitser.
 \newblock Fair inference on outcomes.
 \newblock In \emph{Proceedings of the AAAI conference on artificial intelligence}, volume~32, 2018.
+
+\bibitem[Noorizadegan et~al.(2026)Noorizadegan, Wang, Ling, and Dominguez-Morales]{noorizadegan2025practitioners}
+Amir Noorizadegan, Sifan Wang, Leevan Ling, and Juan~P. Dominguez-Morales.
+\newblock A practitioner's guide to {Kolmogorov-Arnold} networks.
+\newblock \emph{Computer Science Review}, 62:\penalty0 100991, 2026.
+\newblock \doi{10.1016/j.cosrev.2026.100991}.
 
 \bibitem[Olson et~al.(2021)Olson, Khanna, Neal, Li, and Wong]{Olson_2021}
 Matthew~L. Olson, Roli Khanna, Lawrence Neal, Fuxin Li, and Weng-Keen Wong.
@@ -208,6 +228,11 @@ Rafael Poyiadzi, Kacper Sokol, Raul Santos-Rodriguez, Tijl De~Bie, and Peter Fla
 \newblock {FACE}: Feasible and actionable counterfactual explanations.
 \newblock In \emph{Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society (AIES)}, pages 344--350, 2020.
 
+\bibitem[Prautzsch et~al.(2002)Prautzsch, Boehm, and Paluszny]{prautzsch2002bezier}
+Hartmut Prautzsch, Wolfgang Boehm, and Marco Paluszny.
+\newblock \emph{B{\'e}zier and B-spline techniques}, volume~6.
+\newblock Springer, 2002.
+
 \bibitem[Raghavan et~al.(2020)Raghavan, Barocas, Kleinberg, and Levy]{raghavan2020mitigating}
 Manish Raghavan, Solon Barocas, Jon Kleinberg, and Karen Levy.
 \newblock Mitigating bias in algorithmic hiring: Evaluating claims and practices.
@@ -228,7 +253,6 @@ Chris Russell.
 Bernhard Sch{\"o}lkopf, Francesco Locatello, Stefan Bauer, Nan~Rosemary Ke, Nal Kalchbrenner, Anirudh Goyal, and Yoshua Bengio.
 \newblock Toward causal representation learning.
 \newblock \emph{Proceedings of the IEEE}, 109\penalty0 (5):\penalty0 612--634, 2021.
-\newblock \doi{10.1109/JPROC.2021.3058954}.
 
 \bibitem[Shailaja et~al.(2018)Shailaja, Seetharamulu, and Jabbar]{shailaja2018machine}
 K~Shailaja, Banoth Seetharamulu, and MA~Jabbar.
@@ -247,6 +271,12 @@ Hidetoshi Shimodaira.
 \newblock ISSN 0378-3758.
 \newblock \doi{https://doi.org/10.1016/S0378-3758(00)00115-4}.
 \newblock URL \url{https://www.sciencedirect.com/science/article/pii/S0378375800001154}.
+
+\bibitem[Somvanshi et~al.(2025)Somvanshi, Javed, Islam, Pandit, and Das]{somvanshi2025survey}
+Shriyank Somvanshi, Syed~Aaqib Javed, Md~Monzurul Islam, Diwas Pandit, and Subasish Das.
+\newblock A survey on {Kolmogorov-Arnold} network.
+\newblock \emph{ACM Computing Surveys}, 58\penalty0 (2):\penalty0 1--35, 2025.
+\newblock \doi{10.1145/3743128}.
 
 \bibitem[Upadhyay et~al.(2021)Upadhyay, Joshi, and Lakkaraju]{upadhyay2021towards}
 Sohini Upadhyay, Shalmali Joshi, and Himabindu Lakkaraju.
@@ -275,10 +305,9 @@ Sandra Wachter, Brent Mittelstadt, and Chris Russell.
 \newblock \emph{Harv. JL \& Tech.}, 31:\penalty0 841, 2017.
 
 \bibitem[Webb et~al.(2016)Webb, Hyde, Cao, Nguyen, and Petitjean]{webb2016characterizing}
-Geoffrey~I. Webb, Roy Hyde, Hong Cao, Hai~Long Nguyen, and Fran{\c{c}}ois Petitjean.
+Geoffrey~I Webb, Roy Hyde, Hong Cao, Hai~Long Nguyen, and Francois Petitjean.
 \newblock Characterizing concept drift.
 \newblock \emph{Data Mining and Knowledge Discovery}, 30\penalty0 (4):\penalty0 964--994, 2016.
-\newblock \doi{10.1007/s10618-015-0448-4}.
 
 \bibitem[White and d'Avila Garcez(2019)]{white2019measurable}
 Adam White and Artur d'Avila Garcez.

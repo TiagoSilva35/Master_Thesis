@@ -87,12 +87,12 @@ $\sigma(z)$ & logistic function, $1 / (1 + e^{-z})$ & \ref{sec:bg-scm} \\
 $t$, $P_t$ & time window; distribution of the data in window $t$ & \ref{sec:bg-drift} \\
 \midrule
 \multicolumn{3}{@{}l}{\textit{Curves and the causal KAN}} \\
-$B_m$, $\beta_m$ & $m$-th B-spline basis function and its height (coefficient) & \ref{sec:bg-splines} \\ % planned
-$\alpha_j$ & constant term in the equation of $X_j$ & \ref{sec:bg-splines} \\ % planned
-$\phi_{ij}$ & curve on the edge $X_i \to X_j$ & \ref{sec:bg-splines} \\ % planned
-$\psi_{klj}$ & surface for the pair of parents $X_k$ and $X_l$ of $X_j$ & \ref{sec:bg-splines} \\ % planned
-$\lambda$ & strength of the smoothness belief & \ref{sec:bg-splines} \\ % planned
-$\sigma_j^2$ & noise variance of $X_j$ & \ref{sec:bg-splines} \\ % planned
+$B_m$, $\beta_m$ & $m$-th B-spline basis function and its height (coefficient) & \ref{sec:bg-kan} \\
+$\alpha_j$ & constant term in the equation of $X_j$ & \ref{chap:proposed-approach} \\ % planned
+$\phi_{ij}$ & curve on the edge $X_i \to X_j$ & \ref{chap:proposed-approach} \\ % planned
+$\psi_{klj}$ & surface for the pair of parents $X_k$ and $X_l$ of $X_j$ & \ref{chap:proposed-approach} \\ % planned
+$\lambda$ & strength of the smoothness belief & \ref{chap:proposed-approach} \\ % planned
+$\sigma_j^2$ & noise variance of $X_j$ & \ref{chap:proposed-approach} \\ % planned
 \bottomrule
 \end{tabular}
 \caption[Notation]{Symbols used in more than one section, with the section that defines each.}
@@ -224,89 +224,6 @@ on the features they can change \cite{karimi2021algorithmic}.
     \label{fig:interventions}
 \end{figure}
 
-\subsection{Concept Drift and Distribution Shift}
-\label{sec:bg-drift}
-
-% Sources: Gama et al. (2014), abstract (drift as a change in the relation between inputs and
-% target). Webb et al. (2016), arXiv:1511.03816v6: Sec. 3, Eqs. (1)-(4) (concept = P(X, Y),
-% following Gama et al.; drift as a change in it; counterpart of dataset shift), Sec. 4.2.1-4.2.2
-% (class and covariate drift, their examples, and Moreno-Torres et al.'s definitions with their
-% causal-direction constraints, which Webb et al. question). Moreno-Torres et al. (2012) were
-% checked only through Webb et al. Sec. 4.2 and Lu et al. Sec. 2.1, not in the original.
-% Lu et al. (2019), arXiv:2004.05785: Sec. 1 (detection, understanding, adaptation), Sec. 2.1
-% (definition, Sources I-III, virtual and actual drift), Sec. 2.2 and Fig. 4 (four drift types),
-% Sec. 3 (when, how, where). Scholkopf et al. (2021), Sec. 4: ICM principle and the Sparse
-% Mechanism Shift hypothesis. Deho et al. (2024), abstract.
-A model is trained on data from the past and applied to people in the present. When the data change
-in between, a model that was accurate when it was trained can become outdated.
-\citet{gama2014survey} describe this problem, concept drift, as a change over time in the relation
-between the input data and the target variable. Following them, \citet{webb2016characterizing} call
-the joint distribution $P_t(\mathbf{X}, Y)$ of the features and the outcome in time window $t$ the
-concept at time $t$, and most of the literature now says that concept drift occurs when this
-distribution changes \cite{lu2019learning}:
-\begin{equation}
-  P_t(\mathbf{X}, Y) \neq P_{t+1}(\mathbf{X}, Y).
-  \label{eq:bg-drift}
-\end{equation}
-\citet{webb2016characterizing} describe concept drift as the stream-learning counterpart of dataset
-shift, the name used in batch learning when a model is trained on one dataset and tested on another
-\cite{moreno2012unifying}.
-
-\paragraph{What changes.}
-Writing $P_t(\mathbf{X}, Y) = P_t(\mathbf{X})\,P_t(Y \mid \mathbf{X})$ separates two sources of
-drift \cite{lu2019learning}. When only $P_t(\mathbf{X})$ changes, the population changes but the
-relation between features and outcome does not, as when the demographics of a company's customers
-change over time \cite{webb2016characterizing}. This does not move the decision boundary, and is
-also called virtual drift. When $P_t(Y \mid \mathbf{X})$ changes, the relation itself changes, as
-when a new tax law changes which tax-payers count as compliant \cite{webb2016characterizing}. The
-decision boundary then moves and the model's accuracy drops, which is why this is called actual
-drift. In practice, the two often occur together \cite{lu2019learning}. For dataset shift,
-\citet{moreno2012unifying} distinguish covariate shift \cite{SHIMODAIRA2000227}, in which
-$P(\mathbf{X})$ changes while $P(Y \mid \mathbf{X})$ stays the same, prior probability shift, in
-which $P(Y)$ changes while $P(\mathbf{X} \mid Y)$ stays the same, and concept shift, in which the
-relation between features and outcome changes. They also tie covariate shift to problems in which
-the features cause the outcome, and prior probability shift to problems in which the outcome causes
-the features. \citet{webb2016characterizing} question this restriction, because in many real
-problems some features cause the outcome, others are caused by it, and others share causes with it.
-The names also vary: \citet{webb2016characterizing} call a change in $P(Y \mid \mathbf{X})$ class
-drift, and note that it is also called real concept drift or prior probability shift.
-
-\paragraph{How drift unfolds.}
-Drift also differs in how it unfolds over time. \citet{lu2019learning} distinguish four types: in
-sudden drift, a new concept appears within a short time; in gradual drift, a new concept gradually
-replaces the old one; in incremental drift, the old concept changes step by step into the new one;
-and with reoccurring concepts, an old concept returns after some time. They also organise learning
-under drift into three tasks: detecting whether drift has occurred, understanding it, and adapting
-the model to it. Understanding drift means finding when it occurs and how long it lasts, how severe
-it is, and where it occurs, that is, which regions of the data it affects. Methods for detecting
-and explaining drift are reviewed in Section~\ref{sec:lr-drift-explanation}.
-
-\paragraph{Drift in a causal model.}
-In an SCM, the joint distribution factorises into one mechanism per variable
-(Equation~\ref{eq:bg-markov}), and by the principle of independent mechanisms one of them can
-change while the others stay the same (Section~\ref{sec:bg-scm}). \citet{scholkopf2021toward} go
-further with the sparse mechanism shift hypothesis: small changes in the distribution tend to affect
-only a few mechanisms, rather than all of them at once. Drift can then be described by which
-mechanisms changed. This turns the question of where drift occurs, which \citet{lu2019learning}
-answer with regions of the data, into a question about the causal model, and the categories above
-do not answer it: a change in $P(\mathbf{X})$ can come from any of the mechanisms of the features.
-
-The running example shows why this matters for recourse. Suppose that people start saving less, so
-that the equation of savings becomes $X_2 := 0.4\,X_1^2 + U_2$, while the equations of income and of
-the decision stay the same. Since the equation of $Y$ is unchanged, so is
-$P(Y \mid X_1, X_2)$: for the classifier this is covariate shift, and $h$ needs no update. The
-consequential recommendation of Section~\ref{sec:bg-recourse}, however, no longer works. For the
-person with $\mathbf{x}^{\mathtt{F}} = (2, 2)$, abduction now gives $u_2 = 2 - 0.4 \cdot 4 = 0.4$.
-Raising income to $2.47$ now raises savings only to about $2.84$, so the score
-$2.47 + 0.5 \cdot 2.84 \approx 3.89$ stays below 4 and the loan is still rejected; under the new
-equation, income has to reach about $2.52$. Recourse computed with an outdated causal model can thus
-fail even when the classifier itself is still valid. Recourse under drift, and methods that learn
-causal structure from changes in the distribution, are reviewed in Section~\ref{sec:lr-drift}.
-
-Drift can also undo fairness. \citet{deho2024still} find that covariate drift is common in real
-data and can substantially reduce the fairness of models trained to be fair, and that the size and
-direction of the drift do not reliably predict how much fairness is lost. Fairness under
-distribution shift is reviewed in Section~\ref{sec:lr-fairness-shift}.
 
 \subsection{Counterfactual Explanations and Algorithmic Recourse}
 \label{sec:bg-recourse}
@@ -535,31 +452,31 @@ differs between groups, so that $A$ and $Y$ are dependent, no two of them can ho
 except in degenerate cases \citep[Ch.~3]{barocas2023fairness}.
 
 \begin{figure}[htbp]
+  \centering
+  
+  \begin{subfigure}{0.48\textwidth}
     \centering
-
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[scale=\graphscale]{figures/same-distribution-graph-a.pdf}
-        \caption{No unresolved discrimination}
-        \label{fig:bg-same-distribution-a}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[scale=\graphscale]{figures/same-distribution-graph-b.pdf}
-        \caption{Unresolved discrimination}
-        \label{fig:bg-same-distribution-b}
-    \end{subfigure}
-
-    \caption[Two causal graphs with the same joint distribution]{Two causal graphs, constructed by
-    \citet{hardt2016equality} and redrawn by \citet{kilbertus2017avoiding}, that can generate the
-    same joint distribution of $A$, $Y$, the features $X_1$ and $X_2$, and the best unconstrained
-    (Bayes-optimal) predictor $\hat{Y}^{*}$ ($R^{*}$ in the original). The shaded $X_1$ is a
-    resolving variable, a route through which $A$ may influence the decision in an accepted way
-    (see the paragraph on path-specific fairness). In (a), $A$ reaches $\hat{Y}^{*}$ only through
-    $X_1$; in (b), it reaches $\hat{Y}^{*}$ along the red paths, neither of which passes through
-    $X_1$. Since the data look the same, no observational criterion can tell the two apart.}
-    \label{fig:bg-same-distribution}
+    \includegraphics[scale=\graphscale]{figures/same-distribution-graph-a.pdf}
+    \caption{No unresolved discrimination}
+    \label{fig:bg-same-distribution-a}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}{0.48\textwidth}
+    \centering
+    \includegraphics[scale=\graphscale]{figures/same-distribution-graph-b.pdf}
+    \caption{Unresolved discrimination}
+    \label{fig:bg-same-distribution-b}
+  \end{subfigure}
+  
+  \caption[Two causal graphs with the same joint distribution]{Two causal graphs, constructed by
+  \citet{hardt2016equality} and redrawn by \citet{kilbertus2017avoiding}, that can generate the
+  same joint distribution of $A$, $Y$, the features $X_1$ and $X_2$, and the best unconstrained
+  (Bayes-optimal) predictor $\hat{Y}^{*}$ ($R^{*}$ in the original). The shaded $X_1$ is a
+  resolving variable, a route through which $A$ may influence the decision in an accepted way
+  (see the paragraph on path-specific fairness). In (a), $A$ reaches $\hat{Y}^{*}$ only through
+  $X_1$; in (b), it reaches $\hat{Y}^{*}$ along the red paths, neither of which passes through
+  $X_1$. Since the data look the same, no observational criterion can tell the two apart.}
+  \label{fig:bg-same-distribution}
 \end{figure}
 
 \paragraph{Counterfactual fairness.}
@@ -614,16 +531,16 @@ it would have been the same in a counterfactual world in which $A$ had been diff
 unfair paths only (Figure~\ref{fig:bg-path-specific}).
 
 \begin{figure}[htbp]
-    \centering
-    \includegraphics[scale=\graphscale]{figures/path-specific-graph.pdf}
-    \caption[Path-specific fairness in the Berkeley admissions case]{The Berkeley admissions case,
-    adapted from \citet{chiappa2019path}. Gender $A$ affects the admission decision $\hat{Y}$
-    directly and through the choice of department $X_1$; $X_2$ is the applicant's qualifications.
-    The route through the department is accepted as fair, which makes $X_1$ a resolving variable
-    (shaded), while the direct route is unfair (red). Counterfactual fairness treats both routes as
-    unfair; path-specific counterfactual fairness only asks that the decision would not change if
-    gender were different along the red route.}
-    \label{fig:bg-path-specific}
+  \centering
+  \includegraphics[scale=\graphscale]{figures/path-specific-graph.pdf}
+  \caption[Path-specific fairness in the Berkeley admissions case]{The Berkeley admissions case,
+  adapted from \citet{chiappa2019path}. Gender $A$ affects the admission decision $\hat{Y}$
+  directly and through the choice of department $X_1$; $X_2$ is the applicant's qualifications.
+  The route through the department is accepted as fair, which makes $X_1$ a resolving variable
+  (shaded), while the direct route is unfair (red). Counterfactual fairness treats both routes as
+  unfair; path-specific counterfactual fairness only asks that the decision would not change if
+  gender were different along the red route.}
+  \label{fig:bg-path-specific}
 \end{figure}
 
 All of these criteria concern the decision itself. Section~\ref{sec:lr-fair-recourse} reviews how
@@ -631,34 +548,223 @@ they have been carried over to recourse, where the quantity compared between gro
 person and their counterfactual twin, is the cost of the action needed to change the decision
 \cite{vonkugelgen2022fairness}.
 
+\subsection{Concept Drift and Distribution Shift}
+\label{sec:bg-drift}
 
+% Sources: Gama et al. (2014), abstract (drift as a change in the relation between inputs and
+% target). Webb et al. (2016), arXiv:1511.03816v6: Sec. 3, Eqs. (1)-(4) (concept = P(X, Y),
+% following Gama et al.; drift as a change in it; counterpart of dataset shift), Sec. 4.2.1-4.2.2
+% (class and covariate drift, their examples, and Moreno-Torres et al.'s definitions with their
+% causal-direction constraints, which Webb et al. question). Moreno-Torres et al. (2012) were
+% checked only through Webb et al. Sec. 4.2 and Lu et al. Sec. 2.1, not in the original.
+% Lu et al. (2019), arXiv:2004.05785: Sec. 1 (detection, understanding, adaptation), Sec. 2.1
+% (definition, Sources I-III, virtual and actual drift), Sec. 2.2 and Fig. 4 (four drift types),
+% Sec. 3 (when, how, where). Scholkopf et al. (2021), Sec. 4: ICM principle and the Sparse
+% Mechanism Shift hypothesis. Deho et al. (2024), abstract.
+A model is trained on data from the past and applied to people in the present. When the data changes
+in between, a model that was accurate when it was trained may become outdated.
+\citet{gama2014survey} describe this problem, concept drift, as a change over time in the relation
+between the input data and the target variable. Following them, \citet{webb2016characterizing} define
+the joint distribution $P_t(\mathbf{X}, Y)$ of the features and the outcome in time window $t$ as the
+concept at time $t$, and most of the literature now says that concept drift occurs when this
+distribution changes \cite{lu2018learning}:
+\begin{equation}
+  P_t(\mathbf{X}, Y) \neq P_{t+1}(\mathbf{X}, Y).
+  \label{eq:bg-drift}
+\end{equation}
+\citet{webb2016characterizing} describe concept drift as the stream-learning counterpart of dataset
+shift, the name used in batch learning when a model is trained on one dataset and tested on another
+\cite{moreno2012unifying}.
 
-\subsection{Splines and Additive Models}
-\label{sec:bg-splines}
+\paragraph{What changes.}
+Writing $P_t(\mathbf{X}, Y) = P_t(\mathbf{X})\,P_t(Y \mid \mathbf{X})$ separates two sources of
+drift \cite{lu2018learning}, and \citet{moreno2012unifying} draw similar distinctions for dataset
+shift, among them covariate shift \cite{SHIMODAIRA2000227}; Table~\ref{tab:bg-drift-types} lists
+both. In virtual drift, only the population evolves,
+so the decision boundary remains the same. In actual drift, the relation between features and
+outcome itself shifts, as when a new tax law redefines which taxpayers are considered to be
+following the law \cite{webb2016characterizing}; the decision boundary then moves and the model's
+accuracy drops. In practice, the two often occur together \cite{lu2018learning}. Sometimes names
+vary: \citet{webb2016characterizing} call a change in $P(Y \mid \mathbf{X})$ class drift, and note
+that it is also called real concept drift or prior probability shift, although
+\citet{moreno2012unifying} use the latter name for a change in $P(Y)$.
 
-% TO WRITE: Bézier curves and B-splines (bumps, knots, intervals + 3 heights), additive models,
-% and tensor-product surfaces for interactions.
-% Suggested reading:
-% - de Boor (2001), A Practical Guide to Splines (revised ed.), Springer: the B-spline definition
-%   and the Cox-de Boor recursion (the tests check the code against it).
-% - Hastie & Tibshirani (1990), Generalized Additive Models, Chapman & Hall: the statistical
-%   ancestor of "one curve per edge, summed at the node".
-% - Wood (2017), Generalized Additive Models: An Introduction with R (2nd ed.), CRC Press: one
-%   modern reference for penalised splines, tensor products and smoothness selection.
-% - Wood (2006), Low-Rank Scale-Invariant Tensor Product Smooths for Generalized Additive Mixed
-%   Models, Biometrics: the ti()-style surfaces that hold only the interaction.
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}lllX@{}}
+\toprule
+Name & Changes & Stays fixed & Note \\
+\midrule
+\multicolumn{4}{@{}l}{\emph{Concept drift} \cite{lu2018learning}} \\
+\quad Virtual drift & $P(\mathbf{X})$ & $P(Y \mid \mathbf{X})$ & boundary stays \\
+\quad Actual drift & $P(Y \mid \mathbf{X})$ & nothing required & boundary moves \\
+\addlinespace
+\multicolumn{4}{@{}l}{\emph{Dataset shift} \cite{moreno2012unifying}} \\
+\quad Covariate shift & $P(\mathbf{X})$ & $P(Y \mid \mathbf{X})$ & $\mathbf{X}$ causes $Y$ \\
+\quad Prior probability shift & $P(Y)$ & $P(\mathbf{X} \mid Y)$ & $Y$ causes $\mathbf{X}$ \\
+\quad Concept shift & $P(Y \mid \mathbf{X})$ & $P(\mathbf{X})$ & $\mathbf{X}$ causes $Y$ \\
+ & $P(\mathbf{X} \mid Y)$ & $P(Y)$ & $Y$ causes $\mathbf{X}$ \\
+\bottomrule
+\end{tabularx}
+\caption[Types of distribution change]{Types of distribution change, by the part of
+$P(\mathbf{X}, Y)$ that changes and the part that must stay fixed. For concept drift, the note gives
+the effect on the decision boundary; actual drift requires nothing to stay fixed, so
+$P(\mathbf{X})$ may change at the same time. For dataset shift, the note gives the kind of problem
+each type is tied to; concept shift has one form for each kind.}
+\label{tab:bg-drift-types}
+\end{table}
+
+\paragraph{How drift unfolds.}
+Drift also differs in how it unfolds over time. \citet{lu2018learning} distinguish four types: in
+sudden drift, a new concept appears within a short time; in gradual drift, a new concept gradually
+replaces the old one; in incremental drift, the old concept changes step by step into the new one;
+and with reoccurring concepts, an old concept returns after some time. They also organise learning
+under drift into three tasks: detecting whether drift has occurred, understanding it, and adapting
+the model to it. Understanding drift means finding when it occurs and how long it lasts, how severe
+it is, and where it occurs, that is, which regions of the data it affects. Methods for detecting
+and explaining drift are reviewed in Section~\ref{sec:lr-drift-explanation}.
+
+\paragraph{Drift in a causal model.}
+In an SCM, the joint distribution factorises into one mechanism per variable
+(Equation~\ref{eq:bg-markov}), and by the principle of independent mechanisms one of them can
+change while the others stay the same (Section~\ref{sec:bg-scm}). \citet{scholkopf2021toward} go
+further with the sparse mechanism shift hypothesis: small changes in the distribution tend to affect
+only a few mechanisms, rather than all of them at once. Drift can then be described by which
+mechanisms changed. This turns the question of where drift occurs, which \citet{lu2018learning}
+answer with regions of the data, into a question about the causal model, and the categories above
+do not answer it: a change in $P(\mathbf{X})$ can come from any of the mechanisms of the features.
+
+The running example shows why this matters for recourse. Suppose that people start saving less, so
+that the equation of savings becomes $X_2 := 0.4\,X_1^2 + U_2$, while the equations of income and of
+the decision stay the same. Since the equation of $Y$ is unchanged, so is
+$P(Y \mid X_1, X_2)$: for the classifier this is covariate shift, and $h$ needs no update. The
+consequential recommendation of Section~\ref{sec:bg-recourse}, however, no longer works. For the
+person with $\mathbf{x}^{\mathtt{F}} = (2, 2)$, abduction now gives $u_2 = 2 - 0.4 \cdot 4 = 0.4$.
+Raising income to $2.47$ now raises savings only to about $2.84$, so the score
+$2.47 + 0.5 \cdot 2.84 \approx 3.89$ stays below 4 and the loan is still rejected; under the new
+equation, income has to reach about $2.52$. Recourse computed with an outdated causal model can thus
+fail even when the classifier itself is still valid. Recourse under drift, and methods that learn
+causal structure from changes in the distribution, are reviewed in Section~\ref{sec:lr-drift}.
 
 \subsection{Kolmogorov--Arnold Networks}
 \label{sec:bg-kan}
 
-% TO WRITE: the Kolmogorov--Arnold representation theorem, KAN layers (learnable curves on edges,
-% sums at nodes), and why a causal graph whose equations are curves is itself a KAN.
-% Suggested reading:
-% - Kolmogorov (1957), On the Representation of Continuous Functions of Many Variables by
-%   Superposition of Continuous Functions of One Variable and Addition, Doklady Akademii Nauk SSSR:
-%   the theorem behind the name.
-% - Liu et al. (2025), KAN: Kolmogorov--Arnold Networks, ICLR (cited in Chapter 1 as liu2025kan,
-%   not yet in references.bib): the architecture itself.
-% - Somvanshi et al. (2025) (somvanshi2025survey) and Noorizadegan et al. (2025)
-%   (noorizadegan2025practitioners), both in references.bib: surveys of KAN variants, including
-%   B-spline bases.
+% Sources: Kolmogorov (1957), Doklady Akademii Nauk SSSR 114(5):953-956, and Arnold (1957),
+% 114(4):679-681 (both in Russian). Girosi & Poggio (1989). Liu et al. (2025): the theorem on
+% [0,1]^n with 2n+1 outer terms; the [n, 2n+1, 1] shape; a KAN layer as a matrix of 1D functions
+% whose nodes only sum; each curve as w_b silu(x) + w_s spline(x) (w_s is absorbed into the heights
+% here); grid extension; sparsity penalty, pruning and symbolic formulas; slower training. Liu et
+% al. write the inner functions as phi_{q,p}; here the first index is the input. de Boor (2001):
+% B-splines. Noorizadegan et al. (2026), Sec. 6: B-spline, Chebyshev and other bases.
+Kolmogorov--Arnold Networks (KANs) \cite{liu2025kan} are neural networks whose design follows a
+theorem of Kolmogorov and Arnold. This subsection presents the theorem, the structure of a KAN and
+the curves it is made of.
+
+\paragraph{The representation theorem.}
+\citet{kolmogorov1957representation} proved that every continuous function $f$ of $n$ variables on
+$[0, 1]^n$ can be written as
+\begin{equation}
+  f(x_1, \dots, x_n) = \sum_{q=1}^{2n+1} \Phi_q\!\left( \sum_{p=1}^{n} \phi_{pq}(x_p) \right),
+  \label{eq:bg-ka}
+\end{equation}
+where the inner functions $\phi_{pq}$ and the outer functions $\Phi_q$ are continuous functions of
+a single variable. In other words, functions of one variable and addition are enough to build any
+continuous function of many variables. For example, the product of two positive numbers is
+$x_1 x_2 = \exp(\ln x_1 + \ln x_2)$. The theorem bears both names because
+\citet{arnold1957functions} had shown shortly before that every continuous function of three
+variables can be built from continuous functions of two. The theorem only guarantees that the inner
+and outer functions exist, and they can be highly irregular, even fractal \cite{liu2025kan}.
+
+\paragraph{Structure of a KAN.}
+\citet{liu2025kan} turn the theorem into a network that can be trained
+(Figure~\ref{fig:bg-kan}). A KAN layer with inputs $z_1, \dots, z_n$ and outputs
+$z'_1, \dots, z'_{n'}$ places a learnable curve $\phi_{pq}$ on the edge from input $p$ to output
+$q$, and each output adds the curves that reach it:
+\begin{equation}
+  z'_q = \sum_{p=1}^{n} \phi_{pq}(z_p), \qquad q = 1, \dots, n'.
+  \label{eq:bg-kan-layer}
+\end{equation}
+A KAN is a stack of such layers, in which the outputs of one layer are the inputs of the next.
+Equation~\ref{eq:bg-ka} is a KAN with two layers of shape $[n, 2n+1, 1]$, and \citet{liu2025kan}
+allow any number of layers of any width. A KAN reverses the design of a multilayer perceptron
+(MLP): in an MLP, each edge multiplies its input by a learnable weight and each node applies a fixed
+activation function, whereas in a KAN, each edge applies a learnable curve and each node only adds.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale=\graphscale]{figures/kan-diagram.pdf}
+  \caption[A small KAN]{A KAN of shape $[2, 2, 1]$. Each edge carries a learnable curve, drawn as
+  a small plot, and each node adds the curves that reach it.}
+  \label{fig:bg-kan}
+\end{figure}
+
+\paragraph{The curves.}
+Each curve is described by a finite set of numbers, which are learned from data in the same way as
+the weights of an MLP. \citet{liu2025kan} write each curve as
+\begin{equation}
+  \phi(x) = w\,\mathrm{silu}(x) + \sum_{m=1}^{M} \beta_m B_m(x),
+  \label{eq:bg-kan-curve}
+\end{equation}
+where $\mathrm{silu}(x) = x / (1 + e^{-x})$ is a fixed function with a learned weight $w$, which
+plays the role of a residual connection, and the sum is a B-spline curve with heights $\beta_m$.
+B-splines are easiest to understand through Bézier curves \cite{prautzsch2002bezier}. A cubic
+Bézier curve is drawn from four control points $V_1, \dots, V_4$:
+\begin{equation}
+  f(t) = (1-t)^3\,V_1 + 3t(1-t)^2\,V_2 + 3t^2(1-t)\,V_3 + t^3\,V_4, \qquad t \in [0, 1].
+  \label{eq:bg-bezier}
+\end{equation}
+As $t$ goes from 0 to 1, the point $f(t)$ travels from $V_1$ to $V_4$, pulled towards $V_2$ and
+$V_3$ on the way (Figure~\ref{fig:bg-bezier}a). The weights of the four points depend only on $t$,
+are never negative and add up to one (Figure~\ref{fig:bg-bezier}b), so the curve stays inside the
+convex hull of its control points.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[scale=\graphscale]{figures/bezier-a.pdf}
+        \caption{The curve}
+        \label{fig:bg-bezier-a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[scale=\graphscale]{figures/bezier-b.pdf}
+        \caption{The weights}
+        \label{fig:bg-bezier-b}
+    \end{subfigure}
+    \caption[A cubic Bézier curve]{A cubic Bézier curve. (a) The curve, its four control points
+    and their convex hull (shaded); the marked point is
+    $f(0.5) = \tfrac18 V_1 + \tfrac38 V_2 + \tfrac38 V_3 + \tfrac18 V_4$. (b) The weight of each
+    control point as $t$ goes from 0 to 1; the dots at $t = 0.5$ are the weights of $f(0.5)$.}
+    \label{fig:bg-bezier}
+\end{figure}
+
+A B-spline curve joins cubic Bézier pieces without a kink (Figure~\ref{fig:bg-bspline}). Points
+called knots divide the range of $x$ into intervals, which form the grid of the curve. Each
+B-spline $B_m$ is a fixed bump that spans four neighbouring intervals \cite{deboor2001practical},
+and the curve adds up the bumps, each scaled by its height $\beta_m$. On each interval only four
+bumps are nonzero, so there the curve is a single cubic piece, and neighbouring pieces join
+smoothly at the knots. A grid of $K$ intervals has $K + 3$ heights, and changing one height moves
+the curve over at most four intervals. \citet{liu2025kan} make the grid finer during training,
+which they call grid extension. Other KANs use other families of curves instead of B-splines,
+such as Chebyshev polynomials \cite{somvanshi2025survey, noorizadegan2025practitioners}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[scale=\graphscale]{figures/bspline-pieces.pdf}
+  \caption[A cubic B-spline curve]{A cubic B-spline curve with three intervals and six heights.
+  Top: the heights $\beta_1, \dots, \beta_6$ (circles), joined by a dashed line, and the curve,
+  made of one cubic piece per interval, with the middle piece in red; the dots mark the knots
+  where the pieces join. Bottom: the six bumps $B_m$; at $x = 1.3$ (vertical line), four of them
+  are nonzero, and their values add up to one. The shaded regions lie outside the range of $x$.}
+  \label{fig:bg-bspline}
+\end{figure}
+
+\paragraph{Interpretability.}
+Since every curve has one input and one output, it can be plotted, so a trained KAN can be
+inspected curve by curve. To make a KAN easier to read, \citet{liu2025kan} train it with a penalty
+that pushes unimportant curves towards zero, prune the edges whose curves remain small, and replace
+curves by symbolic formulas, such as $x^2$ or $\sin x$, when one fits. They also note that KANs can
+be slower to train than MLPs but have less parameters.

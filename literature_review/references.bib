@@ -248,6 +248,122 @@
   year         = {2026}
 }
 
+% Checked against the ICLR 2025 proceedings PDF and arXiv:2404.19756.
+@inproceedings{liu2025kan,
+  title={KAN: Kolmogorov--arnold networks},
+  author={Liu, Ziming and Wang, Yixuan and Vaidya, Sachin and Ruehle, Fabian and Halverson, James and Soljacic, Marin and Hou, Thomas and Tegmark, Max},
+  booktitle={International conference on learning representations},
+  volume={2025},
+  pages={70367--70413},
+  year={2025}
+}
+
+% Checked against Math-Net.Ru (Doklady archive). The paper is in Russian.
+@article{kolmogorov1957representation,
+  author  = {Kolmogorov, Andrei N.},
+  title   = {On the Representation of Continuous Functions of Many Variables by Superposition of Continuous Functions of One Variable and Addition},
+  journal = {Doklady Akademii Nauk SSSR},
+  volume  = {114},
+  number  = {5},
+  pages   = {953--956},
+  year    = {1957},
+  note    = {In Russian}
+}
+
+% Checked against Math-Net.Ru (Doklady archive). The paper is in Russian.
+@article{arnold1957functions,
+  author  = {Arnold, Vladimir I.},
+  title   = {On Functions of Three Variables},
+  journal = {Doklady Akademii Nauk SSSR},
+  volume  = {114},
+  number  = {4},
+  pages   = {679--681},
+  year    = {1957},
+  note    = {In Russian}
+}
+
+% Checked against dblp.
+@article{girosi1989representation,
+  author  = {Girosi, Federico and Poggio, Tomaso},
+  title   = {Representation Properties of Networks: {Kolmogorov's} Theorem Is Irrelevant},
+  journal = {Neural Computation},
+  volume  = {1},
+  number  = {4},
+  pages   = {465--469},
+  year    = {1989},
+  doi     = {10.1162/neco.1989.1.4.465}
+}
+
+% ---------------------------------------------------------------------------
+% Splines and additive models
+% ---------------------------------------------------------------------------
+
+% Checked against the Springer catalogue (revised edition; first edition 1978).
+@book{deboor2001practical,
+  author    = {de Boor, Carl},
+  title     = {A Practical Guide to Splines},
+  edition   = {Revised},
+  series    = {Applied Mathematical Sciences},
+  volume    = {27},
+  publisher = {Springer},
+  address   = {New York},
+  year      = {2001}
+}
+
+% Checked against Project Euclid.
+@article{eilers1996flexible,
+  author  = {Eilers, Paul H. C. and Marx, Brian D.},
+  title   = {Flexible Smoothing with {B}-splines and Penalties},
+  journal = {Statistical Science},
+  volume  = {11},
+  number  = {2},
+  pages   = {89--121},
+  year    = {1996},
+  doi     = {10.1214/ss/1038425655}
+}
+
+% Checked against Crossref.
+@article{lang2004bayesian,
+  author  = {Lang, Stefan and Brezger, Andreas},
+  title   = {{Bayesian} {P}-Splines},
+  journal = {Journal of Computational and Graphical Statistics},
+  volume  = {13},
+  number  = {1},
+  pages   = {183--212},
+  year    = {2004},
+  doi     = {10.1198/1061860043010}
+}
+
+% Checked against library catalogues.
+@book{hastie1990generalized,
+  author    = {Hastie, Trevor J. and Tibshirani, Robert J.},
+  title     = {Generalized Additive Models},
+  series    = {Monographs on Statistics and Applied Probability},
+  volume    = {43},
+  publisher = {Chapman and Hall},
+  address   = {London},
+  year      = {1990}
+}
+
+% Checked against the publisher's page (Routledge/CRC).
+@book{wood2017generalized,
+  author    = {Wood, Simon N.},
+  title     = {Generalized Additive Models: An Introduction with {R}},
+  edition   = {Second},
+  publisher = {Chapman and Hall/CRC},
+  address   = {Boca Raton, FL},
+  year      = {2017}
+}
+
+% Checked against the Springer catalogue (Mathematics and Visualization, 2002).
+@book{prautzsch2002bezier,
+  title={B{\'e}zier and B-spline techniques},
+  author={Prautzsch, Hartmut and Boehm, Wolfgang and Paluszny, Marco},
+  volume={6},
+  year={2002},
+  publisher={Springer}
+}
+
 % ---------------------------------------------------------------------------
 % Foundations -- surveys and position papers
 % ---------------------------------------------------------------------------
@@ -300,14 +416,15 @@ keywords = {Algorithmic recourse, contrastive explanations and consequential rec
   doi     = {10.1145/3743128}
 }
 
-% VERIFY: the year (2025) and the DOI (cosrev.2026) disagree; check the issue date.
+% Checked against Crossref: November 2026 issue, four authors. The key keeps "2025" so that
+% existing references to it still work.
 @article{noorizadegan2025practitioners,
-  author  = {Noorizadegan, Amir and Wang, Sifan and Ling, Leevan},
+  author  = {Noorizadegan, Amir and Wang, Sifan and Ling, Leevan and Dominguez-Morales, Juan P.},
   title   = {A Practitioner's Guide to {Kolmogorov-Arnold} Networks},
   journal = {Computer Science Review},
   volume  = {62},
   pages   = {100991},
-  year    = {2025},
+  year    = {2026},
   doi     = {10.1016/j.cosrev.2026.100991}
 }
 
@@ -551,58 +668,58 @@ keywords = {Algorithmic recourse, contrastive explanations and consequential rec
 % gama2014survey and moreno2012unifying could not be opened (checked only through Webb et al. and
 % Lu et al.).
 @article{gama2014survey,
-  author    = {Gama, Jo{\~a}o and {\v{Z}}liobait{\.e}, Indr{\.e} and Bifet, Albert and Pechenizkiy, Mykola and Bouchachia, Abdelhamid},
-  title     = {A Survey on Concept Drift Adaptation},
-  journal   = {ACM Computing Surveys},
-  volume    = {46},
-  number    = {4},
-  pages     = {44:1--44:37},
-  year      = {2014},
-  doi       = {10.1145/2523813}
+  title={A survey on concept drift adaptation},
+  author={Gama, Jo{\~a}o and {\v{Z}}liobait{\.e}, Indr{\.e} and Bifet, Albert and Pechenizkiy, Mykola and Bouchachia, Abdelhamid},
+  journal={ACM computing surveys (CSUR)},
+  volume={46},
+  number={4},
+  pages={1--37},
+  year={2014},
+  publisher={ACM, New York, NY, USA}
 }
 
-@article{lu2019learning,
-  author    = {Lu, Jie and Liu, Anjin and Dong, Fan and Gu, Feng and Gama, Jo{\~a}o and Zhang, Guangquan},
-  title     = {Learning under Concept Drift: A Review},
-  journal   = {IEEE Transactions on Knowledge and Data Engineering},
-  volume    = {31},
-  number    = {12},
-  pages     = {2346--2363},
-  year      = {2019},
-  doi       = {10.1109/TKDE.2018.2876857}
+@article{lu2018learning,
+  title={Learning under concept drift: A review},
+  author={Lu, Jie and Liu, Anjin and Dong, Fan and Gu, Feng and Gama, Joao and Zhang, Guangquan},
+  journal={IEEE transactions on knowledge and data engineering},
+  volume={31},
+  number={12},
+  pages={2346--2363},
+  year={2018},
+  publisher={IEEE}
 }
 
 @article{webb2016characterizing,
-  author    = {Webb, Geoffrey I. and Hyde, Roy and Cao, Hong and Nguyen, Hai Long and Petitjean, Fran{\c{c}}ois},
-  title     = {Characterizing Concept Drift},
-  journal   = {Data Mining and Knowledge Discovery},
-  volume    = {30},
-  number    = {4},
-  pages     = {964--994},
-  year      = {2016},
-  doi       = {10.1007/s10618-015-0448-4}
+  title={Characterizing concept drift},
+  author={Webb, Geoffrey I and Hyde, Roy and Cao, Hong and Nguyen, Hai Long and Petitjean, Francois},
+  journal={Data Mining and Knowledge Discovery},
+  volume={30},
+  number={4},
+  pages={964--994},
+  year={2016},
+  publisher={Springer}
 }
 
 @article{moreno2012unifying,
-  author    = {Moreno-Torres, Jose G. and Raeder, Troy and Alaiz-Rodr{\'i}guez, Roc{\'i}o and Chawla, Nitesh V. and Herrera, Francisco},
-  title     = {A Unifying View on Dataset Shift in Classification},
-  journal   = {Pattern Recognition},
-  volume    = {45},
-  number    = {1},
-  pages     = {521--530},
-  year      = {2012},
-  doi       = {10.1016/j.patcog.2011.06.019}
+  title={A unifying view on dataset shift in classification},
+  author={Moreno-Torres, Jose G and Raeder, Troy and Alaiz-Rodr{\'\i}guez, Roc{\'\i}o and Chawla, Nitesh V and Herrera, Francisco},
+  journal={Pattern recognition},
+  volume={45},
+  number={1},
+  pages={521--530},
+  year={2012},
+  publisher={Elsevier}
 }
 
 @article{scholkopf2021toward,
-  author    = {Sch{\"o}lkopf, Bernhard and Locatello, Francesco and Bauer, Stefan and Ke, Nan Rosemary and Kalchbrenner, Nal and Goyal, Anirudh and Bengio, Yoshua},
-  title     = {Toward Causal Representation Learning},
-  journal   = {Proceedings of the IEEE},
-  volume    = {109},
-  number    = {5},
-  pages     = {612--634},
-  year      = {2021},
-  doi       = {10.1109/JPROC.2021.3058954}
+  title={Toward causal representation learning},
+  author={Sch{\"o}lkopf, Bernhard and Locatello, Francesco and Bauer, Stefan and Ke, Nan Rosemary and Kalchbrenner, Nal and Goyal, Anirudh and Bengio, Yoshua},
+  journal={Proceedings of the IEEE},
+  volume={109},
+  number={5},
+  pages={612--634},
+  year={2021},
+  publisher={IEEE}
 }
 
 % VERIFY: a peer-reviewed version may exist; prefer it over arXiv.

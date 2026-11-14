@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1794677510.69352 "main.aux" "main.bbl" "main" 1794677542.1691 0
-  "./references.bib" 1794676073.54664 27961 74f6edfa5933165f6485add0f45298bf ""
+["bibtex main"] 1794698483.10088 "main.aux" "main.bbl" "main" 1794698747.94812 0
+  "./references.bib" 1794698190.17229 31439 3133bafb76c38866ac7e3a9d09de0489 ""
   "/opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/bibtex/bst/natbib/plainnat.bst" 1772380719 26816 ffe5423d2019860bad9f54bc402fac15 ""
-  "main.aux" 1794677542.02015 25178 71a70fe7fd4305f5aa57e1353446b674 "pdflatex"
+  "main.aux" 1794698747.8035 27717 8a5fd66541c811ffc21a94f12cb04b66 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1794677541.22086 "/Users/tiagosilva/Documents/Master_Thesis/literature_review/main.tex" "main.pdf" "main" 1794677542.16927 0
+["pdflatex"] 1794698746.99835 "/Users/tiagosilva/Documents/Master_Thesis/literature_review/main.tex" "main.pdf" "main" 1794698747.9483 0
   "/Users/tiagosilva/Documents/Master_Thesis/literature_review/main.tex" 1794672864.23457 8831 455e18089e6090ef60e72fdc0802cddc ""
   "/opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/fonts/enc/dvips/base/8r.enc" 1772380719 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1772380719 2971 def0b6c1f0b107b3b936def894055589 ""
@@ -259,8 +259,12 @@
   "/opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/tex/latex/xkeyval/xkeyval.sty" 1772380719 5006 d7e899bb5d9717c7f214e9bc0284de7b ""
   "/opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/web2c/texmf.cnf" 1772380719 43633 14bbc273cebd985e64ab1a698333eaf9 ""
   "/opt/homebrew/Cellar/texlive/20260301/share/texmf-var/web2c/pdftex/pdflatex.fmt" 1772380719 3636956 5168b884cb430e6a6336cfea08fa659a ""
+  "figures/bezier-a.pdf" 1794697968.96472 32282 4064df4c17359d1ad9df8ae096a580b5 ""
+  "figures/bezier-b.pdf" 1794697968.96504 24220 156f70ee969ee0c2403d38b34951812e ""
+  "figures/bspline-pieces.pdf" 1794697968.96532 23510 1c9fc9b9886efe9bc44ee2f32d6b966e ""
   "figures/intervention_on_X1-example.pdf" 1794677491.45554 24475 8f93138781f0f9fa302b8fa3f5c12bf5 ""
   "figures/intervention_on_X2.pdf" 1794677491.78248 24225 708c59da2a5abd04c8f3c72726ab4013 ""
+  "figures/kan-diagram.pdf" 1794696272.86287 32181 39722406e52746eaa985735243a45938 ""
   "figures/path-specific-graph.pdf" 1794675754.35022 26001 0a044bd4a789824f26385ebf2a33904d ""
   "figures/same-distribution-graph-a.pdf" 1794672645.82306 28510 91dadfaf4a1acde75ac45cbf8036ae87 ""
   "figures/same-distribution-graph-b.pdf" 1794672646.0909 28560 30b4494203afe299a0b8eef35f8fe3c9 ""
@@ -274,15 +278,15 @@
   "frontmatter/8-acronyms.tex" 1793374913.48639 165 7c6aaa822be3330725f9f31227682480 ""
   "frontmatter/logo-dei.pdf" 1793374913.48692 129612 f4fadf1f3f5b5157bd8d87ed9aefb3d8 ""
   "frontmatter/logo-uc-gold.pdf" 1793374913.48709 207731 b11783984561a8ee3a2a9dfb6c3d7fd9 ""
-  "main.aux" 1794677542.02015 25178 71a70fe7fd4305f5aa57e1353446b674 "pdflatex"
-  "main.bbl" 1794677510.74307 18035 95f1cd50215dbe1d17b647b1070bf3fc "bibtex main"
-  "main.lof" 1794677542.02224 651 34a7ae384cef711c2961fcf49013037e "pdflatex"
-  "main.lot" 1794677542.02226 348 eb1279846ef1917e673d894081c7acd2 "pdflatex"
-  "main.out" 1794677542.02194 8926 eee29c5b3ca1ba9c254c6ab90804e3ed "pdflatex"
+  "main.aux" 1794698747.8035 27717 8a5fd66541c811ffc21a94f12cb04b66 "pdflatex"
+  "main.bbl" 1794698483.15033 19611 596d9ba919f3317cbacaf80506ee9f58 "bibtex main"
+  "main.lof" 1794698747.80546 951 dcb7429887c59eb4dcc11fa0786dedcf "pdflatex"
+  "main.lot" 1794698747.80547 456 2239253367c9443e294277d4004cbab5 "pdflatex"
+  "main.out" 1794698747.80525 8720 f3e3879d9b101ae2e4dfe61a89dc2c65 "pdflatex"
   "main.tex" 1794672864.23457 8831 455e18089e6090ef60e72fdc0802cddc ""
-  "main.toc" 1794677542.02219 5108 96b077ce8624f088da3dec959c17ac10 "pdflatex"
+  "main.toc" 1794698747.80542 5277 e6cff8937cca00c0043384a2164b6222 "pdflatex"
   "text/1-introduction.tex" 1793374913.49179 1987 50955a0457bb531df6544639003d3e28 ""
-  "text/2-background.tex" 1794677540.95857 45184 98094da5ef1a72b3fd0d63c7c7eb8215 ""
+  "text/2-background.tex" 1794698746.80175 50747 3e8da70da1af66614fd70c153365c224 ""
   "text/3-literature-review.tex" 1794410686.07452 38140 7e77b0ea4eaa16c46a956b1454940528 ""
   "text/4-proposed-approach.tex" 1793374913.49204 1362 487f955f0d97ee27d7edede0ccf22a57 ""
   "text/5-conclusion.tex" 1793374913.49211 359 af4365ed5388152d82bcc0313fc61cd0 ""

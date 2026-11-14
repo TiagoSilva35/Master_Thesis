@@ -3,8 +3,11 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {2.1}{\ignorespaces Causal graph of the running example}}{6}{figure.caption.10}%
 \contentsline {figure}{\numberline {2.2}{\ignorespaces Interventions in the running example}}{6}{figure.caption.12}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Two causal graphs with the same joint distribution}}{12}{figure.caption.21}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Path-specific fairness in the Berkeley admissions case}}{13}{figure.caption.24}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Two causal graphs with the same joint distribution}}{10}{figure.caption.18}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Path-specific fairness in the Berkeley admissions case}}{12}{figure.caption.21}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces A small KAN}}{14}{figure.caption.28}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces A cubic Bézier curve}}{15}{figure.caption.30}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces A cubic B-spline curve}}{16}{figure.caption.31}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
