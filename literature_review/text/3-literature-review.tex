@@ -338,9 +338,30 @@ papers, drift comes from recourse and not from the outside world.
 %   KDD: detects which mechanisms change across contexts; the closest idea to flagging drift edge
 %   by edge, but without recourse.
 \citet{huang2020causal} propose Constraint-based causal Discovery from heterogeneous/NOnstationary Data (CD-NOD), a
-framework that leverages distribution shifts to learn causal structure. It also extracts a low-dimensional
-``driving force'' of the change and allows edges to appear and vanish over time. \citet{perry2022causal} make
-sparsity explicit through the sparse mechanism shift hypothesis and propose the Mechanism Shift Score, proving
+framework that leverages distribution shifts to learn causal structure. Their method can be divided into three main steps:
+\begin{itemize}
+
+    \item \textbf{Skeleton estimation and changing mechanism detection:}
+    The authors introduce a surrogate variable $C$, representing time or the environment, to capture changes in the causal mechanisms. They use kernel-based conditional independence tests (KCI) to identify which variables are adjacent to $C$, indicating changing mechanisms. They then perform conditional independence tests, conditioning on $C$, to determine which pairs of observed variables are causally connected.
+
+    \item \textbf{Causal direction identification:}
+    CD-NOD first orients edges involving $C$, where possible. Then, for each edge $X_i-X_j$, it examines whether the causal mechanisms of the two variables change with $C$:
+    \begin{itemize}
+        \item If only one mechanism changes, it uses conditional independence (invariance) tests to orient the edge.
+        \item If both mechanisms change, it applies the Independent Change Principle, choosing the direction whose causal mechanisms exhibit greater independence.
+        \item If neither mechanism changes, these nonstationarity-based criteria cannot orient the edge. Its direction may remain undetermined unless additional information or assumptions allow it to be oriented.
+    \end{itemize}
+    Finally, it applies Meek's orientation rules to infer additional edge directions where possible.
+
+    \item \textbf{Driving-force estimation:}
+    The last step characterises how the identified changing causal mechanisms evolve over time. For each variable identified as having a changing mechanism, CD-NOD estimates its conditional distribution
+    \[
+        P(V_i \mid PA_i,C),
+    \]
+    constructs kernel embeddings of these distributions, and applies Kernel Principal Component Analysis (KPCA) to obtain low-dimensional representations of their evolution, called nonstationary driving forces.
+
+\end{itemize}
+\citet{perry2022causal} make sparsity explicit through the sparse mechanism shift hypothesis and propose the Mechanism Shift Score, proving
 that the full graph can be identified with high probability if the hypothesis holds. Although promising, both
 works are limited in scale: they are batch methods, so neither fits a data stream directly, and the kernel-based
 tests used by CD-NOD have a cost of $O(N^3)$ in the number of samples. Both also rule out most hidden confounders,
@@ -427,10 +448,6 @@ Nevertheless, none of these works provides any connection to recourse, much less
 
 \subsection{Comparison and Research Gaps}
 \label{sec:lr-gaps}
-
-% TO WRITE (blank): read Table~\ref{tab:lr-comparison} column by column, name the gaps, and say
-% which ones this thesis addresses (the last row).
-
 \begin{table}[htbp]
 \centering
 \footnotesize

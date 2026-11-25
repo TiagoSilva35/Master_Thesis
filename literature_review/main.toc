@@ -49,7 +49,7 @@
 \contentsline {subsection}{\numberline {2.2.6}Fairness Under Distribution Shift}{24}{subsection.2.2.6}%
 \contentsline {subsection}{\numberline {2.2.7}Interpretable Additive Models with Interactions}{24}{subsection.2.2.7}%
 \contentsline {subsection}{\numberline {2.2.8}Readable Structural Equations}{24}{subsection.2.2.8}%
-\contentsline {subsection}{\numberline {2.2.9}Comparison and Research Gaps}{24}{subsection.2.2.9}%
+\contentsline {subsection}{\numberline {2.2.9}Comparison and Research Gaps}{25}{subsection.2.2.9}%
 \contentsline {chapter}{\numberline {3}Proposed Approach}{27}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Problem Formulation}{27}{section.3.1}%
 \contentsline {section}{\numberline {3.2}Candidate Architectures}{27}{section.3.2}%

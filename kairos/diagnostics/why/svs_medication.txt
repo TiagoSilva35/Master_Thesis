@@ -1,0 +1,12 @@
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: divide by zero encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: overflow encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: invalid value encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+medication bell  : found graph     4126.8 (F1 0.38, 33 arrows) | true graph     4037.3 | true − found    -89.5 | 17s
+   nodes where the found parents score better than the true ones (top 5): [('total_carbohydrate_grams', -860.4), ('prior_day_data_quality_i', -169.9), ('safety_conservatism_flag', -155.4), ('meal_logging_support_lev', -124.1), ('sleep_circadian_profile_', -90.7)]
+   nodes where the true parents score better (top 5): [('time_in_range_today', 859.0), ('late_carbohydrate_propor', 260.3), ('prior_day_time_in_range', 163.9), ('recommended_dose_change', 123.3), ('carb_log_completeness', 34.8)]
+medication learnt: found graph   -19186.8 (F1 0.37, 36 arrows) | true graph   -19808.6 | true − found   -621.8 | 45s
+   nodes where the found parents score better than the true ones (top 5): [('prior_day_minutes_below_', -209.8), ('safety_conservatism_flag', -155.4), ('meal_logging_support_lev', -124.1), ('late_carbohydrate_propor', -117.8), ('sleep_circadian_profile_', -89.5)]
+   nodes where the true parents score better (top 5): [('late_carbohydrate_propor', 169.1), ('recommended_dose_change', 126.7), ('carb_log_completeness', 5.2), ('reminder_intensity_level', 0.0), ('prior_day_data_quality_i', 0.0)]

@@ -20,7 +20,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
 
-from src.causal_model.fitting import BayesianFitting
+from src.causal_model.nodes import BayesianFitting
 from src.simulation.drift import FIGURES, DriftExperiment, TermResult
 from src.simulation.scenarios import SCENARIOS
 

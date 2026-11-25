@@ -1,0 +1,9 @@
+no-shapes       mortgage   obs_only no background F1 0.48 (correct 20, reversed 7, extra 13, missing 17) 76s
+no-shapes       mortgage   obs_only roots given   F1 0.61 (correct 24, reversed 2, extra 9, missing 18) 76s
+no-shapes       mortgage   obs_int  no background F1 0.41 (correct 18, reversed 6, extra 19, missing 20) 84s
+no-shapes       mortgage   obs_int  roots given   F1 0.63 (correct 25, reversed 0, extra 10, missing 19) 76s
+no-shapes       medication obs_only no background F1 0.69 (correct 23, reversed 2, extra 2, missing 15) 34s
+no-shapes       medication obs_only roots given   F1 0.69 (correct 23, reversed 1, extra 3, missing 16) 34s
+no-shapes       medication obs_int  no background F1 0.74 (correct 25, reversed 2, extra 1, missing 13) 40s
+no-shapes       medication obs_int  roots given   F1 0.76 (correct 26, reversed 1, extra 1, missing 13) 42s
+no-shapes       average F1 0.625 over 8 runs

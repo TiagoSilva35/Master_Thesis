@@ -1,0 +1,27 @@
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: divide by zero encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: overflow encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: invalid value encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_only/rep0 · no background: F1 0.26 (precision 0.25, recall 0.27, correct 12, reversed 13, extra 23, missing 19), doubtful 1, 105s
+    into categorical: F1 0.23 (4/18 correct, 3 reversed); out of categorical: F1 0.25 (4/13 correct, 3 reversed)
+    spread arrows: [('current_rate_spread', 'borrower_note_rate'), ('current_rate_spread', 'refinance_application_attempt'), ('current_rate_spread', 'retail_refinance_rate_index'), ('final_closing_costs', 'current_rate_spread'), ('ltv_bucket', 'current_rate_spread'), ('monthly_refinance_hazard', 'current_rate_spread'), ('observed_event_type_code', 'current_rate_spread'), ('realized_refinance_savings_npv', 'current_rate_spread'), ('remaining_term', 'current_rate_spread'), ('underwriting_approval_decision', 'current_rate_spread')]; doubtful: []
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_only/rep0 · roots given: F1 0.51 (precision 0.54, recall 0.48, correct 21, reversed 4, extra 14, missing 19), doubtful 0, 102s
+    into categorical: F1 0.34 (6/18 correct, 2 reversed); out of categorical: F1 0.50 (7/13 correct, 2 reversed)
+    spread arrows: [('borrower_note_rate', 'current_rate_spread'), ('current_rate_spread', 'refinance_application_attempt'), ('retail_refinance_rate_index', 'current_rate_spread')]; doubtful: []
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_int/rep0 · no background: F1 0.17 (precision 0.16, recall 0.18, correct 8, reversed 13, extra 29, missing 23), doubtful 0, 203s
+    into categorical: F1 0.12 (2/18 correct, 3 reversed); out of categorical: F1 0.18 (3/13 correct, 3 reversed)
+    spread arrows: [('closing_cost_subsidy', 'current_rate_spread'), ('current_rate_spread', 'borrower_note_rate'), ('current_rate_spread', 'retail_refinance_rate_index'), ('final_closing_costs', 'current_rate_spread'), ('household_income_shock', 'current_rate_spread'), ('ltv_bucket', 'current_rate_spread'), ('monthly_default_hazard', 'current_rate_spread'), ('monthly_refinance_hazard', 'current_rate_spread'), ('remaining_term', 'current_rate_spread'), ('underwriting_approval_decision', 'current_rate_spread')]; doubtful: []
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_int/rep0 · roots given: F1 0.40 (precision 0.44, recall 0.36, correct 16, reversed 5, extra 15, missing 23), doubtful 1, 159s
+    into categorical: F1 0.19 (3/18 correct, 2 reversed); out of categorical: F1 0.36 (5/13 correct, 2 reversed)
+    spread arrows: [('borrower_note_rate', 'current_rate_spread'), ('retail_refinance_rate_index', 'current_rate_spread')]; doubtful: []
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_only/rep0 · no background: F1 0.42 (precision 0.47, recall 0.38, correct 15, reversed 6, extra 11, missing 19), doubtful 1, 43s
+    into categorical: F1 0.00 (0/2 correct, 0 reversed); out of categorical: F1 0.00 (0/5 correct, 0 reversed)
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_only/rep0 · roots given: F1 0.51 (precision 0.58, recall 0.45, correct 18, reversed 4, extra 9, missing 18), doubtful 1, 37s
+    into categorical: F1 0.00 (0/2 correct, 0 reversed); out of categorical: F1 0.25 (1/5 correct, 0 reversed)
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_int/rep0 · no background: F1 0.41 (precision 0.45, recall 0.38, correct 15, reversed 6, extra 12, missing 19), doubtful 2, 63s
+    into categorical: F1 0.00 (0/2 correct, 0 reversed); out of categorical: F1 0.00 (0/5 correct, 0 reversed)
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_int/rep0 · roots given: F1 0.52 (precision 0.58, recall 0.47, correct 19, reversed 4, extra 10, missing 17), doubtful 2, 63s
+    into categorical: F1 0.00 (0/2 correct, 0 reversed); out of categorical: F1 0.25 (1/5 correct, 0 reversed)
+total 775s

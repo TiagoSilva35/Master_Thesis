@@ -1,0 +1,5 @@
+pc-fisherz      mortgage   obs_only no background F1 0.37 (correct 13, reversed 5, extra 9, missing 26) 0s
+pc-fisherz      mortgage   obs_int  no background F1 0.36 (correct 13, reversed 6, extra 9, missing 25) 0s
+pc-fisherz      medication obs_only no background F1 0.42 (correct 13, reversed 8, extra 1, missing 19) 0s
+pc-fisherz      medication obs_int  no background F1 0.39 (correct 12, reversed 9, extra 1, missing 19) 0s
+pc-fisherz      average F1 0.383 over 4 runs

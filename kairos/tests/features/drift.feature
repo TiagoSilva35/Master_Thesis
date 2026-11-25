@@ -30,8 +30,3 @@ Feature: Drift detection
     When the income node is fitted jointly with ridge 0.001 and with ridge 0.000001
     Then the two level gains differ by less than 1
     And the level of income is not flagged
-
-  Scenario: A node without a smoothness belief is refused
-    Given 500 people from before and 500 from after the drift in world 1
-    When I fit the savings node jointly with a plain fitting
-    Then it refuses because it needs Bayesian fitting

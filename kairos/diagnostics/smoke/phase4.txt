@@ -1,0 +1,21 @@
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_only/rep0 · no background: F1 0.22 (precision 0.21, recall 0.23, correct 10, reversed 11, extra 27, missing 23), doubtful 2, 118s
+    into categorical: F1 0.24 (4/18 correct, 2 reversed); out of categorical: F1 0.22 (3/13 correct, 2 reversed)
+    spread arrows: [('current_rate_spread', 'borrower_note_rate'), ('current_rate_spread', 'retail_refinance_rate_index'), ('earliest_event_type_true', 'current_rate_spread'), ('final_closing_costs', 'current_rate_spread'), ('monthly_refinance_hazard', 'current_rate_spread'), ('remaining_term', 'current_rate_spread')]; doubtful: []
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_only/rep0 · roots given: F1 0.44 (precision 0.50, recall 0.39, correct 17, reversed 4, extra 13, missing 23), doubtful 1, 134s
+    into categorical: F1 0.24 (4/18 correct, 1 reversed); out of categorical: F1 0.43 (5/13 correct, 1 reversed)
+    spread arrows: [('borrower_note_rate', 'current_rate_spread'), ('retail_refinance_rate_index', 'current_rate_spread')]; doubtful: []
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_int/rep0 · no background: F1 0.34 (precision 0.34, recall 0.34, correct 15, reversed 10, extra 19, missing 19), doubtful 2, 64s
+    into categorical: F1 0.25 (4/18 correct, 2 reversed); out of categorical: F1 0.36 (5/13 correct, 2 reversed)
+    spread arrows: [('current_rate_spread', 'borrower_note_rate'), ('current_rate_spread', 'retail_refinance_rate_index'), ('earliest_event_type_true', 'current_rate_spread'), ('final_closing_costs', 'current_rate_spread'), ('monthly_refinance_hazard', 'current_rate_spread'), ('realized_refinance_savings_npv', 'current_rate_spread'), ('remaining_term', 'current_rate_spread'), ('underwriting_approval_decision', 'current_rate_spread')]; doubtful: []
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_int/rep0 · roots given: F1 0.42 (precision 0.48, recall 0.36, correct 16, reversed 4, extra 13, missing 24), doubtful 0, 128s
+    into categorical: F1 0.18 (3/18 correct, 1 reversed); out of categorical: F1 0.43 (5/13 correct, 1 reversed)
+    spread arrows: [('borrower_note_rate', 'current_rate_spread'), ('retail_refinance_rate_index', 'current_rate_spread')]; doubtful: []
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_only/rep0 · no background: F1 0.26 (precision 0.28, recall 0.25, correct 10, reversed 12, extra 14, missing 18), doubtful 2, 23s
+    into categorical: F1 0.00 (0/2 correct, 0 reversed); out of categorical: F1 0.00 (0/5 correct, 0 reversed)
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_only/rep0 · roots given: F1 0.44 (precision 0.48, recall 0.40, correct 16, reversed 6, extra 11, missing 18), doubtful 1, 19s
+    into categorical: F1 0.00 (0/2 correct, 0 reversed); out of categorical: F1 0.25 (1/5 correct, 0 reversed)
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_int/rep0 · no background: F1 0.32 (precision 0.34, recall 0.30, correct 12, reversed 14, extra 9, missing 14), doubtful 2, 20s
+    into categorical: F1 0.00 (0/2 correct, 0 reversed); out of categorical: F1 0.00 (0/5 correct, 0 reversed)
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_int/rep0 · roots given: F1 0.46 (precision 0.50, recall 0.42, correct 17, reversed 7, extra 10, missing 16), doubtful 0, 18s
+    into categorical: F1 0.00 (0/2 correct, 0 reversed); out of categorical: F1 0.25 (1/5 correct, 0 reversed)
+total 525s

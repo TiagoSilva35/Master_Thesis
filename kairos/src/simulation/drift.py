@@ -22,13 +22,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from src.causal_model.change import ChangeFit
-from src.causal_model.fitting import BayesianFitting
+from src.causal_model.drift import ChangeFit
 from src.causal_model.kan import CausalKAN
-from src.causal_model.node import Node
-from src.causal_model.outcome import OutcomeNode
+from src.causal_model.nodes import BayesianFitting, BinaryNode, Node, PairScreening
 from src.causal_model.plot import KANPlot
-from src.causal_model.screening import PairScreening
+from src.causal_model.terms import Spline
 from src.simulation.scenarios import SCENARIOS, DriftScenario
 from src.simulation.world import World
 
@@ -83,6 +81,7 @@ class DriftPlot:
         for model, world, colour, label in ((self.before, self.scenario.world, "C0", "before"),
                                             (self.after, self.scenario.drifted, "C1", "after")):
             curve = model.node(child).curves[parent]
+            assert isinstance(curve, Spline), "the simulated worlds have continuous parents only"
             x = np.linspace(curve.knots[0], curve.knots[-1], self.points)
             low, high = curve.band(x)
             ax.fill_between(x, low, high, color=colour, alpha=0.2, linewidth=0)
@@ -97,6 +96,7 @@ class DriftPlot:
 
     def _draw_surface(self, fig, ax, pair: tuple[str, str], child: str) -> None:
         old, new = self.before.node(child).surfaces[pair], self.after.node(child).surfaces[pair]
+        assert isinstance(old.first, Spline) and isinstance(old.second, Spline), "the worlds have continuous parents only"
         grid1, grid2 = np.meshgrid(np.linspace(old.first.knots[0], old.first.knots[-1], 60),
                                    np.linspace(old.second.knots[0], old.second.knots[-1], 60))
         change = (new(grid1.ravel(), grid2.ravel()) - old(grid1.ravel(), grid2.ravel())).reshape(grid1.shape)
@@ -156,7 +156,7 @@ class DriftExperiment:
         return results
 
     def _node(self, world: World, name: str, parents: list[str]) -> Node:
-        kind = OutcomeNode if name == world.outcome else Node
+        kind = BinaryNode if name == world.outcome else Node
         screening = self.screening if len(parents) >= 2 else None
         return kind(name, parents, pairs=[], intervals=self.intervals, fitting=self.fitting, screening=screening)
 

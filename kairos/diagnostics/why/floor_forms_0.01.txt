@@ -1,0 +1,18 @@
+share 0.01 | pairs: share of the 10 (root, formula) x 3 seeds with the true direction ahead by > 3 / behind by > 3, and mean gap
+noise 0.0: bell   own+add: 0.67/0.13 (   283) | own max: 0.50/0.00 (   241) | car+add r: 0.63/0.17 (   326) | car max m: 0.60/0.10 (   230) | car max r: 0.60/0.10 (   230)
+noise 0.0: learnt own+add: 0.20/0.60 (  -254) | own max: 0.33/0.47 (  -243) | car+add r: 0.27/0.53 (   -99) | car max m: 0.27/0.53 (    12) | car max r: 0.40/0.40 (    25)
+noise 0.1: bell   own+add: 0.80/0.03 (   381) | own max: 0.80/0.00 (   526) | car+add r: 0.67/0.17 (   303) | car max m: 0.70/0.17 (   296) | car max r: 0.70/0.17 (   296)
+noise 0.1: learnt own+add: 0.30/0.67 (    -8) | own max: 0.20/0.77 (  -189) | car+add r: 0.30/0.70 (  -196) | car max m: 0.30/0.60 (  -303) | car max r: 0.27/0.67 (  -189)
+noise 0.2: bell   own+add: 0.80/0.10 (   308) | own max: 0.80/0.10 (   353) | car+add r: 0.77/0.13 (   254) | car max m: 0.80/0.10 (   353) | car max r: 0.80/0.10 (   353)
+noise 0.2: learnt own+add: 0.93/0.03 (    54) | own max: 0.67/0.23 (    36) | car+add r: 0.23/0.63 (   -33) | car max m: 0.37/0.63 (   -75) | car max r: 0.37/0.63 (   -60)
+noise 0.4: bell   own+add: 0.77/0.10 (   165) | own max: 0.77/0.10 (   173) | car+add r: 0.77/0.13 (   145) | car max m: 0.77/0.10 (   173) | car max r: 0.77/0.10 (   173)
+noise 0.4: learnt own+add: 0.93/0.03 (    58) | own max: 0.93/0.03 (    53) | car+add r: 0.77/0.13 (    35) | car max m: 0.73/0.13 (    25) | car max r: 0.60/0.30 (    19)
+triples z = a x - b y: wrong minus true (worst of the two rewritings), 3 seeds, mean
+1x-1y bell bell   own+add:    332 | own max:    345 | car+add r:    -13 | car max m:     -3 | car max r:     -3
+1x-1y bell learnt own+add:    347 | own max:    346 | car+add r:      7 | car max m:      5 | car max r:      5
+1x-1y flat bell   own+add:    357 | own max:    366 | car+add r:    -15 | car max m:     -4 | car max r:     -4
+1x-1y flat learnt own+add:    312 | own max:    312 | car+add r:    -56 | car max m:    -50 | car max r:    -50
+100x-30y bell bell   own+add:   1101 | own max:   1214 | car+add r:     -5 | car max m:     -2 | car max r:     -2
+100x-30y bell learnt own+add:   1170 | own max:   1158 | car+add r:     -3 | car max m:     -4 | car max r:     -4
+100x-30y flat bell   own+add:   1181 | own max:   1263 | car+add r:     18 | car max m:     25 | car max r:     25
+100x-30y flat learnt own+add:   1103 | own max:   1105 | car+add r:    -93 | car max m:    -79 | car max r:    -80

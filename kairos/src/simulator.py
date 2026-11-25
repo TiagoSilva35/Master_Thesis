@@ -1,15 +1,17 @@
 """Simulate a small world, fit a causal KAN to it, and plot its curves.
 
-Run from the repo root:  python3 -m kairos.simulator
+Run from kairos/:  PYTHONPATH=. venv/bin/python src/simulator.py
 """
 
+from pathlib import Path
+
 import numpy as np
-import os
-from src.causal_model.fitting import BayesianFitting, Fitting, PlainFitting
+
 from src.causal_model.kan import CausalKAN
-from src.causal_model.node import Node
-from src.causal_model.outcome import OutcomeNode
+from src.causal_model.nodes import BinaryNode, Node
 from src.causal_model.plot import KANPlot
+
+FIGURES = Path(__file__).resolve().parents[1] / "figures"
 
 
 class Simulator:
@@ -32,31 +34,22 @@ class Simulator:
         return {"income": income, "savings": savings, "Y": y}
 
 
-def build_model(fitting: Fitting, intervals: int) -> CausalKAN:
-    """The simulator's graph, with every node fitted the same way."""
+def build_model() -> CausalKAN:
+    """The simulator's graph."""
     return CausalKAN([
-        Node("income", [], pairs=[], intervals=intervals, fitting=fitting),
-        Node("savings", ["income"], pairs=[], intervals=intervals, fitting=fitting),
-        OutcomeNode("Y", ["income", "savings"], pairs=[], intervals=intervals, fitting=fitting),
+        Node("income", [], intervals=16),
+        Node("savings", ["income"], intervals=16),
+        BinaryNode("Y", ["income", "savings"], intervals=16),
     ])
 
 
 def main() -> None:
-    data = Simulator(seed=2).sample(10000)
-    # Plain: only the data decides, so few knots keep the curves from wiggling.
-    # Bayesian: the smoothness belief keeps them calm, so more knots can be used.
-    models = {
-        "plain": build_model(PlainFitting(), intervals=8),
-        "bayesian": build_model(BayesianFitting(), intervals=16),
-    }
-    # create a directory to save the figures
-    directory = "kairos/figures"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    for name, model in models.items():
-        model.fit(data)
-        KANPlot(model).figure().savefig(f"{directory}/kan_curves_{name}.png", dpi=110)
-        print(f"saved kan_curves_{name}.png")
+    model = build_model()
+    model.fit(Simulator(seed=2).sample(10000))
+    FIGURES.mkdir(exist_ok=True)
+    path = FIGURES / "kan_curves.png"
+    KANPlot(model).figure().savefig(path, dpi=110)
+    print(f"saved {path}")
 
 
 if __name__ == "__main__":

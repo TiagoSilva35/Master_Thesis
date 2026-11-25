@@ -1,0 +1,9 @@
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_only/rep0 · no background: F1 0.26 (precision 0.25, recall 0.27, correct 12, reversed 12, extra 24, missing 20), doubtful 4, 8s
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_only/rep0 · roots given: F1 0.49 (precision 0.51, recall 0.48, correct 21, reversed 4, extra 16, missing 19), doubtful 0, 10s
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_int/rep0 · no background: F1 0.28 (precision 0.26, recall 0.30, correct 13, reversed 10, extra 27, missing 21), doubtful 3, 10s
+finance_and_credit/mortgage_prepayment_interest_rate_shock/obs_int/rep0 · roots given: F1 0.44 (precision 0.43, recall 0.45, correct 20, reversed 4, extra 23, missing 20), doubtful 1, 12s
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_only/rep0 · no background: F1 0.45 (precision 0.52, recall 0.40, correct 16, reversed 8, extra 7, missing 16), doubtful 1, 5s
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_only/rep0 · roots given: F1 0.59 (precision 0.68, recall 0.53, correct 21, reversed 2, extra 8, missing 17), doubtful 0, 5s
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_int/rep0 · no background: F1 0.42 (precision 0.48, recall 0.38, correct 15, reversed 10, extra 6, missing 15), doubtful 3, 4s
+healthcare_delivery/medication_titration_cgm_meal_timing/obs_int/rep0 · roots given: F1 0.69 (precision 0.80, recall 0.60, correct 24, reversed 2, extra 4, missing 14), doubtful 0, 5s
+total 58s

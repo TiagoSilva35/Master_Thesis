@@ -1,0 +1,10 @@
+medication: worth found − truth 110; climbing from the truth gains 82
+F1 found 0.62, climbing from the truth 0.75; true arrows that earn their price 24 of 40
+         67 dosing_rule_aggressiveness       found ['recommended_dose_c', 'logged_carbohydrat', 'safety_conservatis', 'prior_day_time_in_'] truth []
+        -34 recommended_dose_change          found ['safety_conservatis', 'logged_carbohydrat', 'prior_day_time_in_'] truth ['daily_step_count', 'dosing_rule_aggres', 'logged_carbohydrat', 'prior_day_data_qua', 'prior_day_minutes_', 'prior_day_time_in_', 'safety_conservatis']
+         23 effective_insulin_action_index   found [] truth ['baseline_basal_dos', 'implemented_dose_c', 'sleep_circadian_pr']
+         16 time_in_range_today              found ['total_carbohydrate', 'calibration_drift_', 'late_carbohydrate_', 'sleep_circadian_pr'] truth ['calibration_drift_', 'cgm_wear_fraction_', 'daily_step_count', 'effective_insulin_', 'late_carbohydrate_', 'sleep_circadian_pr', 'total_carbohydrate']
+         11 minutes_below_range_today        found ['calibration_drift_', 'total_carbohydrate', 'effective_insulin_', 'sleep_circadian_pr'] truth ['calibration_drift_', 'cgm_wear_fraction_', 'daily_step_count', 'effective_insulin_', 'total_carbohydrate']
+         10 sleep_circadian_profile_index    found ['cgm_wear_fraction_'] truth []
+          8 carb_log_completeness            found ['meal_logging_suppo'] truth ['meal_logging_suppo', 'total_carbohydrate']
+          8 implemented_dose_change          found ['recommended_dose_c'] truth ['recommended_dose_c', 'reminder_intensity', 'safety_conservatis']

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from src.causal_model.spline import Spline
+from src.causal_model.terms import Spline
 from tests.helpers import CoxDeBoor
 
 scenarios("spline.feature")

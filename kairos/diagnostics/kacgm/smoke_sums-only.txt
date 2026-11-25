@@ -1,0 +1,9 @@
+sums-only       mortgage   obs_only no background F1 0.23 (correct 11, reversed 14, extra 27, missing 19) 21s
+sums-only       mortgage   obs_only roots given   F1 0.45 (correct 19, reversed 4, extra 18, missing 21) 39s
+sums-only       mortgage   obs_int  no background F1 0.33 (correct 16, reversed 9, extra 27, missing 19) 20s
+sums-only       mortgage   obs_int  roots given   F1 0.51 (correct 23, reversed 3, extra 20, missing 18) 22s
+sums-only       medication obs_only no background F1 0.56 (correct 20, reversed 5, extra 7, missing 15) 6s
+sums-only       medication obs_only roots given   F1 0.68 (correct 24, reversed 2, extra 5, missing 14) 4s
+sums-only       medication obs_int  no background F1 0.63 (correct 22, reversed 5, extra 3, missing 13) 4s
+sums-only       medication obs_int  roots given   F1 0.72 (correct 25, reversed 2, extra 2, missing 13) 3s
+sums-only       average F1 0.513 over 8 runs

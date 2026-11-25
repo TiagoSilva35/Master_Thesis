@@ -694,6 +694,11 @@ INPUT ./text/3-literature-review.tex
 INPUT ./text/3-literature-review.tex
 INPUT ./text/3-literature-review.tex
 INPUT text/3-literature-review.tex
+INPUT /opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/tex/latex/psnfss/ts1ppl.fd
+INPUT /opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/tex/latex/psnfss/ts1ppl.fd
+INPUT /opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/tex/latex/psnfss/ts1ppl.fd
+INPUT /opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/fonts/tfm/adobe/palatino/pplr8c.tfm
+INPUT /opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/fonts/vf/adobe/palatino/pplr8c.vf
 INPUT /opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/fonts/tfm/adobe/palatino/pplr7t.tfm
 INPUT /opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/fonts/tfm/adobe/palatino/pplr7t.tfm
 INPUT /opt/homebrew/Cellar/texlive/20260301/share/texmf-dist/fonts/tfm/public/mathpazo/zplmr7m.tfm

@@ -1,0 +1,33 @@
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: divide by zero encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: overflow encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: invalid value encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+=== medication learnt  N=1000  variables=22  (48s)
+  greedy             total   -19166.6  arrows  59  F1 0.34
+  true, all arrows   total   -19808.6  arrows  40  F1 1.00
+  true, pruned       total   -19767.0  arrows  30  F1 0.86
+     212.0 prior_day_minutes_below_range      conti unexpl greedy  0.150 true  0.150 | greedy ['prior_day_data_quali', 'prior_day_time_in_ra', 'sleep_circadian_prof', 'daily_step_count'] | true ['prior_day_data_quali'] kept ['prior_day_data_quali']
+     158.1 safety_conservatism_flag           binar unexpl greedy    nan true    nan | greedy ['recommended_dose_cha', 'logged_carbohydrate_', 'prior_day_time_in_ra', 'dosing_rule_aggressi', 'prior_day_data_quali', 'late_carbohydrate_pr', 'sleep_circadian_prof'] | true ['prior_day_data_quali', 'prior_day_minutes_be'] kept ['prior_day_data_quali']
+     124.1 meal_logging_support_level         ordin unexpl greedy    nan true    nan | greedy ['carb_log_completenes'] | true [] kept []
+     116.7 late_carbohydrate_proportion_true  conti unexpl greedy  0.613 true  0.810 | greedy ['late_carbohydrate_pr', 'carb_log_completenes', 'recommended_dose_cha', 'meal_logging_support'] | true ['sleep_circadian_prof', 'total_carbohydrate_g'] kept ['sleep_circadian_prof']
+      89.6 sleep_circadian_profile_index      conti unexpl greedy  0.824 true  1.000 | greedy ['late_carbohydrate_pr', 'dosing_rule_aggressi', 'meal_logging_support'] | true [] kept []
+      77.2 prior_day_time_in_range            conti unexpl greedy  0.589 true  0.711 | greedy ['prior_day_data_quali', 'recommended_dose_cha', 'logged_carbohydrate_', 'dosing_rule_aggressi', 'daily_step_count'] | true ['prior_day_data_quali'] kept ['prior_day_data_quali']
+      60.9 dosing_rule_aggressiveness         ordin unexpl greedy    nan true    nan | greedy ['recommended_dose_cha', 'logged_carbohydrate_', 'late_carbohydrate_pr', 'reminder_intensity_l'] | true [] kept []
+      50.7 total_carbohydrate_grams           conti unexpl greedy  0.830 true  1.000 | greedy ['recommended_dose_cha', 'carb_log_completenes', 'meal_logging_support'] | true [] kept []
+       9.0 logged_carbohydrate_grams          conti unexpl greedy  0.060 true  0.060 | greedy ['total_carbohydrate_g', 'carb_log_completenes', 'baseline_basal_dose_'] | true ['carb_log_completenes', 'total_carbohydrate_g'] kept ['carb_log_completenes', 'total_carbohydrate_g']
+       6.4 minutes_below_range_today          conti unexpl greedy  0.061 true  0.062 | greedy ['calibration_drift_bi', 'total_carbohydrate_g', 'effective_insulin_ac', 'sleep_circadian_prof', 'recommended_dose_cha'] | true ['calibration_drift_bi', 'cgm_wear_fraction_to', 'daily_step_count', 'effective_insulin_ac', 'total_carbohydrate_g'] kept ['calibration_drift_bi', 'daily_step_count', 'effective_insulin_ac', 'total_carbohydrate_g']
+       1.7 effective_insulin_action_index     conti unexpl greedy  1.000 true  0.989 | greedy ['reminder_intensity_l'] | true ['baseline_basal_dose_', 'implemented_dose_cha', 'sleep_circadian_prof'] kept ['implemented_dose_cha']
+       1.0 cgm_wear_fraction_today            conti unexpl greedy  0.962 true  0.963 | greedy ['daily_step_count', 'dosing_rule_aggressi'] | true ['sleep_circadian_prof'] kept ['sleep_circadian_prof']
+       1.0 calibration_drift_bias_today       conti unexpl greedy  0.996 true  1.000 | greedy ['cgm_wear_fraction_to', 'meal_logging_support', 'safety_conservatism_', 'dosing_rule_aggressi'] | true ['cgm_wear_fraction_to'] kept ['cgm_wear_fraction_to']
+       0.9 prior_day_data_quality_index       conti unexpl greedy  0.986 true  1.000 | greedy ['sleep_circadian_prof', 'reminder_intensity_l', 'dosing_rule_aggressi'] | true [] kept []
+       0.0 reminder_intensity_level           ordin unexpl greedy    nan true    nan | greedy [] | true [] kept []
+       0.0 implemented_dose_change            conti unexpl greedy  0.929 true  0.929 | greedy ['recommended_dose_cha', 'reminder_intensity_l'] | true ['recommended_dose_cha', 'reminder_intensity_l', 'safety_conservatism_'] kept ['recommended_dose_cha', 'reminder_intensity_l']
+       0.0 daily_step_count                   conti unexpl greedy  0.000 true  0.000 | greedy ['sleep_circadian_prof'] | true ['sleep_circadian_prof'] kept ['sleep_circadian_prof']
+       0.0 baseline_basal_dose_units          conti unexpl greedy  1.000 true  1.000 | greedy [] | true [] kept []
+      -2.4 time_in_range_today                conti unexpl greedy  0.118 true  0.118 | greedy ['total_carbohydrate_g', 'calibration_drift_bi', 'late_carbohydrate_pr', 'sleep_circadian_prof', 'effective_insulin_ac', 'meal_logging_support'] | true ['calibration_drift_bi', 'cgm_wear_fraction_to', 'daily_step_count', 'effective_insulin_ac', 'late_carbohydrate_pr', 'sleep_circadian_prof', 'total_carbohydrate_g'] kept ['calibration_drift_bi', 'daily_step_count', 'effective_insulin_ac', 'late_carbohydrate_pr', 'total_carbohydrate_g']
+      -6.2 carb_log_completeness              conti unexpl greedy  1.000 true  0.772 | greedy [] | true ['meal_logging_support', 'total_carbohydrate_g'] kept ['meal_logging_support']
+    -131.2 recommended_dose_change            conti unexpl greedy  1.000 true  0.413 | greedy ['reminder_intensity_l'] | true ['daily_step_count', 'dosing_rule_aggressi', 'logged_carbohydrate_', 'prior_day_data_quali', 'prior_day_minutes_be', 'prior_day_time_in_ra', 'safety_conservatism_'] kept ['daily_step_count', 'dosing_rule_aggressi', 'logged_carbohydrate_', 'prior_day_minutes_be', 'prior_day_time_in_ra', 'safety_conservatism_']
+    -169.1 late_carbohydrate_proportion_logge conti unexpl greedy  1.000 true  0.578 | greedy [] | true ['carb_log_completenes', 'late_carbohydrate_pr'] kept ['carb_log_completenes', 'late_carbohydrate_pr']
+$PY -I why/pruned_truth.py arena_data $s $m  50.18s user 0.50s system 97% cpu 51.881 total

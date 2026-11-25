@@ -1,0 +1,9 @@
+all true edges                      40 edges | P1 all bell: 0.38 right (7✓ 9✗) | P3 kinds, bell: 0.40 right (6✓ 10✗) | P4 kinds, learnt: 0.55 right (12✓ 15✗) | P4 no floor: 0.50 right (11✓ 15✗) |
+continuous → continuous             33 edges | P1 all bell: 0.39 right (5✓ 7✗) | P3 kinds, bell: 0.39 right (5✓ 7✗) | P4 kinds, learnt: 0.58 right (12✓ 12✗) | P4 no floor: 0.52 right (11✓ 12✗) |
+continuous → categorical             2 edges | P1 all bell: 1.00 right (2✓ 0✗) | P3 kinds, bell: 0.50 right (1✓ 0✗) | P4 kinds, learnt: 0.50 right (0✓ 0✗) | P4 no floor: 0.50 right (0✓ 0✗) |
+categorical → continuous             5 edges | P1 all bell: 0.00 right (0✓ 2✗) | P3 kinds, bell: 0.40 right (0✓ 3✗) | P4 kinds, learnt: 0.40 right (0✓ 3✗) | P4 no floor: 0.40 right (0✓ 3✗) |
+all true edges                      44 edges | P1 all bell: 0.41 right (6✓ 15✗) | P3 kinds, bell: 0.32 right (7✓ 11✗) | P4 kinds, learnt: 0.52 right (21✓ 12✗) | P4 no floor: 0.43 right (17✓ 16✗) |
+continuous → continuous             19 edges | P1 all bell: 0.32 right (2✓ 5✗) | P3 kinds, bell: 0.32 right (2✓ 5✗) | P4 kinds, learnt: 0.58 right (11✓ 8✗) | P4 no floor: 0.53 right (10✓ 9✗) |
+continuous → categorical            12 edges | P1 all bell: 0.75 right (4✓ 3✗) | P3 kinds, bell: 0.50 right (4✓ 2✗) | P4 kinds, learnt: 0.58 right (6✓ 1✗) | P4 no floor: 0.33 right (3✓ 4✗) |
+categorical → continuous             7 edges | P1 all bell: 0.00 right (0✓ 6✗) | P3 kinds, bell: 0.14 right (1✓ 4✗) | P4 kinds, learnt: 0.57 right (4✓ 3✗) | P4 no floor: 0.57 right (4✓ 3✗) |
+categorical → categorical            6 edges | P1 all bell: 0.50 right (0✓ 1✗) | P3 kinds, bell: 0.17 right (0✓ 0✗) | P4 kinds, learnt: 0.17 right (0✓ 0✗) | P4 no floor: 0.17 right (0✓ 0✗) |

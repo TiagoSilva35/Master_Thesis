@@ -1,0 +1,34 @@
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: divide by zero encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: overflow encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: invalid value encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+=== mortgage bell  N=1000  variables=24  (126s)
+  greedy             total     7774.3  arrows  65  F1 0.35
+  true, all arrows   total     6627.2  arrows  44  F1 1.00
+  true, pruned       total     6646.4  arrows  37  F1 0.91
+    1710.8 borrower_note_rate                 conti unexpl greedy  0.000 true  1.000 | greedy ['current_rate_spread', 'retail_refinance_rat'] | true [] kept []
+    1690.2 local_median_days_on_market        conti unexpl greedy  0.000 true  1.000 | greedy ['monthly_sale_hazard', 'ltv_bucket', 'local_hpi_monthly_ch'] | true [] kept []
+     800.3 bom_balance                        conti unexpl greedy  0.114 true  1.000 | greedy ['final_closing_costs', 'closing_cost_subsidy', 'credit_score_band', 'documentation_burden'] | true [] kept []
+     536.9 closing_cost_subsidy               conti unexpl greedy  0.235 true  1.000 | greedy ['final_closing_costs'] | true [] kept []
+     381.1 realized_refinance_savings_npv     conti unexpl greedy  0.296 true  0.682 | greedy ['monthly_refinance_ha', 'ltv_bucket', 'earliest_event_type_', 'remaining_term', 'bom_balance', 'credit_score_band'] | true ['bom_balance', 'current_rate_spread', 'earliest_event_type_', 'final_closing_costs', 'remaining_term'] kept ['bom_balance', 'current_rate_spread', 'earliest_event_type_']
+     271.0 monthly_refinance_hazard           conti unexpl greedy  0.096 true  0.204 | greedy ['observed_event_month', 'earliest_event_type_', 'current_rate_spread'] | true ['current_rate_spread', 'final_closing_costs', 'remaining_term', 'underwriting_approva'] kept ['current_rate_spread', 'underwriting_approva']
+     144.6 refinance_application_attempt      binar unexpl greedy    nan true    nan | greedy ['monthly_refinance_ha', 'current_rate_spread', 'earliest_event_type_', 'local_hpi_monthly_ch'] | true ['bom_balance', 'closing_cost_subsidy', 'credit_score_band', 'current_rate_spread', 'documentation_burden', 'ltv_bucket'] kept ['credit_score_band', 'current_rate_spread', 'documentation_burden']
+     102.5 underwriting_approval_decision     binar unexpl greedy    nan true    nan | greedy ['monthly_refinance_ha', 'refinance_applicatio', 'current_rate_spread', 'earliest_event_type_', 'borrower_note_rate', 'observed_event_type_', 'credit_score_band'] | true ['credit_score_band', 'documentation_burden', 'ltv_bucket', 'refinance_applicatio'] kept ['credit_score_band', 'documentation_burden', 'ltv_bucket', 'refinance_applicatio']
+      44.1 credit_score_band                  ordin unexpl greedy    nan true    nan | greedy ['final_closing_costs', 'closing_cost_subsidy'] | true [] kept []
+      40.2 earliest_event_type_true           nomin unexpl greedy    nan true    nan | greedy ['observed_event_type_', 'monthly_sale_hazard', 'monthly_default_haza', 'observed_event_month', 'event_month_true', 'ltv_bucket'] | true ['monthly_default_haza', 'monthly_refinance_ha', 'monthly_sale_hazard'] kept ['monthly_default_haza', 'monthly_refinance_ha', 'monthly_sale_hazard']
+      31.9 right_censored_at_horizon          binar unexpl greedy    nan true    nan | greedy ['observed_event_type_', 'event_month_true', 'observed_event_month'] | true ['event_month_true'] kept ['event_month_true']
+       9.3 ltv_bucket                         ordin unexpl greedy    nan true    nan | greedy ['bom_balance', 'credit_score_band', 'final_closing_costs', 'closing_cost_subsidy', 'local_hpi_monthly_ch'] | true ['bom_balance', 'local_hpi_monthly_ch'] kept ['bom_balance', 'local_hpi_monthly_ch']
+       4.9 household_income_shock             conti unexpl greedy  0.976 true  1.000 | greedy ['observed_event_month'] | true [] kept []
+       0.0 remaining_term                     conti unexpl greedy  0.995 true  1.000 | greedy ['earliest_event_type_', 'credit_score_band'] | true [] kept []
+       0.0 retail_refinance_rate_index        conti unexpl greedy  1.000 true  1.000 | greedy [] | true [] kept []
+       0.0 monthly_default_hazard             conti unexpl greedy  0.046 true  0.046 | greedy ['ltv_bucket', 'household_income_sho'] | true ['household_income_sho', 'ltv_bucket'] kept ['household_income_sho', 'ltv_bucket']
+       0.0 local_hpi_monthly_change           conti unexpl greedy  1.000 true  1.000 | greedy [] | true [] kept []
+       0.0 documentation_burden               conti unexpl greedy  1.000 true  1.000 | greedy [] | true [] kept []
+      -3.3 observed_event_month_recorded      conti unexpl greedy  0.000 true  0.000 | greedy ['event_month_true'] | true ['earliest_event_type_', 'event_month_true'] kept ['earliest_event_type_', 'event_month_true']
+    -117.3 observed_event_type_code           nomin unexpl greedy    nan true    nan | greedy ['event_month_true', 'monthly_default_haza', 'monthly_sale_hazard', 'observed_event_month', 'local_median_days_on', 'credit_score_band', 'bom_balance'] | true ['earliest_event_type_', 'event_month_true'] kept ['earliest_event_type_', 'event_month_true']
+    -156.6 event_month_true                   conti unexpl greedy  0.913 true  0.606 | greedy ['current_rate_spread', 'ltv_bucket'] | true ['monthly_default_haza', 'monthly_refinance_ha', 'monthly_sale_hazard'] kept ['monthly_default_haza', 'monthly_refinance_ha', 'monthly_sale_hazard']
+   -1266.8 monthly_sale_hazard                conti unexpl greedy  0.468 true  0.020 | greedy ['ltv_bucket', 'event_month_true', 'local_hpi_monthly_ch'] | true ['local_hpi_monthly_ch', 'local_median_days_on', 'ltv_bucket'] kept ['local_hpi_monthly_ch', 'local_median_days_on', 'ltv_bucket']
+   -1374.2 final_closing_costs                conti unexpl greedy  1.000 true  0.036 | greedy [] | true ['bom_balance', 'closing_cost_subsidy', 'credit_score_band', 'documentation_burden', 'ltv_bucket'] kept ['bom_balance', 'closing_cost_subsidy', 'credit_score_band', 'documentation_burden', 'ltv_bucket']
+   -1721.8 current_rate_spread                conti unexpl greedy  0.624 true  0.000 | greedy ['retail_refinance_rat'] | true ['borrower_note_rate', 'retail_refinance_rat'] kept ['borrower_note_rate', 'retail_refinance_rat']

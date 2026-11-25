@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from src.causal_model.node import Node
+from src.causal_model.nodes import Node
 
 
 class CausalKAN:

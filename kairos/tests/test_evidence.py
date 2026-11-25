@@ -3,9 +3,7 @@
 import numpy as np
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from src.causal_model.fitting import BayesianFitting
-from src.causal_model.node import Node
-from src.causal_model.outcome import OutcomeNode
+from src.causal_model.nodes import BayesianFitting, BinaryNode, Node
 from tests.helpers import sigmoid, world
 
 scenarios("evidence.feature")
@@ -15,7 +13,8 @@ scenarios("evidence.feature")
 def sine_people(context, count):
     random = np.random.default_rng(0)
     x = random.uniform(0, 4, count)
-    context["data"] = {"x": x, "y": np.sin(x) + random.normal(0, 0.3, count)}
+    y = np.sin(x) + random.normal(0, 0.3, count)
+    context["data"] = {"x": x, "y": y - y.mean()}  # centred, as the solver centres it
 
 
 @given(parsers.parse("{count:d} people with a yes/no outcome whose chance rises with x"))
@@ -32,7 +31,7 @@ def feature_node(context, intervals):
 
 @given(parsers.parse("a Bayesian outcome node for Y with parent x and {intervals:d} intervals"))
 def outcome_node(context, intervals):
-    context["node"] = OutcomeNode("Y", ["x"], pairs=[], intervals=intervals, fitting=BayesianFitting())
+    context["node"] = BinaryNode("Y", ["x"], pairs=[], intervals=intervals, fitting=BayesianFitting())
 
 
 @given(parsers.parse("{count:d} people from the large world"))
@@ -43,7 +42,7 @@ def large_world_people(context, count):
 
 @given("its outcome node with surfaces income×debt and age×savings")
 def large_world_outcome(context):
-    context["node"] = OutcomeNode("Y", context["parents"], pairs=[("income", "debt"), ("age", "savings")],
+    context["node"] = BinaryNode("Y", context["parents"], pairs=[("income", "debt"), ("age", "savings")],
                                   intervals=16, fitting=BayesianFitting())
 
 
@@ -60,15 +59,14 @@ def _design_and_penalty(context, strength):
 def feature_evidence(context, strength):
     design, penalty = _design_and_penalty(context, strength)
     context["design"], context["penalty"] = design, penalty
-    context["fit"] = context["node"]._solve(design, context["data"]["y"], penalty)
+    context["fit"] = context["node"].solver(design, context["data"]["y"])(penalty)
 
 
 @when(parsers.parse("I compute its Laplace evidence with λ = {strength:g}"))
 def laplace_evidence(context, strength):
     design, penalty = _design_and_penalty(context, strength)
     context["design"], context["penalty"] = design, penalty
-    context["node"]._start = None
-    context["fit"] = context["node"]._solve(design, context["data"]["Y"], penalty)
+    context["fit"] = context["node"].solver(design, context["data"]["Y"])(penalty)
 
 
 @when(parsers.parse("I fit the outcome with every λ = {strength:g}"))

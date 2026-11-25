@@ -12,8 +12,12 @@ Feature: Screening
       | 0        | rejected |
       | 0.1      | kept     |
 
-  # The surface's simple saddle has a smoothness belief of its own (Surface.saddle);
-  # before it had one, only the tiny ridge held it and this gain moved by about 3.45.
+  Scenario: A gate gets a surface between the gate and what it lets through
+    Given 1000 people where y = flag · 2x plus noise, with a yes/no flag
+    When a node for y screens its pairs of parents
+    Then the surface flag×x is kept
+    And with the flag off, x moves y by less than a tenth of what it does with the flag on
+
   Scenario: The decision to keep a surface does not depend on the tiny ridge
     Given 3000 people where y = sin(x1) + 0.5·x2 + 0.03·(x1 − 2)·(x2 − 2) plus noise
     When I compute the evidence gain of the surface with ridge 0.001 and with ridge 0.000001

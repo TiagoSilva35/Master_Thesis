@@ -1,13 +1,9 @@
 """Steps for drift.feature."""
 
-import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from src.causal_model.change import ChangeFit
-from src.causal_model.fitting import BayesianFitting, PlainFitting
-from src.causal_model.node import Node
-from src.causal_model.outcome import OutcomeNode
-from src.causal_model.screening import PairScreening
+from src.causal_model.drift import ChangeFit
+from src.causal_model.nodes import BayesianFitting, BinaryNode, Node, PairScreening
 from tests.helpers import world
 
 scenarios("drift.feature")
@@ -37,22 +33,13 @@ def joint_fit(context, child):
 @when("the outcome node is fitted jointly on both, with screening")
 def joint_outcome(context):
     parents = context["scenario"].world.parents()["Y"]
-    node = OutcomeNode("Y", parents, pairs=[], intervals=8, fitting=BayesianFitting(), screening=PairScreening())
+    node = BinaryNode("Y", parents, pairs=[], intervals=8, fitting=BayesianFitting(), screening=PairScreening())
     context["result"] = ChangeFit().fit(node, context["old"], context["new"])
 
 
 @when(parsers.parse("the {child} node is fitted jointly with ridge {first:g} and with ridge {second:g}"))
 def joint_two_ridges(context, child, first, second):
     context["results"] = [_joint(context, child, ridge) for ridge in (first, second)]
-
-
-@when(parsers.parse("I fit the {child} node jointly with a plain fitting"))
-def joint_plain(context, child):
-    parents = context["scenario"].world.parents()[child]
-    node = Node(child, parents, pairs=[], intervals=8, fitting=PlainFitting())
-    with pytest.raises(TypeError) as error:
-        ChangeFit().fit(node, context["old"], context["new"])
-    context["error"] = error.value
 
 
 @then(parsers.parse("{term} -> {child} is flagged as changed"))
@@ -83,7 +70,3 @@ def level_gains_independent_of_ridge(context, tolerance):
 def level_not_flagged(context, child):
     assert all("level" not in result.changed() for result in context["results"])
 
-
-@then("it refuses because it needs Bayesian fitting")
-def refuses_plain(context):
-    assert "BayesianFitting" in str(context["error"])

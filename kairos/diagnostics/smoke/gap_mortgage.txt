@@ -1,0 +1,10 @@
+mortgage: worth found − truth 1589; climbing from the truth gains 1461
+F1 found 0.45, climbing from the truth 0.71; true arrows that earn their price 30 of 44
+      -4063 observed_event_month_recorded    found [] truth ['earliest_event_typ', 'event_month_true']
+       3964 event_month_true                 found ['right_censored_at_', 'observed_event_mon'] truth ['monthly_default_ha', 'monthly_refinance_', 'monthly_sale_hazar']
+       1277 bom_balance                      found ['ltv_bucket'] truth []
+      -1095 ltv_bucket                       found ['earliest_event_typ'] truth ['bom_balance', 'local_hpi_monthly_']
+        985 realized_refinance_savings_npv   found ['earliest_event_typ', 'monthly_refinance_', 'final_closing_cost'] truth ['bom_balance', 'current_rate_sprea', 'earliest_event_typ', 'final_closing_cost', 'remaining_term']
+        439 monthly_refinance_hazard         found ['remaining_term', 'underwriting_appro', 'earliest_event_typ', 'current_rate_sprea', 'final_closing_cost'] truth ['current_rate_sprea', 'final_closing_cost', 'remaining_term', 'underwriting_appro']
+       -291 observed_event_type_code         found ['right_censored_at_', 'observed_event_mon'] truth ['earliest_event_typ', 'event_month_true']
+        175 refinance_application_attempt    found ['underwriting_appro', 'current_rate_sprea'] truth ['bom_balance', 'closing_cost_subsi', 'credit_score_band', 'current_rate_sprea', 'documentation_burd', 'ltv_bucket']

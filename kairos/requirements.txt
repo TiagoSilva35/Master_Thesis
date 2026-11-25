@@ -4,3 +4,6 @@ matplotlib
 # tests (run from kairos/: venv/bin/python -m pytest)
 pytest
 pytest-bdd
+
+# benchmark baselines (src/benchmarks/causal_arena)
+causal-learn

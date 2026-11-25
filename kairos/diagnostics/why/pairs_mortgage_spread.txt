@@ -1,0 +1,77 @@
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: divide by zero encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: overflow encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+/Users/tiagosilva/Documents/Master_Thesis/kairos/venv/lib/python3.14/site-packages/numpy/linalg/_linalg.py:2366: RuntimeWarning: invalid value encountered in slogdet
+  sign, logdet = _umath_linalg.slogdet(a, signature=signature)
+mortgage {'continuous': 17, 'binary': 3, 'ordinal': 2, 'nominal': 2}
+all true edges                      44 edges | P1 all bell: 0.41 right (6✓ 15✗) | P3 kinds, bell: 0.32 right (7✓ 11✗) | P4 kinds, learnt: 0.43 right (16✓ 18✗) | P4 no floor: 0.45 right (17✓ 17✗) |
+continuous → continuous             19 edges | P1 all bell: 0.32 right (2✓ 5✗) | P3 kinds, bell: 0.32 right (2✓ 5✗) | P4 kinds, learnt: 0.58 right (11✓ 8✗) | P4 no floor: 0.63 right (12✓ 7✗) |
+continuous → categorical            12 edges | P1 all bell: 0.75 right (4✓ 3✗) | P3 kinds, bell: 0.50 right (4✓ 2✗) | P4 kinds, learnt: 0.25 right (1✓ 7✗) | P4 no floor: 0.25 right (1✓ 7✗) |
+categorical → continuous             7 edges | P1 all bell: 0.00 right (0✓ 6✗) | P3 kinds, bell: 0.14 right (1✓ 4✗) | P4 kinds, learnt: 0.57 right (4✓ 3✗) | P4 no floor: 0.57 right (4✓ 3✗) |
+categorical → categorical            6 edges | P1 all bell: 0.50 right (0✓ 1✗) | P3 kinds, bell: 0.17 right (0✓ 0✗) | P4 kinds, learnt: 0.17 right (0✓ 0✗) | P4 no floor: 0.17 right (0✓ 0✗) |
+
+edge margins (P1 bell, P3 kinds bell, P4 learnt):
+  bom_balance                  (cont) → final_closing_costs          (cont)    -167.3    -167.3    -301.6
+  bom_balance                  (cont) → ltv_bucket                   (ordi)     328.6     136.1    -123.9
+  bom_balance                  (cont) → realized_refinance_savings_n (cont)       1.0       1.0     237.5
+  bom_balance                  (cont) → refinance_application_attemp (bina)       0.9      -0.6      -0.2
+  borrower_note_rate           (cont) → current_rate_spread          (cont)      -0.1      -0.1       9.9
+  closing_cost_subsidy         (cont) → final_closing_costs          (cont)    -203.1    -203.1   -1339.6
+  closing_cost_subsidy         (cont) → refinance_application_attemp (bina)       0.5      -2.2   -1010.8
+  credit_score_band            (ordi) → final_closing_costs          (cont)      -0.9      -0.8    -333.1
+  credit_score_band            (ordi) → refinance_application_attemp (bina)       0.2      -0.2      -0.2
+  credit_score_band            (ordi) → underwriting_approval_decisi (bina)       0.0      -0.6      -0.6
+  current_rate_spread          (cont) → monthly_refinance_hazard     (cont)    -355.2    -355.2   -1106.7
+  current_rate_spread          (cont) → realized_refinance_savings_n (cont)      15.2      15.2     430.7
+  current_rate_spread          (cont) → refinance_application_attemp (bina)       3.5       0.8       2.3
+  documentation_burden         (cont) → final_closing_costs          (cont)       0.2       0.2    -280.6
+  documentation_burden         (cont) → refinance_application_attemp (bina)       0.7      -0.5     -50.7
+  documentation_burden         (cont) → underwriting_approval_decisi (bina)       0.4       0.6     -38.7
+  earliest_event_type_true     (nomi) → observed_event_month_recorde (cont)     -82.2     -34.0     -49.6
+  earliest_event_type_true     (nomi) → observed_event_type_code     (nomi)    -948.0      -0.3      -0.3
+  earliest_event_type_true     (nomi) → realized_refinance_savings_n (cont)     -59.3      -1.9    1967.6
+  event_month_true             (cont) → observed_event_month_recorde (cont)       0.6       0.6     -12.6
+  event_month_true             (cont) → observed_event_type_code     (nomi)     383.7     140.9      -4.9
+  event_month_true             (cont) → right_censored_at_horizon    (bina)    1055.9     138.4     -42.9
+  final_closing_costs          (cont) → monthly_refinance_hazard     (cont)      -0.4      -0.4    -932.9
+  final_closing_costs          (cont) → realized_refinance_savings_n (cont)      -1.0      -1.0     133.7
+  household_income_shock       (cont) → monthly_default_hazard       (cont)      37.1      37.1     513.4
+  local_hpi_monthly_change     (cont) → ltv_bucket                   (ordi)       0.7      -1.4      -1.3
+  local_hpi_monthly_change     (cont) → monthly_sale_hazard          (cont)      -1.7      -1.7       3.8
+  local_median_days_on_market  (cont) → monthly_sale_hazard          (cont)     -93.5     -93.5     277.6
+  ltv_bucket                   (ordi) → final_closing_costs          (cont)    -104.7     -80.2    -336.7
+  ltv_bucket                   (ordi) → monthly_default_hazard       (cont)    -148.9     -89.5     327.7
+  ltv_bucket                   (ordi) → monthly_sale_hazard          (cont)      -9.3     -26.8      45.6
+  ltv_bucket                   (ordi) → refinance_application_attemp (bina)       0.1      -0.1      -0.1
+  ltv_bucket                   (ordi) → underwriting_approval_decisi (bina)      -0.1       1.4       1.4
+  monthly_default_hazard       (cont) → earliest_event_type_true     (nomi)     -96.0    -102.4      97.3
+  monthly_default_hazard       (cont) → event_month_true             (cont)      -0.6      -0.6     163.2
+  monthly_refinance_hazard     (cont) → earliest_event_type_true     (nomi)    -362.0    -444.5     -48.2
+  monthly_refinance_hazard     (cont) → event_month_true             (cont)    -621.9    -621.9     216.3
+  monthly_sale_hazard          (cont) → earliest_event_type_true     (nomi)      -5.6      17.9       0.9
+  monthly_sale_hazard          (cont) → event_month_true             (cont)      -0.9      -0.9     -59.0
+  refinance_application_attemp (bina) → underwriting_approval_decisi (bina)      -0.3      -0.1      -0.1
+  remaining_term               (cont) → monthly_refinance_hazard     (cont)      -1.5      -1.5    -272.0
+  remaining_term               (cont) → realized_refinance_savings_n (cont)      -1.3      -1.3     190.4
+  retail_refinance_rate_index  (cont) → current_rate_spread          (cont)       0.1       0.1       8.6
+  underwriting_approval_decisi (bina) → monthly_refinance_hazard     (cont)    -678.2     387.7     171.4
+
+root shape bonus (learnt − bell + N/2(log2π+1)), continuous variables:
+  borrower_note_rate                           -0.8
+  retail_refinance_rate_index                 -13.9
+  bom_balance                                 329.2
+  remaining_term                              207.2
+  local_hpi_monthly_change                    -14.3
+  documentation_burden                        145.3
+  closing_cost_subsidy                       -728.7
+  local_median_days_on_market                 161.6
+  household_income_shock                      -14.6
+  current_rate_spread                         -10.3
+  final_closing_costs                         413.5
+  monthly_sale_hazard                          -9.1
+  monthly_default_hazard                      423.2
+  monthly_refinance_hazard                   2507.1
+  event_month_true                             88.8
+  realized_refinance_savings_npv             1320.8
+  observed_event_month_recorded               102.9

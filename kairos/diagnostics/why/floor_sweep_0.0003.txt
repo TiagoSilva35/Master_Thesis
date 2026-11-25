@@ -1,0 +1,18 @@
+share 0.0003 | pairs: share of the 10 (root, formula) x 3 seeds with the true direction ahead by > 3 / behind by > 3, and mean gap
+noise 0.0: bell   own+add: 0.68/0.12 (   775) | car+add: 0.68/0.12 (   716)
+noise 0.0: learnt own+add: 0.30/0.50 (    73) | car+add: 0.40/0.40 (    85)
+noise 0.1: bell   own+add: 0.80/0.08 (   525) | car+add: 0.80/0.08 (   515)
+noise 0.1: learnt own+add: 0.84/0.10 (   127) | car+add: 0.82/0.10 (   117)
+noise 0.2: bell   own+add: 0.80/0.10 (   352) | car+add: 0.80/0.10 (   350)
+noise 0.2: learnt own+add: 0.92/0.00 (    78) | car+add: 0.92/0.00 (    75)
+noise 0.4: bell   own+add: 0.76/0.12 (   173) | car+add: 0.76/0.12 (   173)
+noise 0.4: learnt own+add: 0.94/0.00 (    57) | car+add: 0.94/0.00 (    58)
+triples z = a x - b y: wrong minus true (worst of the two rewritings), 3 seeds, mean
+1x-1y bell bell   own+add:    171 | car+add:    -36
+1x-1y bell learnt own+add:    235 | car+add:    -21
+1x-1y flat bell   own+add:    257 | car+add:    -26
+1x-1y flat learnt own+add:    226 | car+add:    -68
+100x-30y bell bell   own+add:    437 | car+add:    -12
+100x-30y bell learnt own+add:    936 | car+add:     -9
+100x-30y flat bell   own+add:    756 | car+add:     15
+100x-30y flat learnt own+add:    873 | car+add:    -88

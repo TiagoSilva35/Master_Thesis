@@ -1,0 +1,252 @@
+% Weekly update, 20 November 2026: work since Friday 13 November (literature review, graph discovery,
+% baselines, the CausalArena benchmark, the issues found and the plan). CISUC template, same preamble as
+% ../bayesian_causal_model/presentation.tex. Compiles with pdfLaTeX (run twice for the TikZ overlays).
+\documentclass[aspectratio=169]{beamer}
+\usepackage{geometry}
+\geometry{paperwidth=13.333in,paperheight=7.5in}
+\usepackage{iftex}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{array}
+
+% ---- fonts ----
+\ifPDFTeX\usepackage[utf8]{inputenc}\fi
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{tgheros}
+\usepackage{tgcursor}
+\renewcommand{\familydefault}{\sfdefault}
+\newcommand{\monofont}{\ttfamily}
+
+% ---- colours ----
+\definecolor{cred}{HTML}{DA0725}
+\definecolor{ink}{HTML}{141414}
+\definecolor{body}{HTML}{262626}
+\definecolor{grey}{HTML}{8A8A8A}
+\definecolor{lgrey}{HTML}{C4C4C4}
+
+\setbeamercolor{normal text}{fg=body}
+\setbeamercolor{itemize item}{fg=cred}
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=0.85in,text margin right=0.85in}
+
+% ---- running header ----
+\newcommand{\hdrtotal}{8}
+\newcommand{\hdrsec}{}
+\newcommand{\hdrpg}{}
+\newcommand{\pageset}[2]{\renewcommand{\hdrsec}{#1}\renewcommand{\hdrpg}{#2}}
+\setbeamertemplate{headline}{%
+  \vskip3mm%
+  \makebox[\paperwidth][c]{%
+    \hspace{9mm}%
+    \parbox[t]{4.2in}{\monofont\color{grey}\fontsize{9}{11}\selectfont
+      Towards Fair Algorithmic Recourse with\\ Kolmogorov-Arnold Networks}%
+    \hfill
+    \parbox[t]{4.2in}{\centering\monofont\color{grey}\fontsize{10}{12}\selectfont \hdrsec}%
+    \hfill
+    \parbox[t]{2.6in}{\raggedleft\monofont\fontsize{13}{15}\selectfont
+      \textbf{\color{ink}\hdrpg}{\color{grey}/\hdrtotal}}%
+    \hspace{9mm}%
+  }%
+}
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{}
+
+% ---- helpers (absolute placement, inches from the page's top-left corner) ----
+\newcommand{\tb}[5][]{\begin{tikzpicture}[remember picture,overlay]%
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=#2in,align=left,#1]
+    at ([xshift=#3in,yshift=-#4in]current page.north west){\raggedright #5\par};\end{tikzpicture}}
+\newcommand{\fs}[2]{\fontsize{#1}{#2}\selectfont}
+\newcommand{\hrl}[3]{\tb{#3}{#1}{#2}{{\color{lgrey}\rule{#3in}{0.9pt}}}}
+\newcommand{\ctitle}[1]{\tb[font=\fontsize{28}{32}\selectfont\bfseries]{11.6}{0.85}{1.3}{\color{ink}#1}}
+\newcommand{\slidefoot}[1]{\tb{11.6}{0.85}{6.5}{\centering\color{grey}\fs{13}{16}#1}}
+\newcommand{\titleSlide}[2]{%
+  \tb[font=\fontsize{46}{50}\selectfont\bfseries]{11.4}{0.9}{2.4}{\color{ink}#1}%
+  \tb[font=\fontsize{30}{36}\selectfont\bfseries]{11.4}{0.9}{3.4}{\color{ink}#2}%
+  \tb{2.5}{0.9}{6.75}{\includegraphics[width=2.5in]{assets/cisuc_logo.png}}}
+% column heading: \colhead{x}{y}{width}{text}
+\newcommand{\colhead}[4]{\tb{#3}{#1}{#2}{\bfseries\color{cred}\fs{17}{21}#4}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \draw[lgrey,line width=0.9pt] ([xshift=#1in,yshift=-#2in-0.42in]current page.north west) -- ++(#3in,0);
+  \end{tikzpicture}}
+% numbered column: \chain{x}{n}{title}{text}
+\newcommand{\chain}[4]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=cred,text=white,inner sep=0pt,minimum size=0.34in,font=\bfseries\fontsize{13}{13}\selectfont]
+      at ([xshift=#1in+0.17in,yshift=-2.2in]current page.north west) {#2};
+  \end{tikzpicture}%
+  \tb{2.6}{#1}{2.6}{{\bfseries\color{ink}\fs{16.5}{20}#3\par}\vspace{6pt}{\color{body}\fs{14.5}{18.5}#4\par}}}
+% numbered block: \nblock{x}{y}{width}{n}{title}{text}
+\newcommand{\nblock}[6]{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[circle,fill=cred,text=white,inner sep=0pt,minimum size=0.3in,font=\bfseries\fontsize{12.5}{12.5}\selectfont]
+      at ([xshift=#1in+0.15in,yshift=-#2in-0.14in]current page.north west) {#4};
+  \end{tikzpicture}%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt,text width=#3in-0.45in,align=left]
+      at ([xshift=#1in+0.45in,yshift=-#2in]current page.north west)
+      {\raggedright{\bfseries\color{ink}\fs{15.5}{18.5}#5\par}\vspace{3pt}{\color{body}\fs{14}{17.5}#6\par}};
+  \end{tikzpicture}}
+% titled text block: \lowcol{x}{y}{width}{title}{text}
+\newcommand{\lowcol}[5]{\tb{#3}{#1}{#2}{{\bfseries\color{ink}\fs{15.5}{18.5}#4\par}\vspace{4pt}{\color{body}\fs{14}{17.5}#5\par}}}
+
+\begin{document}
+
+% ===================================================== LOGO
+\begin{frame}[plain]
+  \tb{4.6}{4.37}{3.35}{\includegraphics[width=4.6in]{assets/cisuc_logo.png}}
+\end{frame}
+
+% ===================================================== TITLE
+\begin{frame}[plain]
+  \titleSlide{Fair Causal KAN}{Finding the graph and benchmarking it}
+  \tb{11}{0.92}{4.3}{\color{ink}\fs{19}{22}Tiago Silva}
+  \tb{11}{0.92}{4.7}{\color{grey}\fs{13}{16}Supervisors: Prof.\ Pedro Henriques Abreu \textperiodcentered{} Prof.\ Bruno Veloso}
+  \tb{11}{0.92}{5.2}{\color{ink}\fs{14}{18}\textbf{CISUC \textperiodcentered{} Data-Centric AI Lab}\\
+    {\color{body}\fs{14}{18}Department of Informatics Engineering, University of Coimbra}}
+  \tb{11}{0.92}{5.95}{\color{grey}\fs{13}{16}Weekly update \textperiodcentered{} 20 November 2026}
+\end{frame}
+
+% ===================================================== 1. OVERVIEW
+\pageset{Overview}{1}
+\begin{frame}
+  \ctitle{Since last Friday}
+  \chain{0.85}{1}{Literature review}{{\color{grey}\monofont\fs{12}{15}Fri 13 -- Sun 15}\\[4pt]
+    Background chapter finished. CD-NOD described step by step.}
+  \chain{3.8}{2}{Graph discovery}{{\color{grey}\monofont\fs{12}{15}Sun 15}\\[4pt]
+    kairos finds the parents of every variable from the data.}
+  \chain{6.75}{3}{Benchmark}{{\color{grey}\monofont\fs{12}{15}Mon 16 -- Wed 18}\\[4pt]
+    PC and CD-NOD as baselines, all run on CausalArena.}
+  \chain{9.7}{4}{Issues and a plan}{{\color{grey}\monofont\fs{12}{15}Wed 18 -- Thu 19}\\[4pt]
+    A first check shows two modelling issues. A plan to fix them.}
+\end{frame}
+
+% ===================================================== 2. LITERATURE REVIEW
+\pageset{Literature review}{2}
+\begin{frame}
+  \ctitle{Literature review}
+  \colhead{0.85}{1.98}{5.5}{2.1 Background knowledge: finished}
+  \tb{5.5}{0.85}{2.62}{\color{body}\fs{15}{24}%
+    2.1.1 \ Notation\\
+    2.1.2 \ Structural causal models and interventions\\
+    2.1.3 \ Counterfactual explanations and recourse\\
+    2.1.4 \ Fairness: statistical and causal notions\\
+    2.1.5 \ Concept drift and distribution shift\\
+    2.1.6 \ Kolmogorov--Arnold networks\par}
+  \colhead{7.0}{1.98}{5.45}{Related work: CD-NOD (Huang et al., 2020)}
+  \nblock{7.0}{2.62}{5.45}{1}{Skeleton and changing mechanisms}{A variable $C$ (time or environment); kernel tests (KCI) find the links and which variables change with $C$.}
+  \nblock{7.0}{3.82}{5.45}{2}{Directions}{Invariance tests, the Independent Change Principle when both ends change, then Meek's rules.}
+  \nblock{7.0}{5.02}{5.45}{3}{Driving forces}{Kernel PCA on how each changing mechanism evolves.}
+\end{frame}
+
+% ===================================================== 3. GRAPH DISCOVERY
+\pageset{Graph discovery}{3}
+\begin{frame}
+  \ctitle{kairos now finds its own graph}
+  \tb{6.4}{0.85}{1.98}{\color{body}\fs{15}{19}Before, the parents were read from the simulated world. Now they are found once from the training data, before the online phase.\par}
+  \nblock{0.85}{2.85}{6.4}{1}{Add arrows}{Start with none; add the arrow with the largest evidence gain (page 6) that closes no loop, until no arrow helps.}
+  \nblock{0.85}{3.75}{6.4}{2}{Prune}{Drop a parent if removing it costs less than 3 (data less than $e^3\approx20$ times more probable with it).}
+  \nblock{0.85}{4.65}{6.4}{3}{Flag doubtful directions}{Reverse each arrow; if the reversed graph scores within 3, flag it.}
+  \nblock{0.85}{5.35}{6.4}{4}{Hand over}{Fit the causal KAN (Bayesian curves, surfaces) on the graph found.}
+  \colhead{7.85}{1.98}{4.6}{Why the direction can be found}
+  \tb{4.6}{7.85}{2.62}{\color{body}\fs{14}{17.5}Each variable is curves of its parents plus noise of the same spread everywhere (an additive noise model). A curved relation fits this shape only in the true direction, as in CAM (B\"uhlmann et al., 2014).\par}
+  \colhead{7.85}{4.2}{4.6}{Optional background}
+  \tb{4.6}{7.85}{4.84}{\color{body}\fs{14}{17.5}The outcome has no children; roots (e.g.\ protected attributes) have no parents.\par}
+\end{frame}
+
+% ===================================================== 4. BENCHMARK
+\pageset{Benchmark}{4}
+\begin{frame}
+  \ctitle{Benchmark: CausalArena, against PC and CD-NOD}
+  \colhead{0.85}{1.98}{5.6}{CausalArena (Li et al., 2026)}
+  \tb{5.6}{0.85}{2.62}{\color{body}\fs{14.5}{18.5}%
+    \textbf{50} causal models of real-world settings in \textbf{10} domains, \textbf{17--25} variables each.\\[6pt]
+    Five domains are about people: education, finance and credit, government services, healthcare, housing.\\[6pt]
+    Per model: 5 replicates of 1,000 rows, observational only, or 800 observational $+$ 200 interventional.\\[6pt]
+    Scored by directed precision, recall, F1 and SHD.\par}
+  \colhead{7.0}{1.98}{5.45}{Methods compared}
+  \tb{5.45}{7.0}{2.62}{\color{body}\fs{14.5}{18.5}%
+    \textbf{\color{ink}kairos}: evidence search (page 3)\\[6pt]
+    \textbf{\color{ink}PC}: Fisher $z$ and RCIT tests (causal-learn)\\[6pt]
+    \textbf{\color{ink}CD-NOD}: the same tests, interventional files only; fixed so that its first step respects background knowledge\\[6pt]
+    \textbf{\color{ink}CD-NOD, authors' version}: their MATLAB code ported to Python (KCI tests); slow, not in the default run\par}
+  \tb{5.45}{7.0}{4.55}{\color{body}\fs{14}{17.5}Each method runs with \textbf{no background} (the protocol) and, for diagnosis, with the \textbf{roots given}.\par}
+\end{frame}
+
+% ===================================================== 5. FIRST CHECK
+\pageset{Benchmark}{5}
+\begin{frame}
+  \ctitle{First check: the mortgage scenario, one replicate}
+  \tb{7.1}{0.85}{2.0}{\fs{14.5}{18}\renewcommand{\arraystretch}{1.3}%
+    \begin{tabular}{@{}l l r r@{}}
+      \toprule
+      \bfseries Method & \bfseries Background & \bfseries Observational & \bfseries Obs.\ $+$ interv.\\
+      \midrule
+      kairos & none & 0.24 & 0.27\\
+      kairos & roots given & \textbf{0.48} & \textbf{0.46}\\
+      PC, Fisher $z$ & none & 0.37 & 0.36\\
+      PC, Fisher $z$ & roots given & 0.39 & 0.40\\
+      CD-NOD, Fisher $z$ & none & -- & 0.36\\
+      CD-NOD, Fisher $z$ & roots given & -- & 0.40\\
+      PC, RCIT & none & 0.37 & 0.37\\
+      CD-NOD, RCIT & none & -- & 0.34\\
+      \bottomrule
+    \end{tabular}\par}
+  \nblock{8.4}{2.0}{4.1}{1}{Roots given: kairos is best}{0.48 against 0.39 for PC.}
+  \nblock{8.4}{3.15}{4.1}{2}{No background: kairos is worst}{0.24: it gets many directions wrong.}
+  \nblock{8.4}{4.3}{4.1}{3}{A check, not a result}{It shows that everything runs. The full run waits for the fixes.}
+\end{frame}
+
+% ===================================================== 6. THE EVIDENCE
+\pageset{The score}{6}
+\begin{frame}
+  \ctitle{The score behind the search: the evidence}
+  \tb{11.6}{0.85}{1.95}{\color{ink}\fs{22}{26}$\log\text{evidence}(x_j \mid \text{parents}) \;=\;
+    \underbrace{{\color{cred}-\tfrac{N}{2}\log\hat\sigma^2}}_{\textstyle\text{fit}}
+    \;+\; \underbrace{\tfrac12\log|P| \;-\; \tfrac12\log|W^\top W+P|}_{\textstyle\text{flexibility cost}}$\par}
+  \lowcol{0.85}{3.3}{3.6}{\color{cred}Fit}{$\hat\sigma^2$: the average squared leftover (actual $-$ curves). Smaller leftovers, higher score. With $N=1{,}000$: $\hat\sigma^2=1$ gives 0 points, $\hat\sigma^2=0.2$ about 800.}
+  \lowcol{4.85}{3.3}{3.6}{Flexibility cost}{$W$: each row's bump weights. $P=\lambda\,\times$ bending, the smoothness belief. More parents or wigglier curves cost more.}
+  \lowcol{8.85}{3.3}{3.6}{In the search}{A graph's score is the sum over its variables. The gain of $i\rightarrow j$ is $j$'s evidence with $i$ minus without.}
+  \colhead{0.85}{5.0}{11.6}{Two assumptions are built in}
+  \tb{11.6}{0.85}{5.62}{\color{body}\fs{15}{20}%
+    \textbf{\color{ink}1 \ Bell-shaped noise:} the fit term is the bell curve's formula; only the size $\hat\sigma^2$ enters, never the shape.\\
+    \textbf{\color{ink}2 \ Numbers on a line:} $W$ and $P$ build a spline over every parent, so neighbouring values must have similar effects.\par}
+\end{frame}
+
+% ===================================================== 7. ISSUES
+\pageset{Issues}{7}
+\begin{frame}
+  \ctitle{Two issues found}
+  \colhead{0.85}{1.98}{5.6}{1 \textperiodcentered{} The noise model (the fit term)}
+  \lowcol{0.85}{2.62}{5.6}{Roots and noise that are not bell-shaped}{The fit term sees only the size $\hat\sigma^2$, not the shape, so a reversed arrow can win.}
+  \lowcol{0.85}{3.72}{5.6}{Categorical children}{A 0/1 child leaves $-0.3$ or $+0.7$, never a bell: $\hat\sigma^2$ no longer measures the fit.}
+  \lowcol{0.85}{4.82}{5.6}{Near-zero noise}{spread $=$ note rate $-$ index, rounded: $\hat\sigma^2=0.0000035$, so $-\tfrac{N}{2}\log\hat\sigma^2=6{,}286$ points. Its rearrangements score 6,050 and 5,811.}
+  \colhead{7.0}{1.98}{5.45}{2 \textperiodcentered{} The input model ($W$ and $P$)}
+  \lowcol{7.0}{2.62}{5.45}{Nominal parents}{Event type coded 0--3: $W$ and $P$ invent an order, so renumbering changes the evidence.}
+  \lowcol{7.0}{3.72}{5.45}{Ordinal parents}{Credit band has 5 values but 11 heights: most of them are set by $P$ alone.}
+  \lowcol{7.0}{4.82}{5.45}{Binary parents}{Harmless: two heights, one effect.}
+\end{frame}
+
+% ===================================================== 8. PLAN
+\pageset{Next steps}{8}
+\begin{frame}
+  \ctitle{Next: a plan to fix them (draft, under review)}
+  \tb{11.6}{0.85}{1.98}{\color{body}\fs{14.5}{18}\renewcommand{\arraystretch}{1.35}%
+    \begin{tabular}{@{}l>{\raggedright\arraybackslash}p{7.6in}>{\raggedright\arraybackslash}p{3.15in}@{}}
+      \toprule
+      & \textbf{Change} & \textbf{Fixes}\\
+      \midrule
+      \textbf{\textcolor{cred}{0}} & Each variable's type reaches kairos (from CausalArena's measurement scales) & groundwork\\
+      \textbf{\textcolor{cred}{1}} & A soft floor on the noise: $\hat\sigma^2 \rightarrow \hat\sigma^2+c$, from a prior on the noise size & near-zero noise\\
+      \textbf{\textcolor{cred}{2}} & Categorical children: logistic, ordered logit, softmax (Laplace evidence, as for Y) & categorical children\\
+      \textbf{\textcolor{cred}{3}} & Categorical parents: one height per level & nominal and ordinal parents\\
+      \textbf{\textcolor{cred}{4}} & A learnt noise shape: the log-density as a P-spline; the bell curve is its special case & directions\\
+      \textbf{\textcolor{cred}{5}} & Optional: fit each variable only on rows where it was not set by intervention & directions\\
+      \bottomrule
+    \end{tabular}\par}
+  \tb{11.6}{0.85}{5.3}{\color{body}\fs{14.5}{18}Each phase ends with tests and a check on two scenarios. Then the full CausalArena run.\par}
+\end{frame}
+
+\end{document}

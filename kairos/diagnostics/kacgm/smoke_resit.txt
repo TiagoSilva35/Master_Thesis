@@ -1,0 +1,9 @@
+resit           mortgage   obs_only no background F1 0.16 (correct 8, reversed 18, extra 33, missing 18) 206s
+resit           mortgage   obs_only roots given   F1 0.47 (correct 19, reversed 4, extra 14, missing 21) 267s
+resit           mortgage   obs_int  no background F1 0.15 (correct 8, reversed 18, extra 34, missing 18) 223s
+resit           mortgage   obs_int  roots given   F1 0.44 (correct 18, reversed 4, extra 16, missing 22) 180s
+resit           medication obs_only no background F1 0.25 (correct 10, reversed 15, extra 16, missing 15) 88s
+resit           medication obs_only roots given   F1 0.42 (correct 17, reversed 8, extra 15, missing 15) 55s
+resit           medication obs_int  no background F1 0.33 (correct 13, reversed 12, extra 14, missing 15) 85s
+resit           medication obs_int  roots given   F1 0.47 (correct 18, reversed 7, extra 12, missing 15) 48s
+resit           average F1 0.336 over 8 runs
